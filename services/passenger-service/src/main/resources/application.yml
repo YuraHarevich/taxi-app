@@ -1,0 +1,16 @@
+server:
+  port: 8010
+spring:
+  application:
+    name: passenger-service
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://localhost:5433/passengers
+    username: postgres
+    password: password
+  jpa:
+    hibernate:
+      ddl-auto: update
+    database: postgresql
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+
