@@ -3,11 +3,11 @@ package com.Harevich.passenger_service.service;
 import com.Harevich.passenger_service.dto.PassengerRequest;
 import com.Harevich.passenger_service.dto.PassengerResponse;
 import com.Harevich.passenger_service.exceptions.UniqueException;
-import com.Harevich.passenger_service.mapper.PassengerMapper;
+import com.Harevich.passenger_service.util.constants.PassengerServiceResponseConstants;
+import com.Harevich.passenger_service.util.mapper.PassengerMapper;
 import com.Harevich.passenger_service.model.Passenger;
 import com.Harevich.passenger_service.repository.PassengerRepository;
 import jakarta.persistence.EntityNotFoundException;
-import jakarta.validation.ConstraintViolationException;
 import lombok.AllArgsConstructor;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
@@ -26,9 +26,9 @@ public class PassengerService {
         } catch (DataIntegrityViolationException ex) {
             String rootMessage = ex.getMessage(); // Сообщение базы данных
             if (rootMessage.contains("Key (email)")) {
-                throw new UniqueException("email should be unique");
+                throw new UniqueException(PassengerServiceResponseConstants.REPEATED_EMAIL);
             } else if (rootMessage.contains("Key (number)")) {
-                throw new UniqueException("phone number should be unique");
+                throw new UniqueException(PassengerServiceResponseConstants.REPEATED_PHONE_NUMBER);
             }
         }
         return passenger;
@@ -37,9 +37,9 @@ public class PassengerService {
     public Passenger edit(PassengerRequest request, UUID id) {
         var passenger = passengerRepository.findById(id);
         if (passenger.isEmpty())
-            throw new EntityNotFoundException("Passenger with such id not found");
+            throw new EntityNotFoundException(PassengerServiceResponseConstants.PASSENGER_NOT_FOUND);
         if (passenger.get().isDeleted() == true)
-            throw new EntityNotFoundException("Passenger with such id is deleted");
+            throw new EntityNotFoundException(PassengerServiceResponseConstants.PASSENGER_DELETED);
         var changed_passenger = passenger.get();
         changed_passenger.setName(request.name());
         changed_passenger.setEmail(request.email());
@@ -52,7 +52,7 @@ public class PassengerService {
         var optional = passengerRepository.findById(id);
         if (optional.isPresent()){
             if(optional.get().isDeleted() == true)
-                throw new EntityNotFoundException("Passenger with such id is deleted");
+                throw new EntityNotFoundException(PassengerServiceResponseConstants.PASSENGER_DELETED);
             return new PassengerResponse(
                     optional.get().getId(),
                     optional.get().getName(),
@@ -62,7 +62,7 @@ public class PassengerService {
             );
         }
         else
-            throw new EntityNotFoundException("Passenger with such id not found");
+            throw new EntityNotFoundException(PassengerServiceResponseConstants.PASSENGER_NOT_FOUND);
 
     }
     public void deleteById(UUID passenger_id){
@@ -72,6 +72,6 @@ public class PassengerService {
             passengerRepository.save(optional.get());
         }
         else
-            throw new EntityNotFoundException("Passenger with such id not found");
+            throw new EntityNotFoundException(PassengerServiceResponseConstants.PASSENGER_NOT_FOUND);
     }
 }

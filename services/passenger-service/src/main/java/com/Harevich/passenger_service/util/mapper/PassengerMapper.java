@@ -1,4 +1,4 @@
-package com.Harevich.passenger_service.mapper;
+package com.Harevich.passenger_service.util.mapper;
 
 import com.Harevich.passenger_service.dto.PassengerRequest;
 import com.Harevich.passenger_service.dto.PassengerResponse;

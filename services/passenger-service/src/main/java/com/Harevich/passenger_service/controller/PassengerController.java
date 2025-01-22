@@ -2,8 +2,7 @@ package com.Harevich.passenger_service.controller;
 
 import com.Harevich.passenger_service.dto.PassengerRequest;
 import com.Harevich.passenger_service.dto.PassengerResponse;
-import com.Harevich.passenger_service.mapper.PassengerMapper;
-import com.Harevich.passenger_service.model.Passenger;
+import com.Harevich.passenger_service.util.mapper.PassengerMapper;
 import com.Harevich.passenger_service.service.PassengerService;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;

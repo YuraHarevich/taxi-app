@@ -1,6 +1,7 @@
 package com.Harevich.passenger_service.controller;
 import com.Harevich.passenger_service.dto.ErrorMessage;
 import com.Harevich.passenger_service.exceptions.UniqueException;
+import com.Harevich.passenger_service.util.constants.PassengerServiceResponseConstants;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
@@ -45,7 +46,7 @@ public class GlobalExceptionHandler {
                     .timestamp(LocalDateTime.now())
                 .build());
     }
-    //обработка на случай дубликата поля при изменении
+    //обработка на случай дубликата поля при попытке изменения
     @ExceptionHandler(DataIntegrityViolationException.class)
     public ResponseEntity<ErrorMessage> handleDataIntegrityViolationException(DataIntegrityViolationException ex) {
         Pattern pattern = Pattern.compile("Подробности: Key \\((.*?)\\)=\\((.*?)\\)");
@@ -54,7 +55,7 @@ public class GlobalExceptionHandler {
         if (matcher.find()) {
             String field = matcher.group(1);
             String value = matcher.group(2);
-            message = String.format("User with such %s (%s) already exists.", field, value);
+            message = field.equals("email")? PassengerServiceResponseConstants.REPEATED_EMAIL: PassengerServiceResponseConstants.REPEATED_PHONE_NUMBER + "("+value+")";
         }
         return ResponseEntity
                 .status(HttpStatus.CONFLICT)
