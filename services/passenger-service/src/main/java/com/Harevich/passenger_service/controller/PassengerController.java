@@ -10,6 +10,7 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -20,6 +21,8 @@ import java.util.UUID;
 @RestController
 @AllArgsConstructor
 @RequestMapping("api/v1/passenger")
+@Tag(name = "Passenger api",
+        description = "This controller is made to communicate with passenger service")
 public class PassengerController {
     private final PassengerService passengerService;
     @PostMapping("registration")
