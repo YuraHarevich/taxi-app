@@ -68,6 +68,8 @@ public class PassengerService {
     public void deleteById(UUID passenger_id){
         var optional = passengerRepository.findById(passenger_id);
         if (optional.isPresent()){
+            if(optional.get().isDeleted()==true)
+                throw new EntityNotFoundException(PassengerServiceResponseConstants.PASSENGER_DELETED);
             optional.get().setDeleted(true);
             passengerRepository.save(optional.get());
         }
