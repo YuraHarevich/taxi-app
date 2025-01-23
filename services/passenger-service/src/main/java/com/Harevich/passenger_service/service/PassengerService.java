@@ -8,6 +8,7 @@ import com.Harevich.passenger_service.util.mapper.PassengerMapper;
 import com.Harevich.passenger_service.model.Passenger;
 import com.Harevich.passenger_service.repository.PassengerRepository;
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
@@ -48,18 +49,12 @@ public class PassengerService {
         return passengerRepository.saveAndFlush(changed_passenger);
     }
 
-    public PassengerResponse getById(UUID id) {
+    public Passenger getById(UUID id) {
         var optional = passengerRepository.findById(id);
         if (optional.isPresent()){
             if(optional.get().isDeleted() == true)
                 throw new EntityNotFoundException(PassengerServiceResponseConstants.PASSENGER_DELETED);
-            return new PassengerResponse(
-                    optional.get().getId(),
-                    optional.get().getName(),
-                    optional.get().getSurname(),
-                    optional.get().getEmail(),
-                    optional.get().getNumber()
-            );
+            return optional.get();
         }
         else
             throw new EntityNotFoundException(PassengerServiceResponseConstants.PASSENGER_NOT_FOUND);

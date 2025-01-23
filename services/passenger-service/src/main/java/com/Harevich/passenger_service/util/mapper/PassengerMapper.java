@@ -23,5 +23,13 @@ public class PassengerMapper {
                 passenger.getNumber()
         );
     }
+    public static PassengerRequest toRequest(Passenger passenger) {
+        return new PassengerRequest(
+                passenger.getName(),
+                passenger.getSurname(),
+                passenger.getEmail(),
+                passenger.getNumber()
+        );
+    }
 }
 

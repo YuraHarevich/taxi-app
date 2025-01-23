@@ -69,7 +69,7 @@ public class PassengerController {
                             schema = @Schema(implementation = ErrorMessage.class))),
     })
     public PassengerResponse getPassengerById(@RequestParam("id") UUID id){
-        return passengerService.getById(id);
+        return PassengerMapper.toResponse(passengerService.getById(id));
     }
 
 
