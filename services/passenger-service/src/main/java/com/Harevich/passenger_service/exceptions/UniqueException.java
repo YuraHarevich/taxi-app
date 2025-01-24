@@ -1,10 +1,10 @@
 package com.Harevich.passenger_service.exceptions;
 
-import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.RequiredArgsConstructor;
 
 @EqualsAndHashCode(callSuper = true)
-@Data
+@RequiredArgsConstructor
 public class UniqueException extends RuntimeException{
     private final String message;
 }

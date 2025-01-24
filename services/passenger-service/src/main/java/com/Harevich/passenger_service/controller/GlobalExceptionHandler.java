@@ -47,6 +47,7 @@ public class GlobalExceptionHandler {
                 .build());
     }
     //обработка на случай дубликата поля при попытке изменения
+
     @ExceptionHandler(DataIntegrityViolationException.class)
     public ResponseEntity<ErrorMessage> handleDataIntegrityViolationException(DataIntegrityViolationException ex) {
         Pattern pattern = Pattern.compile("Подробности: Key \\((.*?)\\)=\\((.*?)\\)");

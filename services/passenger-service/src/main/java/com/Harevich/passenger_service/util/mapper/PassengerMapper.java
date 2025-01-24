@@ -3,33 +3,21 @@ package com.Harevich.passenger_service.util.mapper;
 import com.Harevich.passenger_service.dto.PassengerRequest;
 import com.Harevich.passenger_service.dto.PassengerResponse;
 import com.Harevich.passenger_service.model.Passenger;
+import org.mapstruct.*;
 
-public class PassengerMapper {
-    public static Passenger toPassenger(PassengerRequest request) {
-        return Passenger.builder()
-                .name(request.name())
-                .surname(request.surname())
-                .email(request.email())
-                .number(request.number())
-                .build();
-    }
+@Mapper(
+        componentModel = "spring",
+        injectionStrategy = InjectionStrategy.CONSTRUCTOR
+)
+public interface PassengerMapper {
 
-    public static PassengerResponse toResponse(Passenger passenger) {
-        return new PassengerResponse(
-                passenger.getId(),
-                passenger.getName(),
-                passenger.getSurname(),
-                passenger.getEmail(),
-                passenger.getNumber()
-        );
-    }
-    public static PassengerRequest toRequest(Passenger passenger) {
-        return new PassengerRequest(
-                passenger.getName(),
-                passenger.getSurname(),
-                passenger.getEmail(),
-                passenger.getNumber()
-        );
-    }
+    PassengerResponse toResponse(Passenger passenger);
+    PassengerRequest toRequest(PassengerResponse passenger);
+
+    Passenger toPassenger(PassengerRequest passengerRequest);
+
+    @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
+    void changePassengerByRequest(PassengerRequest passengerRequest, @MappingTarget Passenger passenger);
+
 }
 

@@ -1,9 +1,7 @@
 package com.Harevich.passenger_service.controller;
-
 import com.Harevich.passenger_service.dto.ErrorMessage;
 import com.Harevich.passenger_service.dto.PassengerRequest;
 import com.Harevich.passenger_service.dto.PassengerResponse;
-import com.Harevich.passenger_service.util.mapper.PassengerMapper;
 import com.Harevich.passenger_service.service.PassengerService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -15,18 +13,12 @@ import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
-
 import java.util.UUID;
 
-@RestController
-@AllArgsConstructor
-@RequestMapping("api/v1/passenger")
 @Tag(name = "Passenger api",
         description = "This controller is made to communicate with passenger service")
-public class PassengerController {
-    private final PassengerService passengerService;
-    @PostMapping("registration")
-    @ResponseStatus(HttpStatus.CREATED)
+public interface PassengerApi {
+
     @Operation(summary = "registration of the passenger")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "Passenger successfully created"),
@@ -37,13 +29,8 @@ public class PassengerController {
                     content = @Content(mediaType = "application/json",
                             schema = @Schema(implementation = ErrorMessage.class))),
     })
-    public PassengerResponse registration(@Valid @RequestBody PassengerRequest request){
-        return PassengerMapper.toResponse(passengerService.registrate(request));
-    }
+    public PassengerResponse registration(@Valid @RequestBody PassengerRequest request);
 
-
-    @PatchMapping("edit")
-    @ResponseStatus(HttpStatus.ACCEPTED)
     @Operation(summary = "changing the passenger")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "202", description = "Passenger successfully edited"),
@@ -54,13 +41,8 @@ public class PassengerController {
                     content = @Content(mediaType = "application/json",
                             schema = @Schema(implementation = ErrorMessage.class))),
     })
-    public PassengerResponse edit(@RequestParam("id") UUID id,@Valid @RequestBody PassengerRequest request){
-        return PassengerMapper.toResponse(passengerService.edit(request,id));
-    }
+    public PassengerResponse edit(@RequestParam("id") UUID id, @Valid @RequestBody PassengerRequest request);
 
-
-    @GetMapping
-    @ResponseStatus(HttpStatus.OK)
     @Operation(summary = "getting the passenger by id")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Passenger successfully found"),
@@ -68,13 +50,8 @@ public class PassengerController {
                     content = @Content(mediaType = "application/json",
                             schema = @Schema(implementation = ErrorMessage.class))),
     })
-    public PassengerResponse getPassengerById(@RequestParam("id") UUID id){
-        return PassengerMapper.toResponse(passengerService.getById(id));
-    }
+    public PassengerResponse getPassengerById(@RequestParam("id") UUID id);
 
-
-    @DeleteMapping
-    @ResponseStatus(HttpStatus.OK)
     @Operation(summary = "getting the passenger by id")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Passenger successfully deleted"),
@@ -82,7 +59,5 @@ public class PassengerController {
                     content = @Content(mediaType = "application/json",
                             schema = @Schema(implementation = ErrorMessage.class))),
     })
-    public void deletePassengerById(@RequestParam("id") UUID id){
-        passengerService.deleteById(id);
-    }
+    public void deletePassengerById(@RequestParam("id") UUID id);
 }

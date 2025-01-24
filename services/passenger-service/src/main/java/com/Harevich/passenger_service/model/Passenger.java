@@ -15,15 +15,18 @@ import java.util.UUID;
 @Getter
 @Builder
 @Setter
+@Table(name = "passenger")
 public class Passenger {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
+    @Column(nullable = false)
     private String name;
+    @Column(nullable = false)
     private String surname;
-    @Column(unique = true)
+    @Column(unique = true,nullable = false)
     private String email;
-    @Column(unique = true)
+    @Column(unique = true,nullable = false)
     private String number;
     @CreationTimestamp
     @Column(name = "created_at", updatable = false)

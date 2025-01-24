@@ -10,7 +10,8 @@ import lombok.EqualsAndHashCode;
 import java.util.Objects;
 import java.util.UUID;
 
-public record PassengerResponse(UUID id,
+public record PassengerResponse(
+        UUID id,
         @Schema(description = "Passengers name", example = "Maksim")
         String name,
         @Schema(description = "Passengers surname", example = "Komissarov")
