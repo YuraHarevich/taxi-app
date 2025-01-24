@@ -1,0 +1,20 @@
+CREATE SEQUENCE car_seq START WITH 1 INCREMENT BY 1;
+
+CREATE TABLE car (
+    id BIGINT NOT NULL PRIMARY KEY,
+    color VARCHAR(50),
+    number VARCHAR(50),
+    brand VARCHAR(50)
+);
+
+CREATE SEQUENCE driver_seq START WITH 1 INCREMENT BY 1;
+
+CREATE TABLE driver (
+    id BIGINT NOT NULL PRIMARY KEY,
+    name VARCHAR(50),
+    surname VARCHAR(50),
+    email VARCHAR(100),
+    rate FLOAT,
+    car_id BIGINT,
+    FOREIGN KEY (car_id) REFERENCES car(id)
+);
