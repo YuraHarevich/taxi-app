@@ -30,7 +30,7 @@ public class PassengerServiceImpl implements PassengerService {
         try {
             passengerRepository.saveAndFlush(passenger);
         } catch (DataIntegrityViolationException ex) {
-            String rootMessage = ex.getMessage(); // Сообщение ошибки, где видно уникальность какого поля в бд нарушена
+            String rootMessage = ex.getMessage();
             passengerValidation.handleUniqueExceptionByErrorMessage(rootMessage);
         }
         return passengerMapper.toResponse(passenger);

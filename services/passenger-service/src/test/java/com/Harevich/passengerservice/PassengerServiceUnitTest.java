@@ -6,6 +6,8 @@ import com.Harevich.passengerservice.service.impl.PassengerServiceImpl;
 import com.Harevich.passengerservice.util.mapper.PassengerMapper;
 
 import jakarta.persistence.EntityNotFoundException;
+import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,15 +18,11 @@ import java.util.UUID;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @Transactional
+@RequiredArgsConstructor(onConstructor = @__(@Autowired))
 class PassengerServiceUnitTest {
 
     private final PassengerService service;
     private final PassengerMapper passengerMapper;
-    @Autowired
-    PassengerServiceUnitTest(PassengerServiceImpl service, PassengerMapper passengerMapper) {
-        this.service = service;
-        this.passengerMapper = passengerMapper;
-    }
 
     //<--------------- Registration ---------------->
     @Test
