@@ -1,9 +1,9 @@
-package com.Harevich.driverservice.dto;
+package com.Harevich.driverservice.dto.driver;
 
 public record DriverRequest(
         String name,
         String surname,
         String email,
-        CarRequest car
+        String number
 ) {
 }
