@@ -2,11 +2,9 @@ package com.Harevich.passengerservice;
 import com.Harevich.passengerservice.dto.PassengerRequest;
 import com.Harevich.passengerservice.exceptions.UniqueException;
 import com.Harevich.passengerservice.service.PassengerService;
-import com.Harevich.passengerservice.service.impl.PassengerServiceImpl;
 import com.Harevich.passengerservice.util.mapper.PassengerMapper;
 
 import jakarta.persistence.EntityNotFoundException;
-import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -30,7 +28,7 @@ class PassengerServiceUnitTest {
         var request = new PassengerRequest(
                 "Arsen",
                 "Hydnitsky",
-                "kryptoBober@gmail.com",
+                "arsen@gmail.com",
                 "+375447555799"
         );
         var actual = service.registrate(request);
@@ -42,14 +40,14 @@ class PassengerServiceUnitTest {
         var test = new PassengerRequest(
                 "Arsen",
                 "Hydnitsky",
-                "kryptoBober@gmail.com",
+                "arsen@gmail.com",
                 "+375447555799"
         );
         service.registrate(test);
         var request = new PassengerRequest(
                 "Arsen",
                 "Hydnitsky",
-                "kryptoBober@gmail.com",
+                "arsen@gmail.com",
                 "+375447555799"
         );
         Assertions.assertThrows(UniqueException.class, () -> service.registrate(request));
@@ -61,15 +59,15 @@ class PassengerServiceUnitTest {
         var test = new PassengerRequest(
                 "Arsen",
                 "Hydnitsky",
-                "kryptoBober@gmail.com",
+                "arsen@gmail.com",
                 "+375447555799"
         );
         UUID id = service.registrate(test).id();
         var edit = new PassengerRequest(
                 "Yura",
                 "Harevich",
-                "NekryptoBober@gmail.com",
-                "+375447555799"
+                "Nearsen@gmail.com",
+                ""
         );
         var passenger = service.edit(edit,id);
         Assertions.assertEquals(edit,passengerMapper.toRequest(passenger));
@@ -81,24 +79,24 @@ class PassengerServiceUnitTest {
         var test1 = new PassengerRequest(
                 "Arsen",
                 "Hydnitsky",
-                "kryptoBober@gmail.com",
+                "arsen@gmail.com",
                 "+375447555799"
         );
-        service.registrate(test1).id();
+        service.registrate(test1);
         var test2 = new PassengerRequest(
                 "NeArsen",
                 "NeHydnitsky",
-                "NekryptoBober@gmail.com",
+                "Nearsen@gmail.com",
                 "+375447555798"
         );
         var request = new PassengerRequest(
                 "TochnoNeArsen",
                 "TochnoNeHydnitsky",
-                "TochnoNekryptoBober@gmail.com",
+                "TochnoNearsen@gmail.com",
                 "+375447555799" //а вот номерок точно повторяется
         );
         UUID id = service.registrate(test2).id();
-        Assertions.assertThrows(DataIntegrityViolationException.class,() -> service.edit(request,id));
+        Assertions.assertThrows(UniqueException.class,() -> service.edit(request,id));
     }
 //    //<--------------- GetById ---------------->
     @Test
@@ -106,7 +104,7 @@ class PassengerServiceUnitTest {
         var test = new PassengerRequest(
                 "Arsen",
                 "Hydnitsky",
-                "kryptoBober@gmail.com",
+                "arsen@gmail.com",
                 "+375447555799"
         );
         UUID id = service.registrate(test).id();
@@ -122,7 +120,7 @@ class PassengerServiceUnitTest {
         var test = new PassengerRequest(
                 "Arsen",
                 "Hydnitsky",
-                "kryptoBober@gmail.com",
+                "arsen@gmail.com",
                 "+375447555799"
         );
         UUID id = service.registrate(test).id();
@@ -130,7 +128,7 @@ class PassengerServiceUnitTest {
         Assertions.assertThrows(EntityNotFoundException.class,() -> service.getById(id));
     }
     @Test
-    void shouldThrowNotFoundWhineDeletingForPassenger() {
+    void shouldThrowNotFoundWhineDeletingPassenger() {
         Assertions.assertThrows(EntityNotFoundException.class,() -> service.deleteById(UUID.randomUUID()));
     }
 

@@ -47,21 +47,4 @@ public class GlobalExceptionHandler {
                 .build());
     }
 
-    @ExceptionHandler(DataIntegrityViolationException.class)
-    public ResponseEntity<ErrorMessage> handleDataIntegrityViolationException(DataIntegrityViolationException ex) {
-        Pattern pattern = Pattern.compile("Подробности: Key \\((.*?)\\)=\\((.*?)\\)");
-        Matcher matcher = pattern.matcher(ex.getMessage());
-        String message = null;
-        if (matcher.find()) {
-            String field = matcher.group(1);
-            String value = matcher.group(2);
-            message = field.equals("email")? PassengerServiceResponseConstants.REPEATED_EMAIL: PassengerServiceResponseConstants.REPEATED_PHONE_NUMBER + "("+value+")";
-        }
-        return ResponseEntity
-                .status(HttpStatus.CONFLICT)
-                .body(ErrorMessage.builder()
-                        .message(message)
-                        .timestamp(LocalDateTime.now())
-                        .build());
-    }
 }
