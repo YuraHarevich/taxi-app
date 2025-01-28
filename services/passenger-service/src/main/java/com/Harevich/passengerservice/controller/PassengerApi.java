@@ -16,7 +16,7 @@ import java.util.UUID;
         description = "This controller is made to communicate with passenger service")
 public interface PassengerApi {
 
-    @Operation(summary = "registration of the passenger")
+    @Operation(summary = "creating passenger")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "Passenger successfully created"),
             @ApiResponse(responseCode = "400", description = "Invalid data format",
@@ -49,7 +49,7 @@ public interface PassengerApi {
     })
     public PassengerResponse getPassengerById(@RequestParam("id") UUID id);
 
-    @Operation(summary = "getting the passenger by id")
+    @Operation(summary = "deleting the passenger by id")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Passenger successfully deleted"),
             @ApiResponse(responseCode = "404", description = "Passenger not found",

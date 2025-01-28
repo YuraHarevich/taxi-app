@@ -18,13 +18,13 @@ import java.util.UUID;
 public class PassengerControllerImpl implements PassengerApi {
     private final PassengerService passengerService;
 
-    @PostMapping("registration")
+    @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public PassengerResponse createPassenger(@Valid @RequestBody PassengerRequest request){
         return passengerService.create(request);
     }
 
-    @PatchMapping("edit")
+    @PatchMapping
     @ResponseStatus(HttpStatus.ACCEPTED)
     public PassengerResponse updatePassenger(@RequestParam("id") UUID id, @Valid @RequestBody PassengerRequest request){
         return passengerService.update(request,id);
