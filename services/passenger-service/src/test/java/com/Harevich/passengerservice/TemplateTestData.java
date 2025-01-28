@@ -1,7 +1,6 @@
 package com.Harevich.passengerservice;
 
 import com.Harevich.passengerservice.dto.PassengerRequest;
-import com.Harevich.passengerservice.model.Passenger;
 
 public class TemplateTestData {
     public static PassengerRequest createFirstPassengerRequest(){
@@ -12,7 +11,7 @@ public class TemplateTestData {
                 "+375447555799"
         );
     }
-    public static PassengerRequest createEditPassengerRequest(){
+    public static PassengerRequest createUpdatePassengerRequest(){
         return new PassengerRequest(
                 "Yura",
                 "Harevich",
@@ -20,7 +19,7 @@ public class TemplateTestData {
                 ""
         );
     }
-    public static PassengerRequest createEditPassengerRequestWithConflict(){
+    public static PassengerRequest createUpdatePassengerRequestWithConflict(){
         return  new PassengerRequest(
                 "TochnoNeArsen",
                 "TochnoNeHydnitsky",
