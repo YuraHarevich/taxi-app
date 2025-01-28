@@ -1,31 +1,33 @@
 package com.Harevich.driverservice.controller.impl;
 
+import com.Harevich.driverservice.controller.DriverApi;
 import com.Harevich.driverservice.dto.driver.DriverRequest;
 import com.Harevich.driverservice.dto.driver.DriverResponse;
 import com.Harevich.driverservice.service.DriverService;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.UUID;
 
 @RestController
-@AllArgsConstructor
+@RequiredArgsConstructor
 @RequestMapping("api/v1/drivers")
-public class DriverController {
+public class DriverController implements DriverApi {
     private final DriverService driverService;
 
-    @PostMapping("registration")
+    @PostMapping("create")
     @ResponseStatus(HttpStatus.CREATED)
-    public DriverResponse registration(@Valid @RequestBody DriverRequest request){
-        return driverService.registration(request);
+    public DriverResponse create(@Valid @RequestBody DriverRequest request){
+        return driverService.createNewDriver(request);
     }
 
-    @PatchMapping("edit")
+    @PatchMapping("update")
     @ResponseStatus(HttpStatus.ACCEPTED)
-    public DriverResponse edit(@RequestParam("id") UUID id, @Valid @RequestBody DriverRequest request){
-        return driverService.edit(request,id);
+    public DriverResponse update(@RequestParam("id") UUID id, @Valid @RequestBody DriverRequest request){
+        return driverService.updateDriver(request,id);
     }
 
     @GetMapping
@@ -39,4 +41,5 @@ public class DriverController {
     public void deleteDriverById(@RequestParam("id") UUID id){
         driverService.deleteById(id);
     }
+
 }

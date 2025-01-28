@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.27.xsd">
+
+    <include file="db/changelog/script/V1_create_cars_table.sql"/>
+    <include file="db/changelog/script/V1_create_drivers_table.sql"/>
+    <include file="db/changelog/script/V1_create_car_driver_table.sql"/>
+    <include file="db/changelog/script/V1_fill_car_table.sql"/>
+    <include file="db/changelog/script/V1_fill_drivers_table.sql"/>
+    <include file="db/changelog/script/V1_fill_car_driver_table.sql"/>
+
+</databaseChangeLog>

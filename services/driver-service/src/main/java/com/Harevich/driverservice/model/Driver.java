@@ -5,6 +5,9 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
 
 @Entity
 @AllArgsConstructor
@@ -12,11 +15,11 @@ import java.time.LocalDateTime;
 @Getter
 @Builder
 @Setter
-@Table(name = "driver")
+@Table(name = "drivers")
 public class Driver {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    private Long id;
+    private UUID id;
 
     @Column(nullable = false)
     private String name;
@@ -38,9 +41,15 @@ public class Driver {
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
-    @OneToOne(cascade = CascadeType.ALL, optional = false)
-    @JoinColumn(name = "car_id")
-    private Car car;
+    @ManyToMany
+    @JoinTable(
+            name = "driver_car",
+            joinColumns = @JoinColumn(name = "driver_id"),
+            inverseJoinColumns = @JoinColumn(name = "car_id")
+    )
+    @Builder.Default
+    private List<Car> cars = new ArrayList<>();
 
+    @Builder.Default
     private boolean deleted = false;
 }

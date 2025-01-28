@@ -6,6 +6,9 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
 
 @Entity
 @AllArgsConstructor
@@ -13,19 +16,19 @@ import java.time.LocalDateTime;
 @Getter
 @Builder
 @Setter
-@Table(name = "car")
+@Table(name = "cars")
 public class Car {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    private Long id;
+    private UUID id;
 
-    @Column(unique = true)
+    @Column(nullable = false)
     private String color;
 
     @Column(unique = true,nullable = false)
     private String number;
 
-    @Column(unique = true)
+    @Column(nullable = false)
     private String brand;
 
     @CreationTimestamp
@@ -36,8 +39,8 @@ public class Car {
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
-    @OneToOne(mappedBy = "car", cascade = CascadeType.ALL)
-    private Driver driver;
+    @ManyToMany(mappedBy = "cars")
+    private List<Driver> drivers = new ArrayList<>();
 
     private boolean deleted = false;
 

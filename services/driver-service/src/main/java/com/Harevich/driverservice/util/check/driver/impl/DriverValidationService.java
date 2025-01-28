@@ -1,8 +1,8 @@
-package com.Harevich.driverservice.util.check.impl;
+package com.Harevich.driverservice.util.check.driver.impl;
 
-import com.Harevich.driverservice.exception.UniqueException;
+import com.Harevich.driverservice.exception.RepeatedDriverDataException;
 import com.Harevich.driverservice.repository.DriverRepository;
-import com.Harevich.driverservice.util.check.DriverCheck;
+import com.Harevich.driverservice.util.check.driver.DriverValidation;
 import com.Harevich.driverservice.util.constants.DriverServiceResponseConstants;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -12,25 +12,25 @@ import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
-public class DriverCheckImpl implements DriverCheck {
+public class DriverValidationService implements DriverValidation {
     private final DriverRepository repository;
 
     @Override
     public void alreadyExistsByEmail(String email) {
         if(repository.existsByEmail(email))
-            throw new UniqueException(DriverServiceResponseConstants.REPEATED_EMAIL);
+            throw new RepeatedDriverDataException(DriverServiceResponseConstants.REPEATED_EMAIL);
     }
 
     @Override
     public void alreadyExistsByNumber(String number) {
         if(repository.existsByNumber(number))
-            throw new UniqueException(DriverServiceResponseConstants.REPEATED_PHONE_NUMBER);
+            throw new RepeatedDriverDataException(DriverServiceResponseConstants.REPEATED_PHONE_NUMBER);
     }
 
     @Override
     public void existsById(UUID id) {
         if(!repository.existsById(id))
-            throw new UniqueException(DriverServiceResponseConstants.DRIVER_NOT_FOUND);
+            throw new RepeatedDriverDataException(DriverServiceResponseConstants.DRIVER_NOT_FOUND);
     }
 
     @Override

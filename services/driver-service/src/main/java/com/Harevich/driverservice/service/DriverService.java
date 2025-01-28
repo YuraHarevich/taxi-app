@@ -6,9 +6,9 @@ import com.Harevich.driverservice.dto.driver.DriverResponse;
 import java.util.UUID;
 
 public interface DriverService {
-    public DriverResponse registration(DriverRequest request);
+    public DriverResponse createNewDriver(DriverRequest request);
 
-    public DriverResponse edit(DriverRequest request, UUID id);
+    public DriverResponse updateDriver(DriverRequest request, UUID id);
 
     public DriverResponse getById(UUID id);
 

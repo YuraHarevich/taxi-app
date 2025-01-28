@@ -1,8 +1,8 @@
-package com.Harevich.driverservice.util.check;
+package com.Harevich.driverservice.util.check.driver;
 
 import java.util.UUID;
 
-public interface DriverCheck {
+public interface DriverValidation {
     void alreadyExistsByEmail(String email);
     void alreadyExistsByNumber(String number);
     void existsById(UUID id);

@@ -1,5 +1,5 @@
 services:
-  passengers_postgresql:
+  drivers_postgresql:
     container_name: ms_drivers_pg_sql
     image: postgres
     environment:
@@ -34,6 +34,6 @@ networks:
   microservices-net:
     driver: bridge
 volumes:
-  passengers_psql:
+  drivers_psql:
   pgadmin:
 

@@ -28,7 +28,7 @@ public interface DriverApi {
                     content = @Content(mediaType = "application/json",
                             schema = @Schema(implementation = ErrorMessage.class))),
     })
-    public DriverResponse registration(@Valid @RequestBody DriverRequest request);
+    public DriverResponse create(@Valid @RequestBody DriverRequest request);
 
     @Operation(summary = "changing the driver")
     @ApiResponses(value = {
@@ -40,7 +40,7 @@ public interface DriverApi {
                     content = @Content(mediaType = "application/json",
                             schema = @Schema(implementation = ErrorMessage.class))),
     })
-    public DriverResponse edit(@RequestParam("id") UUID id, @Valid @RequestBody DriverRequest request);
+    public DriverResponse update(@RequestParam("id") UUID id, @Valid @RequestBody DriverRequest request);
 
     @Operation(summary = "getting the driver by id")
     @ApiResponses(value = {
