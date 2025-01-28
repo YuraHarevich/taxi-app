@@ -35,7 +35,7 @@ public class DriverCheckImpl implements DriverCheck {
 
     @Override
     public void isDeleted(UUID id) {
-        repository.findByIdAndDeletedTrue(id)
+        repository.findByIdAndDeletedFalse(id)
                 .orElseThrow(() -> new EntityNotFoundException(DriverServiceResponseConstants.DRIVER_DELETED));
     }
 }
