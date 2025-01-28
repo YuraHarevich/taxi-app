@@ -15,21 +15,19 @@ import java.util.UUID;
 @RestController
 @AllArgsConstructor
 @RequestMapping("api/v1/passengers")
-@Tag(name = "Passenger api",
-        description = "This controller is made to communicate with passenger service")
 public class PassengerControllerImpl implements PassengerApi {
     private final PassengerService passengerService;
 
     @PostMapping("registration")
     @ResponseStatus(HttpStatus.CREATED)
-    public PassengerResponse registration(@Valid @RequestBody PassengerRequest request){
-        return passengerService.registrate(request);
+    public PassengerResponse createPassenger(@Valid @RequestBody PassengerRequest request){
+        return passengerService.create(request);
     }
 
     @PatchMapping("edit")
     @ResponseStatus(HttpStatus.ACCEPTED)
-    public PassengerResponse edit(@RequestParam("id") UUID id,@Valid @RequestBody PassengerRequest request){
-        return passengerService.edit(request,id);
+    public PassengerResponse updatePassenger(@RequestParam("id") UUID id, @Valid @RequestBody PassengerRequest request){
+        return passengerService.update(request,id);
     }
 
     @GetMapping

@@ -5,6 +5,6 @@ import lombok.RequiredArgsConstructor;
 
 @EqualsAndHashCode(callSuper = true)
 @RequiredArgsConstructor
-public class UniqueException extends RuntimeException{
+public class PassengersDataRepeatException extends RuntimeException{
     private final String message;
 }

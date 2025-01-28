@@ -1,9 +1,7 @@
 package com.Harevich.passengerservice.util.constants;
 
-import lombok.experimental.UtilityClass;
 
-
-public final class PassengerServiceResponseConstants {
+public final class PassengerValidationConstants {
     public static final String PASSENGER_NOT_FOUND = "Passenger with such id not found";
     public static final String PASSENGER_DELETED = "Passenger with such id is deleted";
 

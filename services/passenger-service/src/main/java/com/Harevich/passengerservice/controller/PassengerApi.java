@@ -26,7 +26,7 @@ public interface PassengerApi {
                     content = @Content(mediaType = "application/json",
                             schema = @Schema(implementation = ErrorMessage.class))),
     })
-    public PassengerResponse registration(@Valid @RequestBody PassengerRequest request);
+    public PassengerResponse createPassenger(@Valid @RequestBody PassengerRequest request);
 
     @Operation(summary = "changing the passenger")
     @ApiResponses(value = {
@@ -38,7 +38,7 @@ public interface PassengerApi {
                     content = @Content(mediaType = "application/json",
                             schema = @Schema(implementation = ErrorMessage.class))),
     })
-    public PassengerResponse edit(@RequestParam("id") UUID id, @Valid @RequestBody PassengerRequest request);
+    public PassengerResponse updatePassenger(@RequestParam("id") UUID id, @Valid @RequestBody PassengerRequest request);
 
     @Operation(summary = "getting the passenger by id")
     @ApiResponses(value = {

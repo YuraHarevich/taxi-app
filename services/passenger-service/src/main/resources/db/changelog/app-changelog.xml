@@ -5,7 +5,7 @@
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
                       http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.27.xsd">
 
-    <include file="db/changelog/script/V1__init_db.sql"/>
-    <include file="db/changelog/script/V1__fill_in_db.sql"/>
+    <include file="db/changelog/script/V1-create-table.sql"/>
+    <include file="db/changelog/script/V1-fill-in-table.sql"/>
 
 </databaseChangeLog>

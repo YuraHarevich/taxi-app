@@ -6,9 +6,9 @@ import com.Harevich.passengerservice.dto.PassengerResponse;
 import java.util.UUID;
 
 public interface PassengerService {
-    public PassengerResponse registrate(PassengerRequest request);
+    public PassengerResponse create(PassengerRequest request);
 
-    public PassengerResponse edit(PassengerRequest request, UUID id);
+    public PassengerResponse update(PassengerRequest request, UUID id);
 
     public PassengerResponse getById(UUID id);
 

@@ -1,9 +1,7 @@
 package com.Harevich.passengerservice.controller;
 import com.Harevich.passengerservice.dto.ErrorMessage;
-import com.Harevich.passengerservice.exceptions.UniqueException;
-import com.Harevich.passengerservice.util.constants.PassengerServiceResponseConstants;
+import com.Harevich.passengerservice.exceptions.PassengersDataRepeatException;
 import jakarta.persistence.EntityNotFoundException;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -11,8 +9,6 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import java.time.LocalDateTime;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
@@ -26,8 +22,8 @@ public class GlobalExceptionHandler {
                         .build());
     }
 
-    @ExceptionHandler(UniqueException.class)
-    public ResponseEntity<ErrorMessage> handle(UniqueException exception) {
+    @ExceptionHandler(PassengersDataRepeatException.class)
+    public ResponseEntity<ErrorMessage> handle(PassengersDataRepeatException exception) {
         return ResponseEntity
                 .status(HttpStatus.CONFLICT)
                 .body(ErrorMessage.builder()

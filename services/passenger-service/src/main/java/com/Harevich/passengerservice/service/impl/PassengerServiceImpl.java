@@ -3,8 +3,8 @@ package com.Harevich.passengerservice.service.impl;
 import com.Harevich.passengerservice.dto.PassengerRequest;
 import com.Harevich.passengerservice.dto.PassengerResponse;
 import com.Harevich.passengerservice.service.PassengerService;
-import com.Harevich.passengerservice.util.check.PassengerCheck;
-import com.Harevich.passengerservice.util.constants.PassengerServiceResponseConstants;
+import com.Harevich.passengerservice.util.check.PassengerValidation;
+import com.Harevich.passengerservice.util.constants.PassengerValidationConstants;
 import com.Harevich.passengerservice.util.mapper.PassengerMapper;
 import com.Harevich.passengerservice.model.Passenger;
 import com.Harevich.passengerservice.repository.PassengerRepository;
@@ -20,27 +20,24 @@ import java.util.UUID;
 public class PassengerServiceImpl implements PassengerService {
     private final PassengerMapper passengerMapper;
     private final PassengerRepository passengerRepository;
-    private final PassengerCheck check;
+    private final PassengerValidation passengerValidation;
 
     @Transactional
-    public PassengerResponse registrate(PassengerRequest request) {
-        check.alreadyExistsByEmail(request.email());
-        check.alreadyExistsByNumber(request.number());
-        Passenger passenger = passengerMapper.toPassenger(request);
-
+    public PassengerResponse create(PassengerRequest request) {
+        passengerValidation.alreadyExistsByEmail(request.email());
+        passengerValidation.alreadyExistsByNumber(request.number());
+        Passenger passenger = passengerRepository.save(passengerMapper.toPassenger(request));
         return passengerMapper
-                .toResponse(passengerRepository
-                        .save(passengerMapper
-                                .toPassenger(request)));
+                .toResponse(passenger);
     }
 
     @Transactional
-    public PassengerResponse edit(PassengerRequest request, UUID id) {
-        check.existsById(id);
+    public PassengerResponse update(PassengerRequest request, UUID id) {
+        passengerValidation.existsById(id);
         Passenger passenger = passengerRepository.findById(id).get();
-        check.isDeleted(id);
-        check.alreadyExistsByEmail(request.email());
-        check.alreadyExistsByNumber(request.number());
+        passengerValidation.isDeleted(id);
+        passengerValidation.alreadyExistsByEmail(request.email());
+        passengerValidation.alreadyExistsByNumber(request.number());
         passengerMapper.changePassengerByRequest(request,passenger);
         Passenger updatedPassenger = passengerRepository.saveAndFlush(passenger);
         return passengerMapper.toResponse(updatedPassenger);
@@ -49,15 +46,14 @@ public class PassengerServiceImpl implements PassengerService {
     public PassengerResponse getById(UUID id) {
         var passenger = passengerRepository
                 .findById(id)
-                .orElseThrow(()-> new EntityNotFoundException(PassengerServiceResponseConstants.PASSENGER_NOT_FOUND));
-        if (passenger.isDeleted())
-            throw new EntityNotFoundException(PassengerServiceResponseConstants.PASSENGER_DELETED);
+                .orElseThrow(()-> new EntityNotFoundException(PassengerValidationConstants.PASSENGER_NOT_FOUND));
+        passengerValidation.isDeleted(id);
         return passengerMapper.toResponse(passenger);
     }
     @Transactional
     public void deleteById(UUID passenger_id){
-        check.existsById(passenger_id);
-        check.isDeleted(passenger_id);
+        passengerValidation.existsById(passenger_id);
+        passengerValidation.isDeleted(passenger_id);
         Passenger passenger = passengerRepository.findById(passenger_id).get();
         passenger.setDeleted(true);
         passengerRepository.save(passenger);

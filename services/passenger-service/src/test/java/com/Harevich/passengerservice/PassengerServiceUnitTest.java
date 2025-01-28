@@ -1,6 +1,6 @@
 package com.Harevich.passengerservice;
 import com.Harevich.passengerservice.dto.PassengerRequest;
-import com.Harevich.passengerservice.exceptions.UniqueException;
+import com.Harevich.passengerservice.exceptions.PassengersDataRepeatException;
 import com.Harevich.passengerservice.service.PassengerService;
 import com.Harevich.passengerservice.util.mapper.PassengerMapper;
 
@@ -10,7 +10,6 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.transaction.annotation.Transactional;
 import java.util.UUID;
 
@@ -25,89 +24,49 @@ class PassengerServiceUnitTest {
     //<--------------- Registration ---------------->
     @Test
     void shouldCreatePassenger() {
-        var request = new PassengerRequest(
-                "Arsen",
-                "Hydnitsky",
-                "arsen@gmail.com",
-                "+375447555799"
-        );
-        var actual = service.registrate(request);
+        var request = TemplateTestData.createFirstPassengerRequest();
+        var actual = service.create(request);
         Assertions.assertEquals(request,passengerMapper.toRequest(actual));
     }
 
     @Test
     void shouldThrowConflictWhileCreatingPassenger() {
-        var test = new PassengerRequest(
-                "Arsen",
-                "Hydnitsky",
-                "arsen@gmail.com",
-                "+375447555799"
-        );
-        service.registrate(test);
-        var request = new PassengerRequest(
-                "Arsen",
-                "Hydnitsky",
-                "arsen@gmail.com",
-                "+375447555799"
-        );
-        Assertions.assertThrows(UniqueException.class, () -> service.registrate(request));
+        var test = TemplateTestData.createFirstPassengerRequest();
+        service.create(test);
+        var request = TemplateTestData.createFirstPassengerRequest();
+        Assertions.assertThrows(PassengersDataRepeatException.class, () -> service.create(request));
     }
 
 //    //<--------------- Edit ---------------->
     @Test
     void shouldEditPassenger() {
-        var test = new PassengerRequest(
-                "Arsen",
-                "Hydnitsky",
-                "arsen@gmail.com",
-                "+375447555799"
-        );
-        UUID id = service.registrate(test).id();
+        var test = TemplateTestData.createFirstPassengerRequest();
+        UUID id = service.create(test).id();
         var edit = new PassengerRequest(
                 "Yura",
                 "Harevich",
                 "Nearsen@gmail.com",
                 ""
         );
-        var passenger = service.edit(edit,id);
+        var passenger = service.update(edit,id);
         Assertions.assertEquals(edit,passengerMapper.toRequest(passenger));
         Assertions.assertEquals(id,passenger.id());
     }
 
     @Test
     void shouldThrowConflictWhileEditingPassenger() {
-        var test1 = new PassengerRequest(
-                "Arsen",
-                "Hydnitsky",
-                "arsen@gmail.com",
-                "+375447555799"
-        );
-        service.registrate(test1);
-        var test2 = new PassengerRequest(
-                "NeArsen",
-                "NeHydnitsky",
-                "Nearsen@gmail.com",
-                "+375447555798"
-        );
-        var request = new PassengerRequest(
-                "TochnoNeArsen",
-                "TochnoNeHydnitsky",
-                "TochnoNearsen@gmail.com",
-                "+375447555799" //а вот номерок точно повторяется
-        );
-        UUID id = service.registrate(test2).id();
-        Assertions.assertThrows(UniqueException.class,() -> service.edit(request,id));
+        var test1 = TemplateTestData.createFirstPassengerRequest();
+        service.create(test1);
+        var test2 = TemplateTestData.createSecondPassengerRequest();
+        var request = TemplateTestData.createEditPassengerRequestWithConflict();
+        UUID id = service.create(test2).id();
+        Assertions.assertThrows(PassengersDataRepeatException.class,() -> service.update(request,id));
     }
 //    //<--------------- GetById ---------------->
     @Test
     void shouldFindPassengerById() {
-        var test = new PassengerRequest(
-                "Arsen",
-                "Hydnitsky",
-                "arsen@gmail.com",
-                "+375447555799"
-        );
-        UUID id = service.registrate(test).id();
+        var test = TemplateTestData.createFirstPassengerRequest();
+        UUID id = service.create(test).id();
         Assertions.assertEquals(test,passengerMapper.toRequest(service.getById(id)));
     }
     @Test
@@ -117,13 +76,8 @@ class PassengerServiceUnitTest {
 //    //<--------------- DeleteById ---------------->
     @Test
     void shouldDeletePassengerById() {
-        var test = new PassengerRequest(
-                "Arsen",
-                "Hydnitsky",
-                "arsen@gmail.com",
-                "+375447555799"
-        );
-        UUID id = service.registrate(test).id();
+        var test = TemplateTestData.createFirstPassengerRequest();
+        UUID id = service.create(test).id();
         service.deleteById(id);
         Assertions.assertThrows(EntityNotFoundException.class,() -> service.getById(id));
     }

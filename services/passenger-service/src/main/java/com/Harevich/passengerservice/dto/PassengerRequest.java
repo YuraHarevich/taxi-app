@@ -1,6 +1,6 @@
 package com.Harevich.passengerservice.dto;
 
-import com.Harevich.passengerservice.util.constants.RegularConstants;
+import com.Harevich.passengerservice.util.constants.PassengerRegularExpressions;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.*;
 
@@ -14,7 +14,7 @@ public record PassengerRequest(
         @Email(message = "email should be valid")
         @Schema(description = "Passengers email", example = "mymail@gmail.com")
         String email,
-        @Pattern(regexp = RegularConstants.PHONE_NUMBER_REGEX, message = "Invalid phone number format")
+        @Pattern(regexp = PassengerRegularExpressions.PHONE_NUMBER_REGEX, message = "Invalid phone number format")
         @Schema(description = "Passengers phone number", example = "+375332567899")
         String number
 ) {
