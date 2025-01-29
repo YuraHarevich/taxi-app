@@ -14,7 +14,7 @@ import java.util.UUID;
         injectionStrategy = InjectionStrategy.CONSTRUCTOR
 )
 public interface DriverMapper {
-    @Mapping(source = "cars", target = "car_id", qualifiedByName = "mapFirstCarId")
+    @Mapping(source = "car.id", target = "car_id")
     DriverResponse toResponse(Driver driver);
 
     Driver toDriver(DriverRequest driverRequest);
@@ -23,9 +23,4 @@ public interface DriverMapper {
 
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
     void changeDriverByRequest(DriverRequest driverRequest, @MappingTarget Driver driver);
-
-    @Named("mapFirstCarId")
-    default UUID mapFirstCarId(List<Car> cars) {
-        return (cars != null && !cars.isEmpty()) ? cars.get(0).getId() : null;
-    }
 }

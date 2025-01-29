@@ -7,9 +7,9 @@
 
     <include file="db/changelog/script/V1_create_cars_table.sql"/>
     <include file="db/changelog/script/V1_create_drivers_table.sql"/>
-    <include file="db/changelog/script/V1_create_car_driver_table.sql"/>
-    <include file="db/changelog/script/V1_fill_car_table.sql"/>
+    <include file="db/changelog/script/V1_create_driver_car_table.sql"/>
+    <include file="db/changelog/script/V1_fill_cars_table.sql"/>
     <include file="db/changelog/script/V1_fill_drivers_table.sql"/>
-    <include file="db/changelog/script/V1_fill_car_driver_table.sql"/>
+    <include file="db/changelog/script/V1_fill_driver_car_table.sql"/>
 
 </databaseChangeLog>

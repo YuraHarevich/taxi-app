@@ -12,6 +12,7 @@ import com.Harevich.driverservice.util.mapper.DriverMapper;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.UUID;
 
@@ -30,6 +31,7 @@ public class DriverServiceImpl implements DriverService {
     }
 
     @Override
+    @Transactional
     public DriverResponse updateDriver(DriverRequest request, UUID id) {
         driverValidation.existsById(id);
         Driver driver = driverRepository.findById(id).get();

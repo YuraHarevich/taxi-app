@@ -1,0 +1,22 @@
+INSERT INTO cars (id, color, number, brand)
+VALUES
+  (gen_random_uuid(), 'Red', '1234 AB-5', 'Toyota'),
+  (gen_random_uuid(), 'Blue', '1234 CD-6', 'Honda'),
+  (gen_random_uuid(), 'Green', '1234 EF-7', 'Ford'),
+  (gen_random_uuid(), 'Black', '1234 GH-8', 'Chevrolet'),
+  (gen_random_uuid(), 'White', '1234 IJ-9', 'BMW'),
+  (gen_random_uuid(), 'Silver', '1234 KL-0', 'Audi'),
+  (gen_random_uuid(), 'Gray', '1234 MN-1', 'Mercedes'),
+  (gen_random_uuid(), 'Orange', '1234 OP-2', 'Tesla'),
+  (gen_random_uuid(), 'Yellow', '1234 QR-3', 'Nissan'),
+  (gen_random_uuid(), 'Purple', '1234 ST-4', 'Volkswagen'),
+  (gen_random_uuid(), 'Brown', '1234 UV-5', 'Ford'),
+  (gen_random_uuid(), 'Pink', '1234 WX-6', 'Fiat'),
+  (gen_random_uuid(), 'Maroon', '1234 YZ-7', 'Honda'),
+  (gen_random_uuid(), 'Copper', '1234 AB-8', 'Toyota'),
+  (gen_random_uuid(), 'Beige', '1234 CD-9', 'BMW'),
+  (gen_random_uuid(), 'Turquoise', '1234 EF-0', 'Chevrolet'),
+  (gen_random_uuid(), 'Lime', '1234 GH-1', 'Audi'),
+  (gen_random_uuid(), 'Indigo', '1234 IJ-2', 'Tesla'),
+  (gen_random_uuid(), 'Teal', '1234 KL-3', 'Volkswagen'),
+  (gen_random_uuid(), 'Violet', '1234 MN-4', 'Nissan');

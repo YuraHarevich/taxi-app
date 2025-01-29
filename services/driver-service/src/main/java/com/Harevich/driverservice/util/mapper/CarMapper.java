@@ -13,6 +13,7 @@ import org.mapstruct.*;
         injectionStrategy = InjectionStrategy.CONSTRUCTOR
 )
 public interface CarMapper {
+    @Mapping(source = "driver.id", target = "driver_id")
     CarResponse toResponse(Car car);
 
     CarRequest toRequest(CarResponse carResponse);

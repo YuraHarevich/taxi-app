@@ -39,8 +39,13 @@ public class Car {
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
-    @ManyToMany(mappedBy = "cars")
-    private List<Driver> drivers = new ArrayList<>();
+    @OneToOne
+    @JoinTable(
+            name = "driver_car",
+            joinColumns = @JoinColumn(name = "car_id"),
+            inverseJoinColumns = @JoinColumn(name = "driver_id")
+    )
+    private Driver driver;
 
     private boolean deleted = false;
 
