@@ -1,7 +1,8 @@
 package com.Harevich.driverservice.controller.ex;
 
 import com.Harevich.driverservice.dto.ErrorMessage;
-import com.Harevich.driverservice.exception.RepeatedDriverDataException;
+import com.Harevich.driverservice.exception.CarIsAlreadyOccupiedException;
+import com.Harevich.driverservice.exception.RepeatedDataException;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -24,8 +25,8 @@ public class GlobalExceptionHandler {
                         .build());
     }
 
-    @ExceptionHandler(RepeatedDriverDataException.class)
-    public ResponseEntity<ErrorMessage> handle(RepeatedDriverDataException exception) {
+    @ExceptionHandler(RepeatedDataException.class)
+    public ResponseEntity<ErrorMessage> handle(RepeatedDataException exception) {
         return ResponseEntity
                 .status(HttpStatus.CONFLICT)
                 .body(ErrorMessage.builder()
@@ -41,6 +42,16 @@ public class GlobalExceptionHandler {
                 .status(HttpStatus.BAD_REQUEST)
                 .body(ErrorMessage.builder()
                         .message(error.getDefaultMessage())
+                        .timestamp(LocalDateTime.now())
+                        .build());
+    }
+
+    @ExceptionHandler(CarIsAlreadyOccupiedException.class)
+    public ResponseEntity<ErrorMessage> handleValidationExceptions(CarIsAlreadyOccupiedException ex) {
+        return ResponseEntity
+                .status(HttpStatus.CONFLICT)
+                .body(ErrorMessage.builder()
+                        .message(ex.getMessage())
                         .timestamp(LocalDateTime.now())
                         .build());
     }

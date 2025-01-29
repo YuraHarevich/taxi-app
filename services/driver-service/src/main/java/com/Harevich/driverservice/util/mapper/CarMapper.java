@@ -1,12 +1,12 @@
 package com.Harevich.driverservice.util.mapper;
 
-import com.Harevich.driverservice.dto.car.CarRequest;
-import com.Harevich.driverservice.dto.car.CarResponse;
-import com.Harevich.driverservice.dto.driver.DriverRequest;
-import com.Harevich.driverservice.dto.driver.DriverResponse;
+import com.Harevich.driverservice.dto.request.CarRequest;
+import com.Harevich.driverservice.dto.response.CarResponse;
 import com.Harevich.driverservice.model.Car;
-import com.Harevich.driverservice.model.Driver;
+import org.hibernate.query.Page;
 import org.mapstruct.*;
+
+import java.util.List;
 
 @Mapper(
         componentModel = "spring",
@@ -21,6 +21,6 @@ public interface CarMapper {
     Car toCar(CarRequest carRequest);
 
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
-    void changeCarByRequest(DriverRequest driverRequest, @MappingTarget Car car);
+    void changeCarByRequest(CarRequest carRequest, @MappingTarget Car car);
 
 }

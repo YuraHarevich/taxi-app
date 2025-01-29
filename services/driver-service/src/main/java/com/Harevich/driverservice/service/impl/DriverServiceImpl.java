@@ -1,15 +1,15 @@
 package com.Harevich.driverservice.service.impl;
 
-import com.Harevich.driverservice.dto.driver.DriverRequest;
-import com.Harevich.driverservice.dto.driver.DriverResponse;
-import com.Harevich.driverservice.exception.RepeatedDriverDataException;
+import com.Harevich.driverservice.dto.request.DriverRequest;
+import com.Harevich.driverservice.dto.response.DriverResponse;
+import com.Harevich.driverservice.model.Car;
 import com.Harevich.driverservice.model.Driver;
+import com.Harevich.driverservice.repository.CarRepository;
 import com.Harevich.driverservice.repository.DriverRepository;
 import com.Harevich.driverservice.service.DriverService;
+import com.Harevich.driverservice.util.check.car.CarValidation;
 import com.Harevich.driverservice.util.check.driver.DriverValidation;
-import com.Harevich.driverservice.util.constants.DriverServiceResponseConstants;
 import com.Harevich.driverservice.util.mapper.DriverMapper;
-import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -20,8 +20,10 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class DriverServiceImpl implements DriverService {
     private final DriverRepository driverRepository;
+    private final CarRepository carRepository;
     private final DriverMapper driverMapper;
     private final DriverValidation driverValidation;
+    private final CarValidation carValidation;
 
     public DriverResponse createNewDriver(DriverRequest request) {
         driverValidation.alreadyExistsByEmail(request.email());
@@ -33,8 +35,7 @@ public class DriverServiceImpl implements DriverService {
     @Override
     @Transactional
     public DriverResponse updateDriver(DriverRequest request, UUID id) {
-        driverValidation.existsById(id);
-        Driver driver = driverRepository.findById(id).get();
+        Driver driver = driverValidation.findIfExistsById(id);
         driverValidation.alreadyExistsByEmail(request.email());
         driverValidation.alreadyExistsByNumber(request.number());
         driverValidation.isDeleted(id);
@@ -45,21 +46,43 @@ public class DriverServiceImpl implements DriverService {
 
     @Override
     public DriverResponse getById(UUID id) {
-        Driver driver = driverRepository.findById(id)
-                .orElseThrow(()->
-                        new RepeatedDriverDataException(DriverServiceResponseConstants.DRIVER_NOT_FOUND));
-        if(driver.isDeleted())
-            throw new EntityNotFoundException(DriverServiceResponseConstants.DRIVER_DELETED);
+        Driver driver = driverValidation.findIfExistsById(id);
+        driverValidation.isDeleted(id);
         return driverMapper.toResponse(driver);
     }
 
     @Override
+    @Transactional
     public void deleteById(UUID id) {
-        driverValidation.existsById(id);
+        Driver driver = driverValidation.findIfExistsById(id);
         driverValidation.isDeleted(id);
-        Driver driver = driverRepository.findById(id).get();
         driver.setDeleted(true);
+        driver.getCar().setDriver(null);
         driverRepository.save(driver);
+    }
+
+    @Override
+    @Transactional
+    public DriverResponse assignPersonalCar(UUID driverId, UUID carId) {
+        Driver driver = driverValidation.findIfExistsById(driverId);
+        driverValidation.isDeleted(driverId);
+
+        Car car = carValidation.findIfExistsById(carId);
+        carValidation.isDeleted(carId);
+
+        if(driverValidation.carToChangeIsTheSameAsPrevious(driver,car))
+            return driverMapper.toResponse(driver);
+
+        carValidation.carIsAlreadyOccupied(carId);
+        Car pastCar = driver.getCar();
+            if (pastCar != null) {
+                pastCar.setDriver(null);
+                carRepository.save(pastCar);
+            }
+        driver.setCar(car);
+        car.setDriver(driver);
+        Driver updatedDriver = driverRepository.saveAndFlush(driver);
+        return driverMapper.toResponse(updatedDriver);
     }
 
 }

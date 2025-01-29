@@ -1,4 +1,4 @@
-package com.Harevich.driverservice.dto.driver;
+package com.Harevich.driverservice.dto.request;
 
 import com.Harevich.driverservice.util.constants.RegularExpressionConstants;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -14,7 +14,7 @@ public record DriverRequest(
         @Schema(description = "Drivers surname", example = "Hanks")
         String surname,
         @Email(message = "email should be valid")
-        @Schema(description = "Drivers email", example = "mymail@gmail.com")
+        @Schema(description = "Drivers email", example = "1mymail@gmail.com")
         String email,
         @Pattern(regexp = RegularExpressionConstants.PHONE_NUMBER_REGEX, message = "Invalid phone number format")
         String number

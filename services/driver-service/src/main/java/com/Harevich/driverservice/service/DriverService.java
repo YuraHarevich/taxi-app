@@ -1,7 +1,7 @@
 package com.Harevich.driverservice.service;
 
-import com.Harevich.driverservice.dto.driver.DriverRequest;
-import com.Harevich.driverservice.dto.driver.DriverResponse;
+import com.Harevich.driverservice.dto.request.DriverRequest;
+import com.Harevich.driverservice.dto.response.DriverResponse;
 
 import java.util.UUID;
 
@@ -13,4 +13,6 @@ public interface DriverService {
     public DriverResponse getById(UUID id);
 
     void deleteById(UUID id);
+
+    DriverResponse assignPersonalCar(UUID driverId, UUID carId);
 }

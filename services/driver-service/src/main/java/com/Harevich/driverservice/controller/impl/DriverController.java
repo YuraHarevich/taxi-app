@@ -1,11 +1,11 @@
 package com.Harevich.driverservice.controller.impl;
 
 import com.Harevich.driverservice.controller.DriverApi;
-import com.Harevich.driverservice.dto.driver.DriverRequest;
-import com.Harevich.driverservice.dto.driver.DriverResponse;
+import com.Harevich.driverservice.dto.response.CarResponse;
+import com.Harevich.driverservice.dto.request.DriverRequest;
+import com.Harevich.driverservice.dto.response.DriverResponse;
 import com.Harevich.driverservice.service.DriverService;
 import jakarta.validation.Valid;
-import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -41,5 +41,14 @@ public class DriverController implements DriverApi {
     public void deleteDriverById(@RequestParam("id") UUID id){
         driverService.deleteById(id);
     }
+
+    @PatchMapping("changeCar")
+    @ResponseStatus(HttpStatus.OK)
+    public DriverResponse assignPersonalCar(@RequestParam("driver_id") UUID driver_id,
+                                            @RequestParam("car_id") UUID car_id){
+        return driverService.assignPersonalCar(driver_id,car_id);
+    }
+
+
 
 }

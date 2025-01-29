@@ -1,0 +1,18 @@
+package com.Harevich.driverservice.dto.response;
+
+import io.swagger.v3.oas.annotations.media.Schema;
+
+import java.util.UUID;
+
+public record DriverResponse(
+        UUID id,
+        @Schema(description = "Drivers name", example = "Vlad")
+        String name,
+        @Schema(description = "Drivers surname", example = "Vvvvvlad")
+        String surname,
+        @Schema(description = "Drivers email", example = "Vlad@gmail.com")
+        String email,
+        @Schema(description = "Drivers car")
+        UUID car_id
+) {
+}

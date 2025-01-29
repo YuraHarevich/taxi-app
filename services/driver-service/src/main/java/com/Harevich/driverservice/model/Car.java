@@ -2,6 +2,7 @@ package com.Harevich.driverservice.model;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
@@ -39,7 +40,7 @@ public class Car {
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
-    @OneToOne
+    @OneToOne(cascade = {CascadeType.MERGE,CascadeType.PERSIST})
     @JoinTable(
             name = "driver_car",
             joinColumns = @JoinColumn(name = "car_id"),
