@@ -6,7 +6,7 @@ import com.Harevich.driverservice.dto.response.PageableResponse;
 import com.Harevich.driverservice.model.Car;
 import com.Harevich.driverservice.repository.CarRepository;
 import com.Harevich.driverservice.service.CarService;
-import com.Harevich.driverservice.util.check.car.CarValidation;
+import com.Harevich.driverservice.util.validation.car.CarValidation;
 import com.Harevich.driverservice.util.constants.RegularExpressionConstants;
 import com.Harevich.driverservice.util.mapper.CarMapper;
 import com.Harevich.driverservice.util.mapper.PageMapper;
@@ -36,6 +36,7 @@ public class CarServiceImpl implements CarService {
     }
 
     @Override
+    @Transactional
     public CarResponse updateCar(@Valid CarRequest request, UUID id) {
         Car car = carValidation.findIfExistsById(id);
         carValidation.alreadyExistsByNumber(request.number());

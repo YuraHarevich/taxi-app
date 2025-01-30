@@ -1,5 +1,6 @@
 package com.Harevich.driverservice.dto.response;
 
+import com.Harevich.driverservice.model.enumerations.Sex;
 import io.swagger.v3.oas.annotations.media.Schema;
 
 import java.util.UUID;
@@ -12,7 +13,9 @@ public record DriverResponse(
         String surname,
         @Schema(description = "Drivers email", example = "Vlad@gmail.com")
         String email,
+        @Schema(description = "Drivers sex", example = "male")
+        Sex sex,
         @Schema(description = "Drivers car")
-        UUID car_id
+        UUID carId
 ) {
 }

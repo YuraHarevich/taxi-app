@@ -3,6 +3,7 @@ package com.Harevich.driverservice.controller.ex;
 import com.Harevich.driverservice.dto.ErrorMessage;
 import com.Harevich.driverservice.exception.CarIsAlreadyOccupiedException;
 import com.Harevich.driverservice.exception.RepeatedDataException;
+import com.Harevich.driverservice.exception.SexConvertionException;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -55,5 +56,16 @@ public class GlobalExceptionHandler {
                         .timestamp(LocalDateTime.now())
                         .build());
     }
+
+    @ExceptionHandler(SexConvertionException.class)
+    public ResponseEntity<ErrorMessage> handleValidationExceptions(SexConvertionException ex) {
+        return ResponseEntity
+                .status(HttpStatus.CONFLICT)
+                .body(ErrorMessage.builder()
+                        .message(ex.getMessage())
+                        .timestamp(LocalDateTime.now())
+                        .build());
+    }
+
 
 }

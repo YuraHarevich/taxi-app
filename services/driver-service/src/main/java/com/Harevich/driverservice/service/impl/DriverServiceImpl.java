@@ -7,8 +7,8 @@ import com.Harevich.driverservice.model.Driver;
 import com.Harevich.driverservice.repository.CarRepository;
 import com.Harevich.driverservice.repository.DriverRepository;
 import com.Harevich.driverservice.service.DriverService;
-import com.Harevich.driverservice.util.check.car.CarValidation;
-import com.Harevich.driverservice.util.check.driver.DriverValidation;
+import com.Harevich.driverservice.util.validation.car.CarValidation;
+import com.Harevich.driverservice.util.validation.driver.DriverValidation;
 import com.Harevich.driverservice.util.mapper.DriverMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -25,11 +25,13 @@ public class DriverServiceImpl implements DriverService {
     private final DriverValidation driverValidation;
     private final CarValidation carValidation;
 
+    @Override
     public DriverResponse createNewDriver(DriverRequest request) {
         driverValidation.alreadyExistsByEmail(request.email());
         driverValidation.alreadyExistsByNumber(request.number());
+        Driver driver = driverMapper.toDriver(request);
         return driverMapper.toResponse(
-                driverRepository.save(driverMapper.toDriver(request)));
+                driverRepository.save(driver));
     }
 
     @Override

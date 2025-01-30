@@ -1,4 +1,4 @@
-package com.Harevich.driverservice.util.check.car;
+package com.Harevich.driverservice.util.validation.car;
 
 import com.Harevich.driverservice.model.Car;
 

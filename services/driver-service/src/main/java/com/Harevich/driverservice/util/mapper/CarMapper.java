@@ -13,7 +13,7 @@ import java.util.List;
         injectionStrategy = InjectionStrategy.CONSTRUCTOR
 )
 public interface CarMapper {
-    @Mapping(source = "driver.id", target = "driver_id")
+    @Mapping(source = "driver.id", target = "driverId")
     CarResponse toResponse(Car car);
 
     CarRequest toRequest(CarResponse carResponse);

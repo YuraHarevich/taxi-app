@@ -1,10 +1,10 @@
-package com.Harevich.driverservice.util.check.driver.impl;
+package com.Harevich.driverservice.util.validation.driver.impl;
 
 import com.Harevich.driverservice.exception.RepeatedDataException;
 import com.Harevich.driverservice.model.Car;
 import com.Harevich.driverservice.model.Driver;
 import com.Harevich.driverservice.repository.DriverRepository;
-import com.Harevich.driverservice.util.check.driver.DriverValidation;
+import com.Harevich.driverservice.util.validation.driver.DriverValidation;
 import com.Harevich.driverservice.util.constants.DriverServiceResponseConstants;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;

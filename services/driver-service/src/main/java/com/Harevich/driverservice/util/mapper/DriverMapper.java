@@ -10,9 +10,10 @@ import org.mapstruct.*;
         injectionStrategy = InjectionStrategy.CONSTRUCTOR
 )
 public interface DriverMapper {
-    @Mapping(source = "car.id", target = "car_id")
+    @Mapping(source = "car.id", target = "carId")
     DriverResponse toResponse(Driver driver);
 
+    @Mapping(source = "sex", target = "sex")
     Driver toDriver(DriverRequest driverRequest);
 
     DriverRequest toRequest(DriverResponse driverResponse);

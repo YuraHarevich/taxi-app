@@ -68,7 +68,7 @@ public interface DriverApi {
                     content = @Content(mediaType = "application/json",
                             schema = @Schema(implementation = ErrorMessage.class))),
     })
-    public DriverResponse assignPersonalCar(@RequestParam("driver_id") UUID driver_id,
-                                            @RequestParam("car_id") UUID car_id);
+    public DriverResponse assignPersonalCar(@RequestParam("driver_id") UUID driverId,
+                                            @RequestParam("car_id") UUID carId);
 
 }

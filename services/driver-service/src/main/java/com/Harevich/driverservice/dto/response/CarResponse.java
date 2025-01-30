@@ -13,6 +13,6 @@ public record CarResponse(
         @Schema(description = "Cars brand", example = "BMW")
         String brand,
         @Schema(description = "Cars owner")
-        UUID driver_id
+        UUID driverId
 ) {
 }

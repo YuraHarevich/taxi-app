@@ -1,12 +1,11 @@
-package com.Harevich.driverservice.util.check.car.impl;
+package com.Harevich.driverservice.util.validation.car.impl;
 
 import com.Harevich.driverservice.exception.CarIsAlreadyOccupiedException;
 import com.Harevich.driverservice.exception.RepeatedDataException;
 import com.Harevich.driverservice.model.Car;
 import com.Harevich.driverservice.repository.CarRepository;
-import com.Harevich.driverservice.util.check.car.CarValidation;
+import com.Harevich.driverservice.util.validation.car.CarValidation;
 import com.Harevich.driverservice.util.constants.DriverServiceResponseConstants;
-import com.Harevich.driverservice.util.constants.RegularExpressionConstants;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

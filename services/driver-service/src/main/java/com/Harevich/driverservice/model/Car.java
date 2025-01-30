@@ -21,15 +21,16 @@ import java.util.UUID;
 public class Car {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
+    @Column(name = "id")
     private UUID id;
 
-    @Column(nullable = false)
+    @Column(name = "color", nullable = false)
     private String color;
 
-    @Column(unique = true,nullable = false)
+    @Column(name = "number", unique = true, nullable = false)
     private String number;
 
-    @Column(nullable = false)
+    @Column(name = "brand", nullable = false)
     private String brand;
 
     @CreationTimestamp
@@ -40,7 +41,7 @@ public class Car {
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
-    @OneToOne(cascade = {CascadeType.MERGE,CascadeType.PERSIST})
+    @OneToOne(cascade = {CascadeType.MERGE, CascadeType.PERSIST})
     @JoinTable(
             name = "driver_car",
             joinColumns = @JoinColumn(name = "car_id"),
@@ -48,6 +49,8 @@ public class Car {
     )
     private Driver driver;
 
+    @Builder.Default
+    @Column(name = "deleted")
     private boolean deleted = false;
 
 }

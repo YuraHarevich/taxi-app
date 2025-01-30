@@ -1,4 +1,6 @@
 package com.Harevich.driverservice.model;
+import com.Harevich.driverservice.model.enumerations.Sex;
+import com.Harevich.driverservice.util.converters.SexEnumConverter;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
@@ -19,18 +21,19 @@ import java.util.UUID;
 public class Driver {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
+    @Column(name = "id")
     private UUID id;
 
-    @Column(nullable = false)
+    @Column(name = "name", nullable = false)
     private String name;
 
-    @Column(nullable = false)
+    @Column(name = "surname", nullable = false)
     private String surname;
 
-    @Column(unique = true,nullable = false)
+    @Column(name = "number", unique = true, nullable = false)
     private String number;
 
-    @Column(unique = true,nullable = false)
+    @Column(name = "email", unique = true, nullable = false)
     private String email;
 
     @CreationTimestamp
@@ -41,9 +44,14 @@ public class Driver {
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
+    @Column(name = "sex", nullable = false)
+    @Convert(converter = SexEnumConverter.class)
+    private Sex sex;
+
     @OneToOne(mappedBy = "driver")
     private Car car;
 
     @Builder.Default
+    @Column(name = "deleted")
     private boolean deleted = false;
 }
