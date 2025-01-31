@@ -13,7 +13,6 @@ public interface DriverMapper {
     @Mapping(source = "car.id", target = "carId")
     DriverResponse toResponse(Driver driver);
 
-    @Mapping(source = "sex", target = "sex")
     Driver toDriver(DriverRequest driverRequest);
 
     DriverRequest toRequest(DriverResponse driverResponse);
