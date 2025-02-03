@@ -1,3 +1,11 @@
+app:
+  urls:
+    openrouteservice:
+      base-url: https://api.openrouteservice.org
+      directions_relational_part: v2/directions/driving-car
+      geocode_relational_part: geocode/search
+      api_key: ${API_KEY}
+      country_ISO_code: "BLR"
 server:
   port: 8030
 spring:
@@ -13,6 +21,13 @@ spring:
       ddl-auto: validate
     database: postgresql
     database-platform: org.hibernate.dialect.PostgreSQLDialect
-
   liquibase:
     change-log: classpath:/db/changelog/app-changelog.xml
+
+logging:
+  level:
+    com.netflix.discovery: DEBUG
+    feign: DEBUG
+    org.springframework.web.client: DEBUG
+    org.apache.http: DEBUG
+    org.springframework.web: DEBUG
