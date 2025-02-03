@@ -18,6 +18,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import java.util.Random;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
@@ -59,11 +60,18 @@ public class RideServiceImpl implements RideService {
     @Override
     @Transactional
     public RideResponse changeRideStatus(UUID id) {
+
         Ride ride = rideDataValidation.findIfExistsByRideId(id);
         RideStatus status = ride.getRideStatus();
         if(status.equals(RideStatus.CREATED)){
-            ride.setRideStatus(RideStatus.ACCEPTED);
-            ride.setAcceptedAt(LocalDateTime.now());
+            var temp = new Random().nextInt(100);
+            if(temp < 80)
+                ride.setRideStatus(RideStatus.DECLINED);
+            else {
+                //todo возврат в очередь пассажира
+                ride.setRideStatus(RideStatus.ACCEPTED);
+                ride.setAcceptedAt(LocalDateTime.now());
+            }
         }
         else if(status.equals(RideStatus.ACCEPTED)){
             ride.setRideStatus(RideStatus.ON_THE_WAY);
@@ -75,7 +83,7 @@ public class RideServiceImpl implements RideService {
         }
         else
             throw new CannotChangeRideStatusException(RideServiceResponseConstants.CANNOT_CHANGE_RIDE_STATUS.formatted(status));
-        return null;
+        return rideMapper.toResponse(ride);
     }
 
     @Override
@@ -95,14 +103,18 @@ public class RideServiceImpl implements RideService {
     @Override
     public PageableResponse<RideResponse> getAllRidesByPassengerId(UUID passenger_id,int pageNumber, int size) {
         //todo: чек для сущностей driver и passenger
-        var rides = rideRepository.findByPassengerId(passenger_id,PageRequest.of(pageNumber,size));
+        var rides = rideRepository
+                .findByPassengerId(passenger_id,PageRequest.of(pageNumber,size))
+                .map(rideMapper::toResponse);
         return pageMapper.toResponse(rides);
     }
 
     @Override
     public PageableResponse<RideResponse> getAllRidesByDriverId(UUID driver_id,int pageNumber, int size) {
         //todo: чек для сущностей driver и passenger
-        var rides = rideRepository.findByDriverId(driver_id,PageRequest.of(pageNumber,size));
+        var rides = rideRepository
+                .findByDriverId(driver_id,PageRequest.of(pageNumber,size))
+                .map(rideMapper::toResponse);
         return pageMapper.toResponse(rides);
     }
 }

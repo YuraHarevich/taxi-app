@@ -1,6 +1,8 @@
 package com.Harevich.ride_service.dto.response;
 
 import com.Harevich.ride_service.model.enumerations.RideStatus;
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.v3.oas.annotations.media.Schema;
 
 import java.math.BigDecimal;
@@ -23,5 +25,14 @@ public record RideResponse(
     RideStatus rideStatus,
     @Schema(description = "Ride time", example = "12:30")
     Duration rideTime
+
 ){
+    @JsonProperty("rideTime")
+    public String getDiscussionTimeSeconds() {
+        if(rideTime == null)
+            return null;
+        long minutes = rideTime.toMinutes();
+        long seconds = rideTime.toSecondsPart();
+        return String.format("%02d:%02d", minutes, seconds);
+    }
 }

@@ -9,6 +9,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.UUID;
 
 public interface RideRepository extends JpaRepository<Ride, UUID> {
-    Page<RideResponse> findByPassengerId(UUID passengerId, Pageable pageable);
-    Page<RideResponse> findByDriverId(UUID driverId, Pageable pageable);
+    Page<Ride> findByPassengerId(UUID passengerId, Pageable pageable);
+    Page<Ride> findByDriverId(UUID driverId, Pageable pageable);
 }

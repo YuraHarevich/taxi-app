@@ -6,8 +6,8 @@ CREATE TABLE ride (
     passenger_id UUID NOT NULL,
     driver_id UUID NOT NULL,
     ride_status INTEGER NOT NULL,
-    accepted_at TIMESTAMP NOT NULL,
     created_at TIMESTAMP NOT NULL,
+    accepted_at TIMESTAMP,
     started_at TIMESTAMP,
     finished_at TIMESTAMP
 );
