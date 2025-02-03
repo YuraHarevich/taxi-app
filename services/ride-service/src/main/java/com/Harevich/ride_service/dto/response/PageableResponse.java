@@ -1,4 +1,6 @@
-package com.Harevich.ride_service.dto;
+package com.Harevich.ride_service.dto.response;
+
+import java.util.List;
 
 public record PageableResponse<T> (
         long totalElements,

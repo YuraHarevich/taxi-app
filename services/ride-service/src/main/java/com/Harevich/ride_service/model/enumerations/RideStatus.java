@@ -4,6 +4,7 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
 import java.util.Arrays;
+import java.util.Optional;
 
 @RequiredArgsConstructor
 @Getter
@@ -14,11 +15,11 @@ public enum RideStatus {
     ON_THE_WAY(3),
     FINISHED(4);
 
-    private final int sexCode;
+    private final int rideCode;
 
-    public static Optional<Sex> fromCode(int code) {
+    public static Optional<RideStatus> fromCode(int code) {
         return Arrays.stream(RideStatus.values())
-                .filter(sex -> sex.sexCode == code)
+                .filter(ride -> ride.rideCode == code)
                 .findAny();
     }
 }

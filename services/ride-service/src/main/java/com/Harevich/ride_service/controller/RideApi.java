@@ -1,7 +1,9 @@
 package com.Harevich.ride_service.controller;
 
-import com.Harevich.ride_service.dto.RideRequest;
-import com.Harevich.ride_service.dto.RideResponse;
+import com.Harevich.ride_service.dto.ErrorMessage;
+import com.Harevich.ride_service.dto.response.PageableResponse;
+import com.Harevich.ride_service.dto.request.RideRequest;
+import com.Harevich.ride_service.dto.response.RideResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -9,6 +11,8 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+
+import jakarta.validation.constraints.Min;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 
@@ -56,7 +60,8 @@ public interface RideApi {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Ride successfully found"),
     })
-    public PageableResponse<RideResponse> getAllRides();
+    public PageableResponse<RideResponse> getAllRides(@RequestParam(defaultValue = "0") @Min(0) int page_number,
+                                                      @RequestParam(defaultValue = "10") int size);
 
     @Operation(summary = "getting ride by passengers id")
     @ApiResponses(value = {
@@ -65,7 +70,9 @@ public interface RideApi {
                     content = @Content(mediaType = "application/json",
                             schema = @Schema(implementation = ErrorMessage.class))),
     })
-    public PageableResponse<RideResponse> getAllRidesByPassengerId(@RequestParam("id") UUID passenger_id);
+    public PageableResponse<RideResponse> getAllRidesByPassengerId(@RequestParam("id") UUID passenger_id,
+                                                                   @RequestParam(defaultValue = "0") @Min(0) int page_number,
+                                                                   @RequestParam(defaultValue = "10") int size);
 
     @Operation(summary = "getting ride by driver id")
     @ApiResponses(value = {
@@ -74,5 +81,7 @@ public interface RideApi {
                     content = @Content(mediaType = "application/json",
                             schema = @Schema(implementation = ErrorMessage.class))),
     })
-    public PageableResponse<RideResponse> getAllRidesByDriverId(@RequestParam("id") UUID driver_id);
+    public PageableResponse<RideResponse> getAllRidesByDriverId(@RequestParam("id") UUID driver_id,
+                                                                @RequestParam(defaultValue = "0") @Min(0) int page_number,
+                                                                @RequestParam(defaultValue = "10") int size);
 }

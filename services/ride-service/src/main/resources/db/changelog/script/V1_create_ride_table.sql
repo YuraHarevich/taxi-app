@@ -5,8 +5,9 @@ CREATE TABLE ride (
     price DECIMAL(10, 2) NOT NULL,
     passenger_id UUID NOT NULL,
     driver_id UUID NOT NULL,
-    ride_status VARCHAR(50) NOT NULL,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    ride_status INTEGER NOT NULL,
+    accepted_at TIMESTAMP NOT NULL,
+    created_at TIMESTAMP NOT NULL,
     started_at TIMESTAMP,
     finished_at TIMESTAMP
 );

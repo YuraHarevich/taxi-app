@@ -1,6 +1,7 @@
 package com.Harevich.ride_service.model;
 
 import com.Harevich.ride_service.model.enumerations.RideStatus;
+import com.Harevich.ride_service.util.converter.RideStatusConverter;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
@@ -40,14 +41,16 @@ public class Ride {
     @Convert(converter = RideStatusConverter.class)
     private RideStatus rideStatus;
 
-    @Builder.Default
     @CreationTimestamp
     @Column(name = "created_at", updatable = false)
     private LocalDateTime createdAt;
 
+    @Column(name = "accepted_at")
+    private LocalDateTime acceptedAt;
+
     @Column(name = "started_at")
-    private LocalDateTime started_at;
+    private LocalDateTime startedAt;
 
     @Column(name = "finished_at")
-    private LocalDateTime finished_at;
+    private LocalDateTime finishedAt;
 }

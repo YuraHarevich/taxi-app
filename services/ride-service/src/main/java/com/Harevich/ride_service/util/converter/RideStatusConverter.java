@@ -1,7 +1,10 @@
 package com.Harevich.ride_service.util.converter;
 
+import com.Harevich.ride_service.exception.RideStatusConvertionException;
 import com.Harevich.ride_service.model.enumerations.RideStatus;
 import com.Harevich.ride_service.util.constants.RideServiceResponseConstants;
+import jakarta.persistence.AttributeConverter;
+import jakarta.persistence.Converter;
 
 @Converter
 public class RideStatusConverter implements AttributeConverter<RideStatus, Integer> {
@@ -10,7 +13,7 @@ public class RideStatusConverter implements AttributeConverter<RideStatus, Integ
         if (rideStatus == null) {
             throw new RideStatusConvertionException(RideServiceResponseConstants.RIDE_STATUS_IS_ABSENT);
         }
-        return sex.getSexCode();
+        return rideStatus.getRideCode();
     }
 
     @Override

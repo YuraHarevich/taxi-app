@@ -1,12 +1,13 @@
-package com.Harevich.ride_service.util.validation.ride;
+package com.Harevich.ride_service.util.validation.ride_status;
 
 import com.Harevich.ride_service.util.constants.RideServiceResponseConstants;
+import jakarta.validation.Constraint;
+import jakarta.validation.Payload;
 
-import java.lang.annotation.ElementType;
-import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.*;
 
 @Documented
-@Constraint(validatedBy = SexValidator.class)
+@Constraint(validatedBy = RideValidation.class)
 @Target({ElementType.METHOD, ElementType.FIELD, ElementType.PARAMETER})
 @Retention(RetentionPolicy.RUNTIME)
 public @interface RideStatusValid {
