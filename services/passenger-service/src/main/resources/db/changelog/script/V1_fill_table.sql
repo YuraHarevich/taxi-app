@@ -1,0 +1,16 @@
+INSERT INTO passenger (name, surname, email, number) VALUES
+('Ivan', 'Ivanov', 'ivan.ivanov@example.com', '+375291234567'),
+('Petr', 'Petrov', 'petr.petrov@example.com', '+375442345678'),
+('Svetlana', 'Svetlova', 'svetlana.svetlova@example.com', '+375253456789'),
+('Olga', 'Ogarkova', 'olga.ogarkova@example.com', '+375174567890'),
+('Dmitry', 'Dmitriev', 'dmitry.dmitriev@example.com', '+375175678901'),
+('Alexandra', 'Alexandrova', 'alexandra.alexandrova@example.com', '+375256789012'),
+('Mikhail', 'Mikhaylov', 'mikhail.mikhaylov@example.com', '+375447890123'),
+('Nadezhda', 'Nadezhdina', 'nadezhda.nadezhdina@example.com', '+375258901234'),
+('Sergey', 'Sergeev', 'sergey.sergeev@example.com', '+375339012345'),
+('Ekaterina', 'Ekaterina', 'ekaterina.ekaterina@example.com', '+375440123456'),
+('Vladimir', 'Vladimirov', 'vladimir.vladimirov@example.com', '+375251234567'),
+('Tatyana', 'Tatyanova', 'tatyana.tatyanova@example.com', '+375172345678'),
+('Roman', 'Romanov', 'roman.romanov@example.com', '+375293456789'),
+('Elena', 'Elentova', 'elena.elentova@example.com', '+375294567890'),
+('Andrey', 'Andreev', 'andrey.andreev@example.com', '+375445678901');
