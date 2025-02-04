@@ -18,13 +18,15 @@ public class OpenrouteGeolocationService implements GeolocationService {
     private final GeolocationClient geolocationClient;
 
     @Override
-    public long getRouteDistanceByTwoAddresses(String from, String to) {
+    public double getRouteDistanceByTwoAddresses(String from, String to) {
+        String fromCordsString = getCoordinatesByAddress(from).toString();
+        String toCordsString = getCoordinatesByAddress(to).toString();
         Map<String,Object> response = geolocationClient.getDirectionByTwoAddresses(
                 geolocationParams.getDirectionsRelationalUrl(),
                 geolocationParams.getApiKey(),
-                from,
-                to);
-        long distance = getDistanseByOpenrouteServiceResponse(response);
+                fromCordsString,
+                toCordsString);
+        double distance = getDistanseInKilometersByOpenrouteServiceResponse(response);
         return distance;
     }
 
@@ -54,11 +56,12 @@ public class OpenrouteGeolocationService implements GeolocationService {
         );
     }
 
-    private long getDistanseByOpenrouteServiceResponse(Map<String, Object> response) {
+    private double getDistanseInKilometersByOpenrouteServiceResponse(Map<String, Object> response) {
         List<Map<String, Object>> features = (List<Map<String, Object>>)response.get("features");
-        Map<String, Object> properties = (Map<String, Object>)features.get(2).get("properties");
+        Map<String, Object> properties = (Map<String, Object>)features.get(0).get("properties");
         Map<String, Object> summary = (Map<String, Object>)properties.get("summary");
-        long distance = (long)summary.get("summary");
-        return distance;
+        double distance = (double)summary.get("distance");
+        double distanceInKilometers = distance/1000;
+        return Math.round(distanceInKilometers * 100.0)/100.0;
     }
 }

@@ -1,6 +1,7 @@
 package com.Harevich.ride_service.controller.exceptions;
 
 import com.Harevich.ride_service.dto.ErrorMessage;
+import com.Harevich.ride_service.exception.AddressNotFoundException;
 import com.Harevich.ride_service.exception.CannotChangeRideStatusException;
 import com.Harevich.ride_service.exception.RideStatusConvertionException;
 import jakarta.persistence.EntityNotFoundException;
@@ -60,6 +61,15 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ErrorMessage> handleValidationExceptions(CannotChangeRideStatusException ex) {
         return ResponseEntity
                 .status(HttpStatus.CONFLICT)
+                .body(ErrorMessage.builder()
+                        .message(ex.getMessage())
+                        .timestamp(LocalDateTime.now())
+                        .build());
+    }
+    @ExceptionHandler(AddressNotFoundException.class)
+    public ResponseEntity<ErrorMessage> handleConstraintViolationExceptions(AddressNotFoundException ex) {
+        return ResponseEntity
+                .status(HttpStatus.BAD_REQUEST)
                 .body(ErrorMessage.builder()
                         .message(ex.getMessage())
                         .timestamp(LocalDateTime.now())

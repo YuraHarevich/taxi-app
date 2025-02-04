@@ -28,7 +28,7 @@ import java.util.UUID;
 public class RideServiceImpl implements RideService {
     private final RideRepository rideRepository;
     private final RideMapper rideMapper;
-    private final PriceService priveService;
+    private final PriceService priceService;
     private final RideDataValidation rideDataValidation;
     private final PageMapper pageMapper;
 
@@ -38,7 +38,10 @@ public class RideServiceImpl implements RideService {
 
         Ride ride = rideMapper.toRide(request);
             ride.setCreatedAt(LocalDateTime.now());
-            ride.setPrice(priveService.getPriceByTwoAddresses(request.to(),request.from()));
+            ride.setPrice(priceService.getPriceByTwoAddresses(
+                    request.from(),
+                    request.to(),
+                    LocalDateTime.now()));
             ride.setPassengerId(passengerId);
             ride.setDriverId(driverId);
             ride.setRideStatus(RideStatus.CREATED);

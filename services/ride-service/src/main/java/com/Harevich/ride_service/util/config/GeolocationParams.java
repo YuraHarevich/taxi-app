@@ -1,12 +1,14 @@
 package com.Harevich.ride_service.util.config;
 
+import lombok.AccessLevel;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 @Component
 @Getter
-public class GeolocationParams {
+public final class GeolocationParams {
 
     @Value("${app.urls.openrouteservice.directions_relational_part}")
     private String directionsRelationalUrl;
@@ -20,14 +22,13 @@ public class GeolocationParams {
     @Value("${app.urls.openrouteservice.country_ISO_code}")
     private String country;
 
-    public String getRelationalDirectionsUrl(String start, String end) {
-        return null;
-        //return String.format("%s?api_key=%s&start=%s&end=%s", directions_relational_url, apiKey, start, end);
-    }
-    public String getFormattedAddress(String address) {
-        String formattedAddress = address
-                .replace(" ","%20")
-                .replace(",","%2C");
-        return formattedAddress;
-    }
+    @Value("${app.urls.openrouteservice.city.minsk.circle.lon}")
+    private double minskLongitude;
+
+    @Value("${app.urls.openrouteservice.city.minsk.circle.lat}")
+    private double minskLatitude;
+
+    @Value("${app.urls.openrouteservice.city.minsk.circle.radius}")
+    private int minskRadius;
+
 }

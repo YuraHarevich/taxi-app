@@ -16,10 +16,18 @@ import java.util.UUID;
 @Tag(name = "Test")
 public class TestController {
     private final GeolocationService service;
-    @GetMapping
+    @GetMapping("cords")
     @ResponseStatus(HttpStatus.OK)
     public Coordinates getCoordsByAddress(@RequestParam("address") String address) {
         Coordinates coordinates = service.getCoordinatesByAddress(address);
         return coordinates;
+    }
+
+    @GetMapping("route")
+    @ResponseStatus(HttpStatus.OK)
+    public double getRouteByAddresses(@RequestParam("from") String from,
+                                           @RequestParam("to") String to) {
+        double distance = service.getRouteDistanceByTwoAddresses(from,to);
+        return distance;
     }
 }
