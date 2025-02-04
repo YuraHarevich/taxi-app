@@ -19,8 +19,7 @@ public interface GeolocationClient {
                                                      @RequestParam("text") String text,
                                                      @RequestParam("boundary.circle.lon") double longitude,
                                                      @RequestParam("boundary.circle.lat") double latitude,
-                                                     @RequestParam("boundary.circle.radius") int radius
-                                                        );
+                                                     @RequestParam("boundary.circle.radius") int radius);
     @GetMapping("{relative_path}")
     Map<String,Object> getCoordinatesByAddressByCountry(@PathVariable("relative_path") String relative_path,
                                                         @RequestParam("api_key") String api_key,

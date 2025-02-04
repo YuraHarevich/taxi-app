@@ -21,7 +21,7 @@ public class PriceServiceIml implements PriceService {
     public BigDecimal getPriceByTwoAddresses(String from, String to, LocalDateTime currentTime) {
         double distance = geolocationService.getRouteDistanceByTwoAddresses(from,to);
         BigDecimal price = BigDecimal.valueOf(distance);
-        //не знаю, вроде криво но иначе будет еще более криво
+        //не знаю, вроде криво, но иначе будет еще более криво
         BigDecimal finalPrice =
                 increaseTariffByMorningPeak(currentTime,
                     increaseTariffByEveningPeak(currentTime,

@@ -35,7 +35,6 @@ public class RideServiceImpl implements RideService {
     @Override
     public RideResponse createRide(RideRequest request, UUID passengerId, UUID driverId) {
         //todo: чек для сущностей driver и passenger
-
         Ride ride = rideMapper.toRide(request);
             ride.setCreatedAt(LocalDateTime.now());
             ride.setPrice(priceService.getPriceByTwoAddresses(
@@ -63,7 +62,6 @@ public class RideServiceImpl implements RideService {
     @Override
     @Transactional
     public RideResponse changeRideStatus(UUID id) {
-
         Ride ride = rideDataValidation.findIfExistsByRideId(id);
         RideStatus status = ride.getRideStatus();
         if(status.equals(RideStatus.CREATED)){

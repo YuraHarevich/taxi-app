@@ -1,5 +1,6 @@
 package com.Harevich.ride_service.controller.impl;
 
+import com.Harevich.ride_service.controller.GeolocationApi;
 import com.Harevich.ride_service.dto.Coordinates;
 import com.Harevich.ride_service.dto.response.RideResponse;
 import com.Harevich.ride_service.service.GeolocationService;
@@ -12,9 +13,8 @@ import java.util.UUID;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("api/v1/test")
-@Tag(name = "Test")
-public class TestController {
+@RequestMapping("api/v1/geolocation")
+public class GeolocationController implements GeolocationApi {
     private final GeolocationService service;
     @GetMapping("cords")
     @ResponseStatus(HttpStatus.OK)

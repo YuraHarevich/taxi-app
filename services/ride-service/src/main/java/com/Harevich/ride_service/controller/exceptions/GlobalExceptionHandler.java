@@ -1,9 +1,7 @@
 package com.Harevich.ride_service.controller.exceptions;
 
 import com.Harevich.ride_service.dto.ErrorMessage;
-import com.Harevich.ride_service.exception.AddressNotFoundException;
-import com.Harevich.ride_service.exception.CannotChangeRideStatusException;
-import com.Harevich.ride_service.exception.RideStatusConvertionException;
+import com.Harevich.ride_service.exception.*;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.ConstraintViolationException;
 import org.springframework.http.HttpStatus;
@@ -70,6 +68,24 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ErrorMessage> handleConstraintViolationExceptions(AddressNotFoundException ex) {
         return ResponseEntity
                 .status(HttpStatus.BAD_REQUEST)
+                .body(ErrorMessage.builder()
+                        .message(ex.getMessage())
+                        .timestamp(LocalDateTime.now())
+                        .build());
+    }
+    @ExceptionHandler(GeolocationServiceBadRequestException.class)
+    public ResponseEntity<ErrorMessage> handleConstraintViolationExceptions(GeolocationServiceBadRequestException ex) {
+        return ResponseEntity
+                .status(HttpStatus.BAD_REQUEST)
+                .body(ErrorMessage.builder()
+                        .message(ex.getMessage())
+                        .timestamp(LocalDateTime.now())
+                        .build());
+    }
+    @ExceptionHandler(GeolocationServiceUnavailableException.class)
+    public ResponseEntity<ErrorMessage> handleConstraintViolationExceptions(GeolocationServiceUnavailableException ex) {
+        return ResponseEntity
+                .status(HttpStatus.SERVICE_UNAVAILABLE)
                 .body(ErrorMessage.builder()
                         .message(ex.getMessage())
                         .timestamp(LocalDateTime.now())

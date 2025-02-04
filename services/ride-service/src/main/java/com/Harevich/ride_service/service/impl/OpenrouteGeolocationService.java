@@ -3,9 +3,12 @@ package com.Harevich.ride_service.service.impl;
 import com.Harevich.ride_service.client.GeolocationClient;
 import com.Harevich.ride_service.dto.Coordinates;
 import com.Harevich.ride_service.exception.AddressNotFoundException;
+import com.Harevich.ride_service.exception.GeolocationServiceBadRequestException;
+import com.Harevich.ride_service.exception.GeolocationServiceUnavailableException;
 import com.Harevich.ride_service.service.GeolocationService;
 import com.Harevich.ride_service.util.config.GeolocationParams;
 import com.Harevich.ride_service.util.constants.RideServiceResponseConstants;
+import feign.FeignException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import java.util.List;
@@ -21,12 +24,19 @@ public class OpenrouteGeolocationService implements GeolocationService {
     public double getRouteDistanceByTwoAddresses(String from, String to) {
         String fromCordsString = getCoordinatesByAddress(from).toString();
         String toCordsString = getCoordinatesByAddress(to).toString();
-        Map<String,Object> response = geolocationClient.getDirectionByTwoAddresses(
-                geolocationParams.getDirectionsRelationalUrl(),
-                geolocationParams.getApiKey(),
-                fromCordsString,
-                toCordsString);
-        double distance = getDistanseInKilometersByOpenrouteServiceResponse(response);
+        double distance;
+        try {
+            Map<String, Object> response = geolocationClient.getDirectionByTwoAddresses(
+                    geolocationParams.getDirectionsRelationalUrl(),
+                    geolocationParams.getApiKey(),
+                    fromCordsString,
+                    toCordsString);
+            distance = getDistanseInKilometersByOpenrouteServiceResponse(response);
+        }catch (FeignException.BadRequest e) {
+            throw new GeolocationServiceBadRequestException(RideServiceResponseConstants.OUTSIDER_REST_API_BAD_REQUEST);
+        }catch (FeignException e) {
+            throw new GeolocationServiceUnavailableException(RideServiceResponseConstants.OUTSIDER_REST_API_BAD_UNAVAILABLE);
+        }
         return distance;
     }
 
