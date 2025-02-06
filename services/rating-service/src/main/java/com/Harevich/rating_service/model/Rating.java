@@ -4,6 +4,7 @@ import com.Harevich.rating_service.model.enumerations.VotingPerson;
 import lombok.Getter;
 import lombok.Setter;
 import org.bson.types.ObjectId;
+import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
@@ -19,8 +20,12 @@ public class Rating {
     @Id
     private ObjectId id;
 
+    @Field("ride_id")
+    private UUID rideId;
+
     @Field("rateTime")
-    private LocalDateTime rateTime;
+    @CreatedDate
+    private LocalDateTime ratingTime;
 
     @Field("votingId")
     private UUID votingId;

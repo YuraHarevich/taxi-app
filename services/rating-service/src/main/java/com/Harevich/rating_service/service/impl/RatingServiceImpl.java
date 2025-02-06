@@ -30,7 +30,7 @@ public class RatingServiceImpl implements RatingService {
     public RatingResponse estimateTheRide(RatingRequest request) {
         Rating rating = ratingMapper.toRating(request);
         ratingRepository.save(rating);
-        return null;
+        return ratingMapper.toResponse(rating);
     }
 
     @Override

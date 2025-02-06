@@ -1,7 +1,6 @@
 package com.Harevich.rating_service.util.validation.impl;
 
 import com.Harevich.rating_service.dto.response.PageableResponse;
-import com.Harevich.rating_service.dto.response.RatingResponse;
 import com.Harevich.rating_service.model.enumerations.VotingPerson;
 import com.Harevich.rating_service.repository.RatingRepository;
 import com.Harevich.rating_service.util.config.RatingParametersConsumer;
@@ -24,25 +23,16 @@ public class RatingValidationServiceImpl implements RatingValidationService {
     private final RatingParametersConsumer ratingParametersConsumer;
     @Override
     public PageableResponse findAllRaitingsByPersonId(UUID id, VotingPerson whoVotes, Pageable pageable) {
-        switch (whoVotes){
-            case PASSENGER:
-                return pageMapper.toResponse(ratingRepository.findByPassengerId(id, pageable));
-            case DRIVER:
-                return pageMapper.toResponse(ratingRepository.findByDriverId(id, pageable));
-            default:
-                throw new RuntimeException();//todo: нормальную ошибку выкинуть
-        }
+        var page = ratingRepository.findByVotableIdAndWhoVotes(id,whoVotes,pageable);
+        return pageMapper.toResponse(page);
     }
 
     @Override
     public PageableResponse findLastRaitingsByPersonId(UUID id, VotingPerson whoVotes) {
-        switch (whoVotes){
-            case PASSENGER:
-                ratingRepository.findByPassengerIdOrderByCreatedAtDesc(id, PageRequest.of(0,ratingParametersConsumer.getNumberOfRidesToEvaluateRating()));
-            case DRIVER:
-                ratingRepository.findByDriverIdOrderByCreatedAtDesc(id, PageRequest.of(0,ratingParametersConsumer.getNumberOfRidesToEvaluateRating()));
-            default:
-                throw new RuntimeException();//todo: нормальную ошибку выкинуть
-        }
+        var page = ratingRepository.findByVotableIdAndWhoVotesOrderByRatingTimeDesc(
+                id,
+                whoVotes,
+                PageRequest.of(0,ratingParametersConsumer.getNumberOfRidesToEvaluateRating()));
+        return pageMapper.toResponse(page);
     }
 }

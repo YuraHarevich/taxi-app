@@ -11,6 +11,8 @@ import org.mapstruct.*;
 )
 public interface RatingMapper {
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
-    @Mapping(target = "rateTime", expression = "java(java.time.LocalDateTime.now())")
+    @Mapping(target = "ratingTime", expression = "java(java.time.LocalDateTime.now())")
     Rating toRating(RatingRequest request);
+
+    RatingResponse toResponse(Rating rating);
 }

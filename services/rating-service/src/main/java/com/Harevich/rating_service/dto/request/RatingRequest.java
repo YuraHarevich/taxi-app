@@ -5,30 +5,30 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
-import org.bson.types.ObjectId;
 
 import java.util.UUID;
 
 public record RatingRequest(
-        @NotBlank(message = "Ride id is mandatory")
-        @Schema(description = "Ride id", example = "656f1e5b8c8a4e2f98d0a2b1")
-        ObjectId id,
 
-        @NotBlank(message = "voting id is mandatory")
+        @Schema(description = "Ride id")
+        UUID rideId,
+
+        @Schema(description = "voting id")
         UUID votingId,
 
-        @NotBlank(message = "votable id is mandatory")
+        @Schema(description = "votable id")
         UUID votableId,
 
-        @NotBlank(message = "appraisal id is mandatory")
         @Max(5)
         @Min(1)
+        @Schema(description = "rating(stars)", example = "5")
         byte rating,
 
-        @NotBlank(message = "it is mandatory to chose voting person")
+        @Schema(description = "voting id",example = "PASSENGER")
         VotingPerson whoVotes,
 
-        @Schema(description = "feedback about the ride", example = "656f1e5b8c8a4e2f98d0a2b1")
+        @Schema(description = "feedback about the ride", example = "Ну типо в целом норм но тот факт, что он не дал папарить это конечно кринж")
         String feedback
+
 ) {
 }
