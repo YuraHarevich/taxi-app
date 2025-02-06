@@ -34,7 +34,7 @@ public record RideResponse(
     @Schema(description = "Ride time", example = "12:30")
     Duration rideTime
 
-){
+) {
 
     @JsonProperty("rideTime")
     public String getDiscussionTimeSeconds() {

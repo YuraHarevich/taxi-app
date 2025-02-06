@@ -60,11 +60,11 @@ public class OpenrouteGeolocationService implements GeolocationService {
     }
 
     private Coordinates getCoordinatesByOpenrouteServiceResponse(Map<String,Object> response, String address){
-        List<Map<String, Object>> features = (List<Map<String, Object>>)response.get("features");
-        if(features.isEmpty())
+        List<Map<String, Object>> features = (List<Map<String, Object>>) response.get("features");
+        if (features.isEmpty())
             throw new AddressNotFoundException(ADDRESS_NOT_FOUND.formatted(address));
-        Map<String, Object> geometry = (Map<String, Object>)features.get(0).get("geometry");
-        List<Double> coordinates = (List<Double>)geometry.get("coordinates");
+        Map<String, Object> geometry = (Map<String, Object>) features.get(0).get("geometry");
+        List<Double> coordinates = (List<Double>) geometry.get("coordinates");
         return new Coordinates(
                 coordinates.get(0),
                 coordinates.get(1)
@@ -72,12 +72,12 @@ public class OpenrouteGeolocationService implements GeolocationService {
     }
 
     private double getDistanseInKilometersByOpenrouteServiceResponse(Map<String, Object> response) {
-        List<Map<String, Object>> features = (List<Map<String, Object>>)response.get("features");
-        Map<String, Object> properties = (Map<String, Object>)features.get(0).get("properties");
-        Map<String, Object> summary = (Map<String, Object>)properties.get("summary");
-        double distance = (double)summary.get("distance");
-        double distanceInKilometers = distance/1000;
-        return Math.round(distanceInKilometers * ACCURACY_OF_DISTANCE)/ACCURACY_OF_DISTANCE;
+        List<Map<String, Object>> features = (List<Map<String, Object>>) response.get("features");
+        Map<String, Object> properties = (Map<String, Object>) features.get(0).get("properties");
+        Map<String, Object> summary = (Map<String, Object>) properties.get("summary");
+        double distance = (double) summary.get("distance");
+        double distanceInKilometers = distance / 1000;
+        return Math.round(distanceInKilometers * ACCURACY_OF_DISTANCE) / ACCURACY_OF_DISTANCE;
     }
 
 }

@@ -29,7 +29,7 @@ public class GeolocationController implements GeolocationApi {
     @ResponseStatus(HttpStatus.OK)
     public double getRouteByAddresses(@RequestParam("from") String from,
                                       @RequestParam("to") String to) {
-        double distance = service.getRouteDistanceByTwoAddresses(from,to);
+        double distance = service.getRouteDistanceByTwoAddresses(from, to);
         return distance;
     }
 
