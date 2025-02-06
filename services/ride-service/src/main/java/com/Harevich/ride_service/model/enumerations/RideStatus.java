@@ -9,6 +9,7 @@ import java.util.Optional;
 @RequiredArgsConstructor
 @Getter
 public enum RideStatus {
+
     CREATED(0),
     ACCEPTED(100),
     DECLINED(200),
@@ -22,4 +23,5 @@ public enum RideStatus {
                 .filter(ride -> ride.rideCode == code)
                 .findAny();
     }
+
 }

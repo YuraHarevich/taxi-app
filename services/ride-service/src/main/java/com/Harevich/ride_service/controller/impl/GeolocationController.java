@@ -32,4 +32,5 @@ public class GeolocationController implements GeolocationApi {
         double distance = service.getRouteDistanceByTwoAddresses(from,to);
         return distance;
     }
+
 }

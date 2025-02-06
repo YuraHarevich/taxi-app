@@ -14,5 +14,5 @@ public record RideRequest (
     @Schema(description = "Ride finish address", example = "Таёжная 19")
     String to
 
-){
+) {
 }

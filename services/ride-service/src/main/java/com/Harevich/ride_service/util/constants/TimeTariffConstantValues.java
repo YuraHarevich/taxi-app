@@ -19,4 +19,5 @@ public final class TimeTariffConstantValues {
     public static final Integer MINUTES_IN_HOUR_WITHOUT_INCREASED_TARIFF = 50;
 
     public static final double TARIFF_PER_KM = 1;
+
 }

@@ -13,4 +13,5 @@ public final class TariffMultiplyConstants {
     public static final double END_OF_HOUR_MULTIPLY_CONSTANT = 1.2;
 
     public static final double ACCURACY_OF_DISTANCE = 100;
+
 }

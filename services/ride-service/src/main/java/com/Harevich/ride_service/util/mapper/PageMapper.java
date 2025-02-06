@@ -12,7 +12,7 @@ import org.springframework.data.domain.Page;
 )
 public interface PageMapper{
 
-    default <T> PageableResponse<T> toResponse(Page<T> page){
+    default <T> PageableResponse<T> toResponse(Page<T> page) {
         return new PageableResponse(
                 page.getTotalElements(),
                 page.getTotalPages(),
@@ -20,7 +20,6 @@ public interface PageMapper{
                 page.getSize(),
                 page.getContent()
         );
-
     }
 
 }

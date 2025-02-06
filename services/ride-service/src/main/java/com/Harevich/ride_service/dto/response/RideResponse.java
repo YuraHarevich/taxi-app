@@ -25,7 +25,7 @@ public record RideResponse(
     @Schema(description = "passengers id")
     UUID passengerId,
 
-    @Schema(description = "passengers id")
+    @Schema(description = "drivers id")
     UUID driverId,
 
     @Schema(description = "Ride status", example = "ACCEPTED")
@@ -35,6 +35,7 @@ public record RideResponse(
     Duration rideTime
 
 ){
+
     @JsonProperty("rideTime")
     public String getDiscussionTimeSeconds() {
         if(rideTime == null)
@@ -43,4 +44,5 @@ public record RideResponse(
         long seconds = rideTime.toSecondsPart();
         return String.format("%02d:%02d", minutes, seconds);
     }
+
 }

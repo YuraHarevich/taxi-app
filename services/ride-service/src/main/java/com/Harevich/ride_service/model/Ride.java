@@ -18,6 +18,7 @@ import java.util.UUID;
 @Setter
 @Table(name = "ride")
 public class Ride {
+
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
@@ -53,4 +54,5 @@ public class Ride {
 
     @Column(name = "finished_at")
     private LocalDateTime finishedAt;
+
 }

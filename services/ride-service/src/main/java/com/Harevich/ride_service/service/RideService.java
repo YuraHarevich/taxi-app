@@ -19,8 +19,8 @@ public interface RideService {
 
     PageableResponse<RideResponse> getAllRides(int pageNumber, int size);
 
-    PageableResponse<RideResponse> getAllRidesByPassengerId(UUID passenger_id,int pageNumber, int size);
+    PageableResponse<RideResponse> getAllRidesByPassengerId(UUID passengerId,int pageNumber, int size);
 
-    PageableResponse<RideResponse> getAllRidesByDriverId(UUID driver_id,int pageNumber, int size);
+    PageableResponse<RideResponse> getAllRidesByDriverId(UUID driverId,int pageNumber, int size);
 
 }

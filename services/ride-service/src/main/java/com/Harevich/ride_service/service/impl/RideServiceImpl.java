@@ -69,9 +69,9 @@ public class RideServiceImpl implements RideService {
     public RideResponse changeRideStatus(UUID id) {
         Ride ride = rideDataValidation.findIfExistsByRideId(id);
         RideStatus status = ride.getRideStatus();
-        if(status.equals(RideStatus.CREATED)){
+        if (status.equals(RideStatus.CREATED)){
             var temp = new Random().nextInt(100);
-            if(temp < 80)
+            if (temp < 80)
                 ride.setRideStatus(RideStatus.DECLINED);
             else {
                 //todo возврат в очередь пассажира
@@ -79,11 +79,11 @@ public class RideServiceImpl implements RideService {
                 ride.setAcceptedAt(LocalDateTime.now());
             }
         }
-        else if(status.equals(RideStatus.ACCEPTED)){
+        else if (status.equals(RideStatus.ACCEPTED)){
             ride.setRideStatus(RideStatus.ON_THE_WAY);
             ride.setStartedAt(LocalDateTime.now());
         }
-        else if(status.equals(RideStatus.ON_THE_WAY)){
+        else if (status.equals(RideStatus.ON_THE_WAY)){
             ride.setRideStatus(RideStatus.FINISHED);
             ride.setFinishedAt(LocalDateTime.now());
         }
@@ -119,7 +119,7 @@ public class RideServiceImpl implements RideService {
     public PageableResponse<RideResponse> getAllRidesByDriverId(UUID driverId, int pageNumber, int size) {
         //todo: чек для сущностей driver и passenger
         var rides = rideRepository
-                .findByDriverId(driverId,PageRequest.of(pageNumber,size))
+                .findByDriverId(driverId, PageRequest.of(pageNumber,size))
                 .map(rideMapper::toResponse);
         return pageMapper.toResponse(rides);
     }
