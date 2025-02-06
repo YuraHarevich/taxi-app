@@ -9,7 +9,10 @@ import java.time.LocalDateTime;
 @Data
 @Builder
 public class ErrorMessage {
+
     @Schema(description = "Error message", example = "Some error message")
     private String message;
+
     private LocalDateTime timestamp;
+
 }

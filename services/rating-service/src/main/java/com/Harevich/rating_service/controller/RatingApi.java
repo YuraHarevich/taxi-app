@@ -37,17 +37,17 @@ public interface RatingApi {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Ratings successfully found"),
     })
-    public PageableResponse getAllRatingsByDriverId(@RequestParam UUID driverId,
-                                               @RequestParam(defaultValue = "0")@Min(0) int page_number,
-                                               @RequestParam(defaultValue = "10") int size);
+    public PageableResponse<RatingResponse> getAllRatingsByDriverId(@RequestParam UUID driverId,
+                                                                    @RequestParam(defaultValue = "0")@Min(0) int page_number,
+                                                                    @RequestParam(defaultValue = "10") int size);
 
     @Operation(summary = "getting all available ratings by driver")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Ratings successfully found"),
     })
-    public PageableResponse getAllRatingsByPassengerId(@RequestParam UUID passengerId,
-                                               @RequestParam(defaultValue = "0")@Min(0) int page_number,
-                                               @RequestParam(defaultValue = "10") int size);
+    public PageableResponse<RatingResponse> getAllRatingsByPassengerId(@RequestParam UUID passengerId,
+                                                                       @RequestParam(defaultValue = "0")@Min(0) int page_number,
+                                                                       @RequestParam(defaultValue = "10") int size);
 
     @Operation(summary = "getting passenger's rating by id")
     @ApiResponses(value = {

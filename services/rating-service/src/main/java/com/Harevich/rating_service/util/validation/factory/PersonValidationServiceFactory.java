@@ -10,18 +10,18 @@ import org.springframework.stereotype.Component;
 @Component
 @RequiredArgsConstructor
 public class PersonValidationServiceFactory {
+
     private final DriverValidationServiceIml driverValidationServiceIml;
+
     private final PassengerValidationServiceIml passengerValidationServiceIml;
 
     public PersonValidationService getService(VotingPerson whoVotes) {
-        switch (whoVotes){
-            case DRIVER:
-                return driverValidationServiceIml;
-            case PASSENGER:
-                return passengerValidationServiceIml;
-            default:
-                throw new IllegalArgumentException("Invalid VotingPerson type: " + whoVotes);
-                //todo: обработка этого вот
-        }
+        //todo: обработка этого вот
+        return switch (whoVotes) {
+            case DRIVER -> driverValidationServiceIml;
+            case PASSENGER -> passengerValidationServiceIml;
+            default -> throw new IllegalArgumentException("Invalid VotingPerson type: " + whoVotes);
+        };
     }
+
 }

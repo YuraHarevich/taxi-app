@@ -10,9 +10,11 @@ import jakarta.validation.Valid;
 import java.util.UUID;
 
 public interface RatingService {
+
     RatingResponse estimateTheRide(@Valid RatingRequest request);
 
-    PageableResponse getAllRatingsByPersonId(UUID Id, VotingPerson whoVotes, int pageNumber, int size);
+    PageableResponse<RatingResponse> getAllRatingsByPersonId(UUID Id, VotingPerson whoVotes, int pageNumber, int size);
 
     PersonalRatingResponse getPersonTotalRating(UUID passengerId, VotingPerson whoVotes);
+
 }

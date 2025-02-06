@@ -17,6 +17,7 @@ import java.util.UUID;
 @Getter
 @Setter
 public class Rating {
+
     @Id
     private ObjectId id;
 
@@ -34,11 +35,12 @@ public class Rating {
     private UUID votableId;
 
     @Field("appraisal")
-    private byte rating;
+    private int rating;
 
     @Field("whoVotes")
     private VotingPerson whoVotes;
 
     @Field("feedback")
     private String feedback;
+
 }

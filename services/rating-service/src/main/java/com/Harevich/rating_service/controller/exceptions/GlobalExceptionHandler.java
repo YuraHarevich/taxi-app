@@ -12,7 +12,10 @@ import java.time.LocalDateTime;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
-    @ExceptionHandler(MethodArgumentNotValidException.class)
+
+    @ExceptionHandler({
+            MethodArgumentNotValidException.class
+    })
     public ResponseEntity<ErrorMessage> handleValidationExceptions(MethodArgumentNotValidException ex) {
         var error = ex.getBindingResult().getAllErrors().getFirst();
         return ResponseEntity
@@ -22,4 +25,5 @@ public class GlobalExceptionHandler {
                         .timestamp(LocalDateTime.now())
                         .build());
     }
+
 }

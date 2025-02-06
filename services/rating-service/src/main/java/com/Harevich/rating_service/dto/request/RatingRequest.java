@@ -22,7 +22,7 @@ public record RatingRequest(
         @Max(5)
         @Min(1)
         @Schema(description = "rating(stars)", example = "5")
-        byte rating,
+        int rating,
 
         @Schema(description = "voting id",example = "PASSENGER")
         VotingPerson whoVotes,

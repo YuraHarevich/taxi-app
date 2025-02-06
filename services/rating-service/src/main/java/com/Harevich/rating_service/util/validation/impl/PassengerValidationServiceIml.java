@@ -7,8 +7,10 @@ import java.util.UUID;
 
 @Service
 public class PassengerValidationServiceIml implements PersonValidationService {
+
     @Override
     public void checkIfPersonExists(UUID id) {
         //todo: запрос в другой сервис
     }
+
 }

@@ -8,7 +8,9 @@ import org.springframework.data.domain.Pageable;
 import java.util.UUID;
 
 public interface RatingValidationService {
-    PageableResponse findAllRaitingsByPersonId(UUID id, VotingPerson whoVotes, Pageable pageable);
 
-    PageableResponse findLastRaitingsByPersonId(UUID id, VotingPerson whoVotes);
+    PageableResponse<RatingResponse> findAllRaitingsByPersonId(UUID id, VotingPerson whoVotes, Pageable pageable);
+
+    PageableResponse<RatingResponse> findLastRaitingsByPersonId(UUID id, VotingPerson whoVotes);
+
 }

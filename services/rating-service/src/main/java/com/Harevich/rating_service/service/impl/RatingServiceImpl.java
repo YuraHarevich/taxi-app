@@ -21,9 +21,13 @@ import java.util.UUID;
 @Service
 @RequiredArgsConstructor
 public class RatingServiceImpl implements RatingService {
+
     private final RatingRepository ratingRepository;
+
     private final PersonValidationServiceFactory personValidationFactory;
+
     private final RatingValidationService ratingValidationService;
+
     private final RatingMapper ratingMapper;
 
     @Override
@@ -34,10 +38,12 @@ public class RatingServiceImpl implements RatingService {
     }
 
     @Override
-    public PageableResponse getAllRatingsByPersonId(UUID id, VotingPerson whoVotes, int pageNumber, int size) {
+    public PageableResponse<RatingResponse> getAllRatingsByPersonId(UUID id, VotingPerson whoVotes, int pageNumber, int size) {
         PersonValidationService validationService = personValidationFactory.getService(whoVotes);
         validationService.checkIfPersonExists(id);
-        return ratingValidationService.findAllRaitingsByPersonId(id, whoVotes, PageRequest.of(pageNumber,size));
+        PageableResponse<RatingResponse> ratings = ratingValidationService
+                .findAllRaitingsByPersonId(id, whoVotes, PageRequest.of(pageNumber,size));
+        return ratings;
     }
 
     @Override
@@ -45,7 +51,11 @@ public class RatingServiceImpl implements RatingService {
         PersonValidationService validationService = personValidationFactory.getService(whoVotes);
         validationService.checkIfPersonExists(id);
         PageableResponse<RatingResponse> pageableResponse = ratingValidationService.findLastRaitingsByPersonId(id,whoVotes);
-        double average = pageableResponse.content().stream().mapToInt(RatingResponse::rating).average().getAsDouble();
+        Double average = pageableResponse.content().stream()
+                .map(RatingResponse::rating)
+                .mapToDouble(Integer::doubleValue)
+                .average()
+                .orElse(5.0);
         return new PersonalRatingResponse(id,average);
     }
 

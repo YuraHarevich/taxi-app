@@ -14,4 +14,5 @@ public interface RatingRepository extends MongoRepository<Rating, ObjectId> {
     Page<Rating> findByVotableIdAndWhoVotes(UUID votableId, VotingPerson whoVotes, Pageable pageable);
 
     Page<Rating> findByVotableIdAndWhoVotesOrderByRatingTimeDesc(UUID id, VotingPerson whoVotes, Pageable pageable);
+
 }

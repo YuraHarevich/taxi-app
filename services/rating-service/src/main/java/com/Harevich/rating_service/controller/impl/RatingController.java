@@ -18,7 +18,9 @@ import java.util.UUID;
 @RequiredArgsConstructor
 @RequestMapping("api/v1/ratings")
 public class RatingController implements RatingApi {
+
     private final RatingService ratingService;
+
     @PostMapping("estimate")
     @ResponseStatus(HttpStatus.CREATED)
     public RatingResponse estimateTheRide(@Valid @RequestBody RatingRequest request) {
@@ -27,10 +29,10 @@ public class RatingController implements RatingApi {
 
     @GetMapping("driver/all")
     @ResponseStatus(HttpStatus.OK)
-    public PageableResponse getAllRatingsByDriverId(@RequestParam UUID driverId,
-                                                    @RequestParam int page_number,
-                                                    @RequestParam int size) {
-        PageableResponse response = ratingService.getAllRatingsByPersonId(
+    public PageableResponse<RatingResponse> getAllRatingsByDriverId(@RequestParam UUID driverId,
+                                                                    @RequestParam(defaultValue = "0") int page_number,
+                                                                    @RequestParam(defaultValue = "10") int size) {
+        PageableResponse<RatingResponse> response = ratingService.getAllRatingsByPersonId(
                 driverId,
                 VotingPerson.DRIVER,
                 page_number,
@@ -40,10 +42,10 @@ public class RatingController implements RatingApi {
 
     @GetMapping("passenger/all")
     @ResponseStatus(HttpStatus.OK)
-    public PageableResponse getAllRatingsByPassengerId(@RequestParam UUID passengerId,
-                                                       @RequestParam int page_number,
-                                                       @RequestParam int size) {
-        PageableResponse response = ratingService.getAllRatingsByPersonId(
+    public PageableResponse<RatingResponse> getAllRatingsByPassengerId(@RequestParam UUID passengerId,
+                                                                       @RequestParam(defaultValue = "0") int page_number,
+                                                                       @RequestParam(defaultValue = "10") int size) {
+        PageableResponse<RatingResponse> response = ratingService.getAllRatingsByPersonId(
                 passengerId,
                 VotingPerson.PASSENGER,
                 page_number,
@@ -64,4 +66,5 @@ public class RatingController implements RatingApi {
         PersonalRatingResponse response = ratingService.getPersonTotalRating(driverId, VotingPerson.DRIVER);
         return response;
     }
+
 }

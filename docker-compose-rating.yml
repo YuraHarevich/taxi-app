@@ -4,8 +4,7 @@ services:
     image: mongo
     restart: always
     environment:
-      MONGO_INITDB_ROOT_USERNAME: password
-      MONGO_INITDB_ROOT_PASSWORD: password
+      - SPRING_DATA_MONGODB_URI=mongodb://localhost/ratings
     ports:
       - "27017:27017"
     networks:
