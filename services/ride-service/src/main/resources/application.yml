@@ -9,7 +9,7 @@ app:
       base-url: https://api.openrouteservice.org
       directions_relational_url: v2/directions/driving-car
       geocode_relational_url: geocode/search
-      api_key: ${API_KEY}
+      api_key: ${API_KEY:api_key}
       country_iso_code: "BLR"
 server:
   port: 8030
