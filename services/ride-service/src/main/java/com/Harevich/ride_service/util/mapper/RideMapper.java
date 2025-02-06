@@ -12,6 +12,7 @@ import java.time.Duration;
         injectionStrategy = InjectionStrategy.CONSTRUCTOR
 )
 public interface RideMapper {
+
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
     @Mapping(target = "rideTime", source = ".", qualifiedByName = "calculateRideDuration")
     RideResponse toResponse(Ride ride);
@@ -31,4 +32,5 @@ public interface RideMapper {
         }
         return null;
     }
+
 }

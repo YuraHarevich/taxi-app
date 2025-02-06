@@ -26,10 +26,15 @@ import java.util.UUID;
 @Service
 @RequiredArgsConstructor
 public class RideServiceImpl implements RideService {
+
     private final RideRepository rideRepository;
+
     private final RideMapper rideMapper;
+
     private final PriceService priceService;
+
     private final RideDataValidation rideDataValidation;
+
     private final PageMapper pageMapper;
 
     @Override
@@ -102,20 +107,21 @@ public class RideServiceImpl implements RideService {
     }
 
     @Override
-    public PageableResponse<RideResponse> getAllRidesByPassengerId(UUID passenger_id,int pageNumber, int size) {
+    public PageableResponse<RideResponse> getAllRidesByPassengerId(UUID passengerId, int pageNumber, int size) {
         //todo: чек для сущностей driver и passenger
         var rides = rideRepository
-                .findByPassengerId(passenger_id,PageRequest.of(pageNumber,size))
+                .findByPassengerId(passengerId,PageRequest.of(pageNumber,size))
                 .map(rideMapper::toResponse);
         return pageMapper.toResponse(rides);
     }
 
     @Override
-    public PageableResponse<RideResponse> getAllRidesByDriverId(UUID driver_id,int pageNumber, int size) {
+    public PageableResponse<RideResponse> getAllRidesByDriverId(UUID driverId, int pageNumber, int size) {
         //todo: чек для сущностей driver и passenger
         var rides = rideRepository
-                .findByDriverId(driver_id,PageRequest.of(pageNumber,size))
+                .findByDriverId(driverId,PageRequest.of(pageNumber,size))
                 .map(rideMapper::toResponse);
         return pageMapper.toResponse(rides);
     }
+
 }

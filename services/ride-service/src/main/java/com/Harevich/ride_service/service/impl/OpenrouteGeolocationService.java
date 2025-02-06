@@ -1,5 +1,10 @@
 package com.Harevich.ride_service.service.impl;
 
+import static com.Harevich.ride_service.util.constants.RideServiceResponseConstants.OUTSIDER_REST_API_BAD_REQUEST;
+import static com.Harevich.ride_service.util.constants.RideServiceResponseConstants.OUTSIDER_REST_API_BAD_UNAVAILABLE;
+import static com.Harevich.ride_service.util.constants.RideServiceResponseConstants.ADDRESS_NOT_FOUND;
+import static com.Harevich.ride_service.util.constants.TariffMultiplyConstants.ACCURACY_OF_DISTANCE;
+
 import com.Harevich.ride_service.client.GeolocationClient;
 import com.Harevich.ride_service.dto.Coordinates;
 import com.Harevich.ride_service.exception.AddressNotFoundException;
@@ -7,7 +12,6 @@ import com.Harevich.ride_service.exception.GeolocationServiceBadRequestException
 import com.Harevich.ride_service.exception.GeolocationServiceUnavailableException;
 import com.Harevich.ride_service.service.GeolocationService;
 import com.Harevich.ride_service.util.config.GeolocationParams;
-import com.Harevich.ride_service.util.constants.RideServiceResponseConstants;
 import feign.FeignException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -17,7 +21,9 @@ import java.util.Map;
 @Service
 @RequiredArgsConstructor
 public class OpenrouteGeolocationService implements GeolocationService {
+
     private final GeolocationParams geolocationParams;
+
     private final GeolocationClient geolocationClient;
 
     @Override
@@ -32,14 +38,13 @@ public class OpenrouteGeolocationService implements GeolocationService {
                     fromCordsString,
                     toCordsString);
             distance = getDistanseInKilometersByOpenrouteServiceResponse(response);
-        }catch (FeignException.BadRequest e) {
-            throw new GeolocationServiceBadRequestException(RideServiceResponseConstants.OUTSIDER_REST_API_BAD_REQUEST);
-        }catch (FeignException e) {
-            throw new GeolocationServiceUnavailableException(RideServiceResponseConstants.OUTSIDER_REST_API_BAD_UNAVAILABLE);
+        } catch (FeignException.BadRequest e) {
+            throw new GeolocationServiceBadRequestException(OUTSIDER_REST_API_BAD_REQUEST);
+        } catch (FeignException e) {
+            throw new GeolocationServiceUnavailableException(OUTSIDER_REST_API_BAD_UNAVAILABLE);
         }
         return distance;
     }
-
 
     public Coordinates getCoordinatesByAddress(String address) {
         String relationalPath = geolocationParams.getGeocodeRelationalUrl();
@@ -57,7 +62,7 @@ public class OpenrouteGeolocationService implements GeolocationService {
     private Coordinates getCoordinatesByOpenrouteServiceResponse(Map<String,Object> response, String address){
         List<Map<String, Object>> features = (List<Map<String, Object>>)response.get("features");
         if(features.isEmpty())
-            throw new AddressNotFoundException(RideServiceResponseConstants.ADDRESS_NOT_FOUND.formatted(address));
+            throw new AddressNotFoundException(ADDRESS_NOT_FOUND.formatted(address));
         Map<String, Object> geometry = (Map<String, Object>)features.get(0).get("geometry");
         List<Double> coordinates = (List<Double>)geometry.get("coordinates");
         return new Coordinates(
@@ -72,6 +77,7 @@ public class OpenrouteGeolocationService implements GeolocationService {
         Map<String, Object> summary = (Map<String, Object>)properties.get("summary");
         double distance = (double)summary.get("distance");
         double distanceInKilometers = distance/1000;
-        return Math.round(distanceInKilometers * 100.0)/100.0;
+        return Math.round(distanceInKilometers * ACCURACY_OF_DISTANCE)/ACCURACY_OF_DISTANCE;
     }
+
 }

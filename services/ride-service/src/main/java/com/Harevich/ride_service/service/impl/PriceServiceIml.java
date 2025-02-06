@@ -1,9 +1,17 @@
 package com.Harevich.ride_service.service.impl;
 
+import static com.Harevich.ride_service.util.constants.TariffMultiplyConstants.END_OF_HOUR_MULTIPLY_CONSTANT;
+import static com.Harevich.ride_service.util.constants.TariffMultiplyConstants.EVENING_MULTIPLY_CONSTANT;
+import static com.Harevich.ride_service.util.constants.TariffMultiplyConstants.MORNING_MULTIPLY_CONSTANT;
+import static com.Harevich.ride_service.util.constants.TimeTariffConstantValues.EVENING_PEAK_END;
+import static com.Harevich.ride_service.util.constants.TimeTariffConstantValues.EVENING_PEAK_START;
+import static com.Harevich.ride_service.util.constants.TimeTariffConstantValues.MINUTES_IN_HOUR_WITHOUT_INCREASED_TARIFF;
+import static com.Harevich.ride_service.util.constants.TimeTariffConstantValues.MORNING_PEAK_END;
+import static com.Harevich.ride_service.util.constants.TimeTariffConstantValues.MORNING_PEAK_START;
+import static com.Harevich.ride_service.util.constants.TimeTariffConstantValues.TARIFF_PER_KM;
+
 import com.Harevich.ride_service.service.GeolocationService;
 import com.Harevich.ride_service.service.PriceService;
-import com.Harevich.ride_service.util.constants.TariffMultiplyConstants;
-import com.Harevich.ride_service.util.constants.TimeTariffConstantValues;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -15,12 +23,13 @@ import java.time.LocalTime;
 @Service
 @RequiredArgsConstructor
 public class PriceServiceIml implements PriceService {
+
     private final GeolocationService geolocationService;
 
     @Override
     public BigDecimal getPriceByTwoAddresses(String from, String to, LocalDateTime currentTime) {
         double distance = geolocationService.getRouteDistanceByTwoAddresses(from,to);
-        BigDecimal price = BigDecimal.valueOf(distance);
+        BigDecimal price = BigDecimal.valueOf(distance*TARIFF_PER_KM);
         //не знаю, вроде криво, но иначе будет еще более криво
         BigDecimal finalPrice =
                 increaseTariffByMorningPeak(currentTime,
@@ -31,23 +40,26 @@ public class PriceServiceIml implements PriceService {
 
     private BigDecimal increaseTariffByMorningPeak(LocalDateTime currentTime, BigDecimal price){
         LocalTime orderTime = currentTime.toLocalTime();
-        if (orderTime.isAfter(TimeTariffConstantValues.MORNING_PEAK_START) && orderTime.isBefore(TimeTariffConstantValues.MORNING_PEAK_END))
-            price.multiply(BigDecimal.valueOf(TariffMultiplyConstants.MORNING_MULTIPLY_CONSTANT));
+        if (orderTime.isAfter(MORNING_PEAK_START) && orderTime.isBefore(MORNING_PEAK_END))
+            price.multiply(BigDecimal.valueOf(MORNING_MULTIPLY_CONSTANT));
         return price;
     }
+
     private BigDecimal increaseTariffByEveningPeak(LocalDateTime currentTime, BigDecimal price){
         LocalTime orderTime = currentTime.toLocalTime();
-        if (orderTime.isAfter(TimeTariffConstantValues.EVENING_PEAK_START) && orderTime.isBefore(TimeTariffConstantValues.EVENING_PEAK_END))
-            price.multiply(BigDecimal.valueOf(TariffMultiplyConstants.EVENING_MULTIPLY_CONSTANT));
+        if (orderTime.isAfter(EVENING_PEAK_START) && orderTime.isBefore(EVENING_PEAK_END))
+            price.multiply(BigDecimal.valueOf(EVENING_MULTIPLY_CONSTANT));
         return price;
     }
+
     private BigDecimal increaseTariffByTheEndOfHour(LocalDateTime currentTime, BigDecimal price){
         LocalTime orderTime = currentTime.toLocalTime();
         int minute = orderTime.getMinute();
-        if (minute >= TimeTariffConstantValues.MINUTES_IN_HOUR_WITHOUT_INCREASED_TARIFF) {
-            price = price.multiply(BigDecimal.valueOf(TariffMultiplyConstants.END_OF_HOUR_MULTIPLY_CONSTANT));
+        if (minute >= MINUTES_IN_HOUR_WITHOUT_INCREASED_TARIFF) {
+            price = price.multiply(BigDecimal.valueOf(END_OF_HOUR_MULTIPLY_CONSTANT));
             price = price.setScale(2, RoundingMode.HALF_UP);
         }
         return price;
     }
+
 }

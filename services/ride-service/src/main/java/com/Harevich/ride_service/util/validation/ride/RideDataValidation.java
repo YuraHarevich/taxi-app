@@ -7,5 +7,7 @@ import java.util.UUID;
 
 
 public interface RideDataValidation {
+
     Ride findIfExistsByRideId(UUID id);
+
 }

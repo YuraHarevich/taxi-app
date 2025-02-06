@@ -6,6 +6,7 @@ import com.Harevich.ride_service.dto.request.RideRequest;
 import com.Harevich.ride_service.dto.response.RideResponse;
 import com.Harevich.ride_service.service.RideService;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.Min;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -21,9 +22,9 @@ public class RideController implements RideApi {
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public RideResponse createRide(@Valid @RequestBody RideRequest request,
-                                   @RequestParam("passenger_id") UUID passenger_id,
-                                   @RequestParam("driver_id") UUID driver_id) {
-        RideResponse rideResponse = rideService.createRide(request,passenger_id,driver_id);
+                                   @RequestParam("passenger_id") UUID passengerId,
+                                   @RequestParam("driver_id") UUID driverId) {
+        RideResponse rideResponse = rideService.createRide(request,passengerId,driverId);
         return rideResponse;
     }
 
@@ -51,7 +52,8 @@ public class RideController implements RideApi {
 
     @GetMapping("all")
     @ResponseStatus(HttpStatus.OK)
-    public PageableResponse<RideResponse> getAllRides(int pageNumber, int size) {
+    public PageableResponse<RideResponse> getAllRides(@RequestParam(defaultValue = "0") @Min(0) int pageNumber,
+                                                      @RequestParam(defaultValue = "10") int size) {
         PageableResponse<RideResponse> rideResponse = rideService
                 .getAllRides(pageNumber,size);
         return rideResponse;
@@ -59,7 +61,9 @@ public class RideController implements RideApi {
 
     @GetMapping("all/passenger")
     @ResponseStatus(HttpStatus.OK)
-    public PageableResponse<RideResponse> getAllRidesByPassengerId(@RequestParam("passenger_id") UUID passenger_id,int pageNumber, int size) {
+    public PageableResponse<RideResponse> getAllRidesByPassengerId(@RequestParam("passenger_id") UUID passenger_id,
+                                                                   @RequestParam(defaultValue = "0") @Min(0) int pageNumber,
+                                                                   @RequestParam(defaultValue = "10") int size) {
         PageableResponse<RideResponse> rideResponse = rideService
                 .getAllRidesByPassengerId(passenger_id,pageNumber,size);
         return rideResponse;
@@ -67,7 +71,9 @@ public class RideController implements RideApi {
 
     @GetMapping("all/driver")
     @ResponseStatus(HttpStatus.OK)
-    public PageableResponse<RideResponse> getAllRidesByDriverId(@RequestParam("driver_id") UUID driver_id,int pageNumber, int size) {
+    public PageableResponse<RideResponse> getAllRidesByDriverId(@RequestParam("driver_id") UUID driver_id,
+                                                                @RequestParam(defaultValue = "0") @Min(0) int pageNumber,
+                                                                @RequestParam(defaultValue = "10") int size) {
         PageableResponse<RideResponse> rideResponse = rideService
                 .getAllRidesByDriverId(driver_id,pageNumber,size);
         return rideResponse;

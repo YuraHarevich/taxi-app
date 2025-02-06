@@ -11,7 +11,9 @@ import java.lang.annotation.*;
 @Target({ElementType.METHOD, ElementType.FIELD, ElementType.PARAMETER})
 @Retention(RetentionPolicy.RUNTIME)
 public @interface RideStatusValid {
+
     String message() default RideServiceResponseConstants.RIDE_STATUS_IS_ABSENT;
     Class<?>[] groups() default {};
     Class<? extends Payload>[] payload() default {};
+
 }

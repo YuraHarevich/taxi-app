@@ -8,9 +8,10 @@ import jakarta.validation.Valid;
 import java.util.UUID;
 
 public interface RideService {
-    RideResponse createRide(@Valid RideRequest request, UUID passengerId, UUID driverId);
 
-    RideResponse updateRide(@Valid RideRequest request, UUID id);
+    RideResponse createRide(RideRequest request, UUID passengerId, UUID driverId);
+
+    RideResponse updateRide(RideRequest request, UUID id);
 
     RideResponse changeRideStatus(UUID id);
 
@@ -21,4 +22,5 @@ public interface RideService {
     PageableResponse<RideResponse> getAllRidesByPassengerId(UUID passenger_id,int pageNumber, int size);
 
     PageableResponse<RideResponse> getAllRidesByDriverId(UUID driver_id,int pageNumber, int size);
+
 }

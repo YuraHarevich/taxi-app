@@ -1,8 +1,11 @@
 package com.Harevich.ride_service.dto;
 
 public record Coordinates(
+
         Double longitude,
-        Double latitude)
+
+        Double latitude
+)
 {
     @Override
     public String toString() {

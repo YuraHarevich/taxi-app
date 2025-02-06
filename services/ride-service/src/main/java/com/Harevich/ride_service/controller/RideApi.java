@@ -21,6 +21,7 @@ import java.util.UUID;
 @Tag(name = "Ride api",
         description = "This controller is made to book rides")
 public interface RideApi {
+
     @Operation(summary = "creating ride")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "Ride successfully created"),
@@ -45,8 +46,8 @@ public interface RideApi {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "202", description = "The ride status successfully changed")
     })
-
     public RideResponse changeRideStatus(@RequestParam("id") UUID id);
+
     @Operation(summary = "getting ride by id")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Ride successfully found"),
@@ -84,4 +85,5 @@ public interface RideApi {
     public PageableResponse<RideResponse> getAllRidesByDriverId(@RequestParam("id") UUID driver_id,
                                                                 @RequestParam(defaultValue = "0") @Min(0) int page_number,
                                                                 @RequestParam(defaultValue = "10") int size);
+
 }

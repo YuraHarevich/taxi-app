@@ -13,10 +13,13 @@ import java.util.UUID;
 @Service
 @RequiredArgsConstructor
 public class RideDataValidationService implements RideDataValidation {
+
     private final RideRepository rideRepository;
+
     @Override
     public Ride findIfExistsByRideId(UUID id) {
         return rideRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException(RideServiceResponseConstants.RIDE_NOT_FOUND));
     }
+
 }

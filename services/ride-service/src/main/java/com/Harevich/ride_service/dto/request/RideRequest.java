@@ -5,6 +5,7 @@ import jakarta.validation.constraints.NotBlank;
 
 
 public record RideRequest (
+
     @NotBlank(message = "start point is mandatory")
     @Schema(description = "Ride start address", example = "Мендзялеева 13")
     String from,
@@ -12,5 +13,6 @@ public record RideRequest (
     @NotBlank(message = "finish point is mandatory")
     @Schema(description = "Ride finish address", example = "Таёжная 19")
     String to
+
 ){
 }

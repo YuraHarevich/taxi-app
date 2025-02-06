@@ -7,6 +7,7 @@ import jakarta.validation.ConstraintValidatorContext;
 import java.util.Arrays;
 
 public class RideValidation implements ConstraintValidator<RideStatusValid, String> {
+
     @Override
     public boolean isValid(String value, ConstraintValidatorContext context) {
 

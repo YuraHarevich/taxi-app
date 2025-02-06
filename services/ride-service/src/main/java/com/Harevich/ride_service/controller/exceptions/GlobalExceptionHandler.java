@@ -26,7 +26,9 @@ public class GlobalExceptionHandler {
                         .build());
     }
 
-    @ExceptionHandler(MethodArgumentNotValidException.class)
+    @ExceptionHandler({
+            MethodArgumentNotValidException.class
+    })
     public ResponseEntity<ErrorMessage> handleValidationExceptions(MethodArgumentNotValidException ex) {
         var error = ex.getBindingResult().getAllErrors().getFirst();
         return ResponseEntity
@@ -37,7 +39,10 @@ public class GlobalExceptionHandler {
                         .build());
     }
 
-    @ExceptionHandler(RideStatusConvertionException.class)
+    @ExceptionHandler({
+            RideStatusConvertionException.class,
+            CannotChangeRideStatusException.class
+    })
     public ResponseEntity<ErrorMessage> handleValidationExceptions(RideStatusConvertionException ex) {
         return ResponseEntity
                 .status(HttpStatus.CONFLICT)
@@ -46,7 +51,12 @@ public class GlobalExceptionHandler {
                         .timestamp(LocalDateTime.now())
                         .build());
     }
-    @ExceptionHandler(ConstraintViolationException.class)
+
+    @ExceptionHandler({
+            ConstraintViolationException.class,
+            AddressNotFoundException.class,
+            GeolocationServiceBadRequestException.class
+    })
     public ResponseEntity<ErrorMessage> handleConstraintViolationExceptions(ConstraintViolationException ex) {
         return ResponseEntity
                 .status(HttpStatus.BAD_REQUEST)
@@ -55,34 +65,10 @@ public class GlobalExceptionHandler {
                         .timestamp(LocalDateTime.now())
                         .build());
     }
-    @ExceptionHandler(CannotChangeRideStatusException.class)
-    public ResponseEntity<ErrorMessage> handleValidationExceptions(CannotChangeRideStatusException ex) {
-        return ResponseEntity
-                .status(HttpStatus.CONFLICT)
-                .body(ErrorMessage.builder()
-                        .message(ex.getMessage())
-                        .timestamp(LocalDateTime.now())
-                        .build());
-    }
-    @ExceptionHandler(AddressNotFoundException.class)
-    public ResponseEntity<ErrorMessage> handleConstraintViolationExceptions(AddressNotFoundException ex) {
-        return ResponseEntity
-                .status(HttpStatus.BAD_REQUEST)
-                .body(ErrorMessage.builder()
-                        .message(ex.getMessage())
-                        .timestamp(LocalDateTime.now())
-                        .build());
-    }
-    @ExceptionHandler(GeolocationServiceBadRequestException.class)
-    public ResponseEntity<ErrorMessage> handleConstraintViolationExceptions(GeolocationServiceBadRequestException ex) {
-        return ResponseEntity
-                .status(HttpStatus.BAD_REQUEST)
-                .body(ErrorMessage.builder()
-                        .message(ex.getMessage())
-                        .timestamp(LocalDateTime.now())
-                        .build());
-    }
-    @ExceptionHandler(GeolocationServiceUnavailableException.class)
+
+    @ExceptionHandler({
+            GeolocationServiceUnavailableException.class
+    })
     public ResponseEntity<ErrorMessage> handleConstraintViolationExceptions(GeolocationServiceUnavailableException ex) {
         return ResponseEntity
                 .status(HttpStatus.SERVICE_UNAVAILABLE)
@@ -91,6 +77,5 @@ public class GlobalExceptionHandler {
                         .timestamp(LocalDateTime.now())
                         .build());
     }
-
 
 }

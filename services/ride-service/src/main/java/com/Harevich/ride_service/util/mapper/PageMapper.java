@@ -11,6 +11,7 @@ import org.springframework.data.domain.Page;
         injectionStrategy = InjectionStrategy.CONSTRUCTOR
 )
 public interface PageMapper{
+
     default <T> PageableResponse<T> toResponse(Page<T> page){
         return new PageableResponse(
                 page.getTotalElements(),
@@ -21,4 +22,5 @@ public interface PageMapper{
         );
 
     }
+
 }

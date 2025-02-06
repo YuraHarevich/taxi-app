@@ -10,10 +10,10 @@ import java.util.Optional;
 @Getter
 public enum RideStatus {
     CREATED(0),
-    ACCEPTED(1),
-    DECLINED(2),
-    ON_THE_WAY(3),
-    FINISHED(4);
+    ACCEPTED(100),
+    DECLINED(200),
+    ON_THE_WAY(300),
+    FINISHED(400);
 
     private final int rideCode;
 
