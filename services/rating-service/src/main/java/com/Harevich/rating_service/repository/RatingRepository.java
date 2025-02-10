@@ -17,4 +17,5 @@ public interface RatingRepository extends MongoRepository<Rating, ObjectId> {
     Page<Rating> findByRatedIdAndWhoIsRatedOrderByRatingTimeDesc(UUID ratedId, RatingPerson whoIsRated, Pageable pageable);
 
     Optional<Rating> findByRideIdAndWhoIsRated(UUID rideId, RatingPerson whoIsRated);
+
 }

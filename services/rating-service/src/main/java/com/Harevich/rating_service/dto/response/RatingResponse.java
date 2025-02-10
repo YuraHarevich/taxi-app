@@ -2,7 +2,7 @@ package com.Harevich.rating_service.dto.response;
 
 import java.util.UUID;
 
-public record RatingResponse(
+public record RatingResponse (
 
         UUID rideId,
 

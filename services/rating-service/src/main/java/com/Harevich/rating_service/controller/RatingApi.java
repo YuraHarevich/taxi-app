@@ -21,6 +21,7 @@ import java.util.UUID;
 @Tag(name = "RatingApi api",
         description = "This controller is made to rate rides")
 public interface RatingApi {
+
     @Operation(summary = "estimating the ride")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "Ride successfully estimated"),
@@ -66,4 +67,5 @@ public interface RatingApi {
                             schema = @Schema(implementation = ErrorMessage.class))),
     })
     public PersonalRatingResponse getDriverRating(@Valid @RequestParam UUID driverId);
+
 }
