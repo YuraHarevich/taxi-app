@@ -33,7 +33,7 @@ public interface RatingApi {
     })
     public RatingResponse estimateTheRide(@Valid @RequestBody RatingRequest request);
 
-    @Operation(summary = "getting all available ratings by passenger")
+    @Operation(summary = "getting all available ratings by driver")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Ratings successfully found"),
     })
@@ -41,7 +41,7 @@ public interface RatingApi {
                                                                     @RequestParam(defaultValue = "0")@Min(0) int page_number,
                                                                     @RequestParam(defaultValue = "10") int size);
 
-    @Operation(summary = "getting all available ratings by driver")
+    @Operation(summary = "getting all available ratings by passenger")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Ratings successfully found"),
     })

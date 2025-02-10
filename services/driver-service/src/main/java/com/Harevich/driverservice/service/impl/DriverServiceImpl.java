@@ -14,6 +14,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Objects;
 import java.util.UUID;
 
 @Service
@@ -59,7 +60,8 @@ public class DriverServiceImpl implements DriverService {
         Driver driver = driverValidation.findIfExistsById(id);
         driverValidation.isDeleted(id);
         driver.setDeleted(true);
-        driver.getCar().setDriver(null);
+        if(!Objects.equals(driver.getCar(),null))
+            driver.getCar().setDriver(null);
         driverRepository.save(driver);
     }
 

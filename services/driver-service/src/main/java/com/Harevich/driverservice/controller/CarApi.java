@@ -68,7 +68,7 @@ public interface CarApi {
     })
     public CarResponse getCarByNumber(@RequestParam("number") @Pattern(regexp = RegularExpressionConstants.CAR_NUMBER_REGEX) String number);
 
-    @Operation(summary = "getting car by id")
+    @Operation(summary = "deleting car by id")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Car successfully deleted"),
             @ApiResponse(responseCode = "404", description = "Car not found",
