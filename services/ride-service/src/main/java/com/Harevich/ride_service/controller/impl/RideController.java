@@ -56,7 +56,7 @@ public class RideController implements RideApi {
     public PageableResponse<RideResponse> getAllRides(@RequestParam(defaultValue = "0") @Min(0) int pageNumber,
                                                       @RequestParam(defaultValue = "10") int size) {
         PageableResponse<RideResponse> rideResponse = rideService
-                .getAllRides(pageNumber, size);
+                .getAllRides(pageNumber, size>50?50:size);
         return rideResponse;
     }
 
@@ -66,7 +66,7 @@ public class RideController implements RideApi {
                                                                    @RequestParam(defaultValue = "0") @Min(0) int pageNumber,
                                                                    @RequestParam(defaultValue = "10") int size) {
         PageableResponse<RideResponse> rideResponse = rideService
-                .getAllRidesByPassengerId(passengerId, pageNumber, size);
+                .getAllRidesByPassengerId(passengerId, pageNumber, size>50?50:size);
         return rideResponse;
     }
 
@@ -76,7 +76,7 @@ public class RideController implements RideApi {
                                                                 @RequestParam(defaultValue = "0") @Min(0) int pageNumber,
                                                                 @RequestParam(defaultValue = "10") int size) {
         PageableResponse<RideResponse> rideResponse = rideService
-                .getAllRidesByDriverId(driverId, pageNumber, size);
+                .getAllRidesByDriverId(driverId, pageNumber, size>50?50:size);
         return rideResponse;
     }
 

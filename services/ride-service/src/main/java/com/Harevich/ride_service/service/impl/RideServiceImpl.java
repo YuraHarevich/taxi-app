@@ -40,6 +40,9 @@ public class RideServiceImpl implements RideService {
     @Override
     public RideResponse createRide(RideRequest request, UUID passengerId, UUID driverId) {
         //todo: чек для сущностей driver и passenger
+
+        rideDataValidation.findIfDriverIsNotBusy(driverId);
+
         Ride ride = rideMapper.toRide(request);
             ride.setCreatedAt(LocalDateTime.now());
             ride.setPrice(priceService.getPriceByTwoAddresses(
@@ -57,8 +60,13 @@ public class RideServiceImpl implements RideService {
     @Override
     @Transactional
     public RideResponse updateRide(RideRequest request, UUID id) {
-        Ride ride = rideDataValidation.findIfExistsByRideId(id);
+        Ride ride = rideDataValidation.findIfExistsByRideIdAndStatusIsCreated(id);
         rideMapper.updateRideByRequest(request,ride);
+
+        ride.setPrice(priceService.getPriceByTwoAddresses(
+                ride.getFrom(),
+                ride.getTo(),
+                LocalDateTime.now()));
 
         rideRepository.saveAndFlush(ride);
         return rideMapper.toResponse(ride);
@@ -110,7 +118,7 @@ public class RideServiceImpl implements RideService {
     public PageableResponse<RideResponse> getAllRidesByPassengerId(UUID passengerId, int pageNumber, int size) {
         //todo: чек для сущностей driver и passenger
         var rides = rideRepository
-                .findByPassengerId(passengerId,PageRequest.of(pageNumber,size))
+                .findByPassengerIdOrderByCreatedAtDesc(passengerId,PageRequest.of(pageNumber,size))
                 .map(rideMapper::toResponse);
         return pageMapper.toResponse(rides);
     }
@@ -119,7 +127,7 @@ public class RideServiceImpl implements RideService {
     public PageableResponse<RideResponse> getAllRidesByDriverId(UUID driverId, int pageNumber, int size) {
         //todo: чек для сущностей driver и passenger
         var rides = rideRepository
-                .findByDriverId(driverId, PageRequest.of(pageNumber,size))
+                .findByDriverIdOrderByCreatedAtDesc(driverId, PageRequest.of(pageNumber,size))
                 .map(rideMapper::toResponse);
         return pageMapper.toResponse(rides);
     }

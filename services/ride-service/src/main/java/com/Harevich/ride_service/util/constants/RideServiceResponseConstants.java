@@ -20,4 +20,6 @@ public final class RideServiceResponseConstants {
 
     public static final String OUTSIDER_REST_API_BAD_UNAVAILABLE = "Geolocational api that we use to calculate price is unavailable";
 
+    public static final String UPDATE_NOT_ALLOWED = "You cant update ride when status is different from created";
+    public static final String DRIVER_IS_BUSY = "Now this driver is busy";
 }
