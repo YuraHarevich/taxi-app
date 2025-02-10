@@ -43,7 +43,7 @@ public class Car {
 
     @OneToOne(cascade = {CascadeType.MERGE, CascadeType.PERSIST})
     @JoinTable(
-            name = "driver_car",
+            name = "driver_car_merge",
             joinColumns = @JoinColumn(name = "car_id"),
             inverseJoinColumns = @JoinColumn(name = "driver_id")
     )
