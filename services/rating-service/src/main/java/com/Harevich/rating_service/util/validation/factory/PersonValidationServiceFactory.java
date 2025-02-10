@@ -1,6 +1,6 @@
 package com.Harevich.rating_service.util.validation.factory;
 
-import com.Harevich.rating_service.model.enumerations.VotingPerson;
+import com.Harevich.rating_service.model.enumerations.RatingPerson;
 import com.Harevich.rating_service.util.validation.PersonValidationService;
 import com.Harevich.rating_service.util.validation.impl.DriverValidationServiceIml;
 import com.Harevich.rating_service.util.validation.impl.PassengerValidationServiceIml;
@@ -15,12 +15,12 @@ public class PersonValidationServiceFactory {
 
     private final PassengerValidationServiceIml passengerValidationServiceIml;
 
-    public PersonValidationService getService(VotingPerson whoVotes) {
+    public PersonValidationService getService(RatingPerson whoIsRated) {
         //todo: обработка этого вот
-        return switch (whoVotes) {
+        return switch (whoIsRated) {
             case DRIVER -> driverValidationServiceIml;
             case PASSENGER -> passengerValidationServiceIml;
-            default -> throw new IllegalArgumentException("Invalid VotingPerson type: " + whoVotes);
+            default -> throw new IllegalArgumentException("Invalid rating person type: " + whoIsRated);
         };
     }
 

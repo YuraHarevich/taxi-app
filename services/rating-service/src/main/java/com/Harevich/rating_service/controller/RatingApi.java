@@ -37,7 +37,7 @@ public interface RatingApi {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Ratings successfully found"),
     })
-    public PageableResponse<RatingResponse> getAllRatingsByDriverId(@RequestParam UUID driverId,
+    public PageableResponse<RatingResponse> getAllRatingsByDriverId(@Valid @RequestParam UUID driverId,
                                                                     @RequestParam(defaultValue = "0")@Min(0) int page_number,
                                                                     @RequestParam(defaultValue = "10") int size);
 
@@ -45,7 +45,7 @@ public interface RatingApi {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Ratings successfully found"),
     })
-    public PageableResponse<RatingResponse> getAllRatingsByPassengerId(@RequestParam UUID passengerId,
+    public PageableResponse<RatingResponse> getAllRatingsByPassengerId(@Valid @RequestParam UUID passengerId,
                                                                        @RequestParam(defaultValue = "0")@Min(0) int page_number,
                                                                        @RequestParam(defaultValue = "10") int size);
 
@@ -56,7 +56,7 @@ public interface RatingApi {
                     content = @Content(mediaType = "application/json",
                             schema = @Schema(implementation = ErrorMessage.class))),
     })
-    public PersonalRatingResponse getPassengerRating(@RequestParam UUID passengerId);
+    public PersonalRatingResponse getPassengerRating(@Valid @RequestParam UUID passengerId);
 
     @Operation(summary = "getting driver's rating by id")
     @ApiResponses(value = {
@@ -65,5 +65,5 @@ public interface RatingApi {
                     content = @Content(mediaType = "application/json",
                             schema = @Schema(implementation = ErrorMessage.class))),
     })
-    public PersonalRatingResponse getDriverRating(@RequestParam UUID driverId);
+    public PersonalRatingResponse getDriverRating(@Valid @RequestParam UUID driverId);
 }

@@ -2,10 +2,11 @@ package com.Harevich.rating_service.util.validation.impl;
 
 import com.Harevich.rating_service.dto.response.PageableResponse;
 import com.Harevich.rating_service.dto.response.RatingResponse;
-import com.Harevich.rating_service.model.Rating;
-import com.Harevich.rating_service.model.enumerations.VotingPerson;
+import com.Harevich.rating_service.exception.RideAlreadyEstimatedException;
+import com.Harevich.rating_service.model.enumerations.RatingPerson;
 import com.Harevich.rating_service.repository.RatingRepository;
 import com.Harevich.rating_service.util.config.RatingParametersConsumer;
+import com.Harevich.rating_service.util.constants.RideServiceConstantResponses;
 import com.Harevich.rating_service.util.mapper.PageMapper;
 import com.Harevich.rating_service.util.mapper.RatingMapper;
 import com.Harevich.rating_service.util.validation.RatingValidationService;
@@ -30,22 +31,32 @@ public class RatingValidationServiceImpl implements RatingValidationService {
     private final RatingParametersConsumer ratingParametersConsumer;
 
     @Override
-    public PageableResponse<RatingResponse>  findAllRaitingsByPersonId(UUID id, VotingPerson whoVotes, Pageable pageable) {
+    public PageableResponse<RatingResponse> findAllRatingsByPersonId(UUID id, RatingPerson whoIsRated, Pageable pageable) {
         Page<RatingResponse> page = ratingRepository
-                .findByVotableIdAndWhoVotes(id,whoVotes,pageable)
+                .findByRatedIdAndWhoIsRated(
+                        id,
+                        whoIsRated,
+                        pageable)
                 .map(ratingMapper::toResponse);
         return pageMapper.toResponse(page);
     }
 
     @Override
-    public PageableResponse<RatingResponse>  findLastRaitingsByPersonId(UUID id, VotingPerson whoVotes) {
+    public PageableResponse<RatingResponse>  findLastRatingsByPersonId(UUID id, RatingPerson whoIsRated) {
         Page<RatingResponse> page = ratingRepository
-                .findByVotableIdAndWhoVotesOrderByRatingTimeDesc(
+                .findByRatedIdAndWhoIsRatedOrderByRatingTimeDesc(
                         id,
-                        whoVotes,
+                        whoIsRated,
                         PageRequest.of(0,ratingParametersConsumer.getNumberOfRidesToEvaluateRating()))
                 .map(ratingMapper::toResponse);
         return pageMapper.toResponse(page);
+    }
+
+    @Override
+    public void checkIfRideIsAlreadyEstimated(UUID rideId, RatingPerson whoIsRated) {
+        if(ratingRepository.findByRideIdAndWhoIsRated(rideId,whoIsRated).isPresent())
+                throw new RideAlreadyEstimatedException(
+                        RideServiceConstantResponses.RIDE_IS_ALREADY_ESTIMATED.formatted(rideId,whoIsRated));
     }
 
 }

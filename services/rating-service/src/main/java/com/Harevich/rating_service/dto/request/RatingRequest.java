@@ -1,10 +1,9 @@
 package com.Harevich.rating_service.dto.request;
 
-import com.Harevich.rating_service.model.enumerations.VotingPerson;
+import com.Harevich.rating_service.model.enumerations.RatingPerson;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
-import jakarta.validation.constraints.NotBlank;
 
 import java.util.UUID;
 
@@ -13,21 +12,21 @@ public record RatingRequest(
         @Schema(description = "Ride id")
         UUID rideId,
 
-        @Schema(description = "voting id")
-        UUID votingId,
+        @Schema(description = "rated by id")
+        UUID ratedById,
 
-        @Schema(description = "votable id")
-        UUID votableId,
+        @Schema(description = "rated id")
+        UUID ratedId,
 
         @Max(5)
         @Min(1)
         @Schema(description = "rating(stars)", example = "5")
         int rating,
 
-        @Schema(description = "voting id",example = "PASSENGER")
-        VotingPerson whoVotes,
+        @Schema(description = "who rates",example = "PASSENGER")
+        RatingPerson whoIsRated,
 
-        @Schema(description = "feedback about the ride", example = "Ну типо в целом норм но тот факт, что он не дал папарить это конечно кринж")
+        @Schema(description = "feedback about the ride", example = "в целом норм")
         String feedback
 
 ) {

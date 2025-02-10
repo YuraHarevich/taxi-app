@@ -1,6 +1,6 @@
 package com.Harevich.rating_service.model;
 
-import com.Harevich.rating_service.model.enumerations.VotingPerson;
+import com.Harevich.rating_service.model.enumerations.RatingPerson;
 import lombok.Getter;
 import lombok.Setter;
 import org.bson.types.ObjectId;
@@ -28,17 +28,17 @@ public class Rating {
     @CreatedDate
     private LocalDateTime ratingTime;
 
-    @Field("votingId")
-    private UUID votingId;
+    @Field("rated_by_id")
+    private UUID ratedById;
 
-    @Field("votableId")
-    private UUID votableId;
+    @Field("rated_id")
+    private UUID ratedId;
 
-    @Field("appraisal")
+    @Field("rating")
     private int rating;
 
-    @Field("whoVotes")
-    private VotingPerson whoVotes;
+    @Field("whoIsRated")
+    private RatingPerson whoIsRated;
 
     @Field("feedback")
     private String feedback;
