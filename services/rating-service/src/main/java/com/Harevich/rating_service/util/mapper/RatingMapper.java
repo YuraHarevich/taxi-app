@@ -8,7 +8,7 @@ import org.mapstruct.*;
 
 import java.util.Locale;
 
-@Mapper(componentModel = "spring",
+@Mapper(componentModel = MappingConstants.ComponentModel.SPRING,
         injectionStrategy = InjectionStrategy.CONSTRUCTOR)
 public interface RatingMapper {
 

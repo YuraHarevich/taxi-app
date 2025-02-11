@@ -11,6 +11,7 @@ public record PageableResponse<T> (
         int currentPage,
 
         int pageSize,
+        
         List<T> content
 
 ) {

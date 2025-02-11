@@ -14,4 +14,5 @@ public interface RatingValidationService {
     PageableResponse<RatingResponse> findLastRatingsByPersonId(UUID id, RatingPerson whoIsRated);
 
     void checkIfRideIsAlreadyEstimated(UUID rideId, RatingPerson ratingPerson);
+
 }

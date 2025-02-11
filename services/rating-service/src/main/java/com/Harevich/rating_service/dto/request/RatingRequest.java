@@ -4,12 +4,14 @@ import com.Harevich.rating_service.model.enumerations.RatingPerson;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotBlank;
 
 import java.util.UUID;
 
 public record RatingRequest(
 
         @Schema(description = "Ride id")
+        @org.hibernate.validator.constraints.UUID
         UUID rideId,
 
         @Schema(description = "rated by id")
