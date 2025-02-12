@@ -1,4 +1,4 @@
-CREATE TABLE driver_car (
+CREATE TABLE driver_car_merge (
     driver_id UUID,
     car_id UUID,
     PRIMARY KEY (driver_id, car_id),

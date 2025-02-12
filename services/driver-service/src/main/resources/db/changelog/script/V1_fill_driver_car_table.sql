@@ -1,4 +1,4 @@
-INSERT INTO driver_car (driver_id, car_id)
+INSERT INTO driver_car_merge (driver_id, car_id)
 SELECT d.id, c.id
 FROM drivers d
 JOIN cars c ON d.name = 'John' AND c.number = '1234 AB-5'
