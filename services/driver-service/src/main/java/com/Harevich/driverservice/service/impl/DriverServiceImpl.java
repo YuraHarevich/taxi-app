@@ -60,8 +60,7 @@ public class DriverServiceImpl implements DriverService {
         Driver driver = driverValidation.findIfExistsById(id);
         driverValidation.isDeleted(id);
         driver.setDeleted(true);
-        if(!Objects.equals(driver.getCar(),null))
-            driver.getCar().setDriver(null);
+        driver.getCar().setDriver(null);
         driverRepository.save(driver);
     }
 
