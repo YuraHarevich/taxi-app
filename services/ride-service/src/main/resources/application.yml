@@ -1,16 +1,14 @@
 app:
   urls:
     openrouteservice:
-      city:
-        minsk:
-          lon: 27.56667
-          lat: 53.9
-          radius: 11
+      longitude: 27.56667
+      latitude: 53.9
+      radius: 11
       base-url: https://api.openrouteservice.org
       directions_relational_url: v2/directions/driving-car
       geocode_relational_url: geocode/search
-      api_key: ${API_KEY:api_key}
-      country_iso_code: "BLR"
+      api-key: ${API_KEY:default}
+      country-iso-code: "BLR"
 server:
   port: 8030
 spring:
