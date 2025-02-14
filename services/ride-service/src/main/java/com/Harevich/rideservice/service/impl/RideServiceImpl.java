@@ -12,6 +12,7 @@ import com.Harevich.rideservice.service.RideService;
 import com.Harevich.rideservice.util.constants.RideServiceResponseConstants;
 import com.Harevich.rideservice.util.mapper.PageMapper;
 import com.Harevich.rideservice.util.mapper.RideMapper;
+import com.Harevich.rideservice.util.validation.passenger.PassengerValidation;
 import com.Harevich.rideservice.util.validation.ride.RideDataValidation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -37,9 +38,12 @@ public class RideServiceImpl implements RideService {
 
     private final PageMapper pageMapper;
 
+    private final PassengerValidation passengerValidation;
+
     @Override
     public RideResponse createRide(RideRequest request, UUID passengerId, UUID driverId) {
-        //todo: чек для сущностей driver и passenger
+        //todo: чек для сущностей driver
+        passengerValidation.throwExceptionIfPassengerDoesNotExist(passengerId);
 
         rideDataValidation.checkIfDriverIsNotBusy(driverId);
 
@@ -118,7 +122,9 @@ public class RideServiceImpl implements RideService {
 
     @Override
     public PageableResponse<RideResponse> getAllRidesByPassengerId(UUID passengerId, int pageNumber, int size) {
-        //todo: чек для сущностей driver и passenger
+        //todo: чек для сущностей driver
+        passengerValidation.throwExceptionIfPassengerDoesNotExist(passengerId);
+
         var rides = rideRepository
                 .findByPassengerIdOrderByCreatedAtDesc(passengerId,PageRequest.of(pageNumber,size))
                 .map(rideMapper::toResponse);
@@ -127,7 +133,8 @@ public class RideServiceImpl implements RideService {
 
     @Override
     public PageableResponse<RideResponse> getAllRidesByDriverId(UUID driverId, int pageNumber, int size) {
-        //todo: чек для сущностей driver и passenger
+        //todo: чек для сущностей driver
+
         var rides = rideRepository
                 .findByDriverIdOrderByCreatedAtDesc(driverId, PageRequest.of(pageNumber,size))
                 .map(rideMapper::toResponse);

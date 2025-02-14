@@ -16,7 +16,7 @@ import java.time.LocalDateTime;
 import static com.Harevich.rideservice.util.constants.RideServiceResponseConstants.OUTSIDER_REST_API_BAD_REQUEST;
 import static com.Harevich.rideservice.util.constants.RideServiceResponseConstants.OUTSIDER_REST_API_BAD_UNAVAILABLE;
 
-public class RetreiveMessageErrorDecoder implements ErrorDecoder {
+public class GeolocationApiErrorDecoder implements ErrorDecoder {
 
     @Override
     public Exception decode(String methodKey, Response response) {

@@ -96,17 +96,17 @@ public class GlobalExceptionHandler {
                         .build());
     }
 
-    @ExceptionHandler({
-            Exception.class
-    })
-    public ResponseEntity<ErrorMessage> handleUnpredictableExceptions(Exception ex) {
-        log.error(ex.getMessage());
-        return ResponseEntity
-                .status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body(ErrorMessage.builder()
-                        .message(UNEXPECTED_SERVER_ERROR)
-                        .timestamp(LocalDateTime.now())
-                        .build());
-    }
+//    @ExceptionHandler({
+//            Exception.class
+//    })
+//    public ResponseEntity<ErrorMessage> handleUnpredictableExceptions(Exception ex) {
+//        log.error(ex.getMessage());
+//        return ResponseEntity
+//                .status(HttpStatus.INTERNAL_SERVER_ERROR)
+//                .body(ErrorMessage.builder()
+//                        .message(UNEXPECTED_SERVER_ERROR)
+//                        .timestamp(LocalDateTime.now())
+//                        .build());
+//    }
 
 }
