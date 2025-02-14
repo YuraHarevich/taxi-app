@@ -30,17 +30,3 @@ spring:
     database-platform: org.hibernate.dialect.PostgreSQLDialect
   liquibase:
     change-log: classpath:/db/changelog/app-changelog.xml
-
-logging:
-  level:
-    com.netflix.discovery: DEBUG
-    feign: DEBUG
-    org.springframework.web.client: DEBUG
-    org.apache.http: DEBUG
-    org.springframework.web: DEBUG
-
-feign:
-  client:
-    config:
-      geolocation-client:
-        loggerLevel: full

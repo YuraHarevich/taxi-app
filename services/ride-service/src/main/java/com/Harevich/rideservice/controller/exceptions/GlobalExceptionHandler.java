@@ -4,6 +4,7 @@ import com.Harevich.rideservice.dto.ErrorMessage;
 import com.Harevich.rideservice.exception.AddressNotFoundException;
 import com.Harevich.rideservice.exception.CannotChangeRideStatusException;
 import com.Harevich.rideservice.exception.DriverIsBusyException;
+import com.Harevich.rideservice.exception.DriverServiceInternalError;
 import com.Harevich.rideservice.exception.GeolocationServiceBadRequestException;
 import com.Harevich.rideservice.exception.GeolocationServiceUnavailableException;
 import com.Harevich.rideservice.exception.RideStatusConvertionException;
@@ -85,9 +86,10 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler({
-            GeolocationServiceUnavailableException.class
+            GeolocationServiceUnavailableException.class,
+            DriverServiceInternalError.class
     })
-    public ResponseEntity<ErrorMessage> handleExceptions(GeolocationServiceUnavailableException ex) {
+    public ResponseEntity<ErrorMessage> handleExceptions(RuntimeException ex) {
         return ResponseEntity
                 .status(HttpStatus.SERVICE_UNAVAILABLE)
                 .body(ErrorMessage.builder()
