@@ -29,6 +29,21 @@ services:
       - microservices-net
     restart: unless-stopped
 
+  rides_postgresql:
+    container_name: ms_ride_pg_sql
+    image: postgres
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: ride
+    volumes:
+      - rides_psql:/data/postgres
+    ports:
+      - "5435:5432"
+    networks:
+      - microservices-net
+    restart: unless-stopped
+
   pgadmin:
     container_name: ms_pgadmin
     image: dpage/pgadmin4
@@ -50,5 +65,5 @@ networks:
 volumes:
   drivers_psql:
   passengers_psql:
+  rides_psql:
   pgadmin:
-

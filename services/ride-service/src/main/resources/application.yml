@@ -9,6 +9,10 @@ app:
       geocode_relational_url: geocode/search
       api-key: ${API_KEY:default}
       country-iso-code: "BLR"
+    services:
+      passenger-service-url: "localhost:8010/api/v1/passengers"
+      driver-service-url: "localhost:8020/api/v1/drivers"
+      ride-service-url: "localhost:8030/api/v1/rides"
 server:
   port: 8030
 spring:
