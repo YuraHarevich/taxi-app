@@ -1,5 +1,6 @@
 package com.Harevich.rideservice.client;
 
+import com.Harevich.rideservice.controller.exceptions.DriverServiceErrorDecoder;
 import com.Harevich.rideservice.sideservices.driver.DriverResponse;
 import com.Harevich.rideservice.util.config.FeignConfig;
 import org.springframework.cloud.openfeign.FeignClient;
@@ -10,12 +11,12 @@ import java.util.UUID;
 
 @FeignClient(
         name = "driver-service-client",
-        url = "${app.urls.services.passenger-service-url}",
-        configuration = {FeignConfig.class, PassengerServiceErrorDecoder.class}
+        url = "${app.urls.services.driver-service-url}",
+        configuration = {FeignConfig.class, DriverServiceErrorDecoder.class}
 )
 public interface DriverServiceClient {
 
     @GetMapping
-    DriverResponse getPassengerIfExists(@RequestParam("id") UUID id);
+    DriverResponse getDriverIfExists(@RequestParam("id") UUID id);
 
 }

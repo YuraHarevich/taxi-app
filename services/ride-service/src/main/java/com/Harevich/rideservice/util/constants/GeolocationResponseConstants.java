@@ -28,4 +28,6 @@ public final class GeolocationResponseConstants {
 
     public static final String DRIVER_SERVICE_UNAVAILABLE = "Driver service is currently unavailable";
 
+    public static final String DRIVER_NOT_FOUND = "Driver with id not found";
+
 }

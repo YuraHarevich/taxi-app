@@ -14,8 +14,8 @@ public class PassengerValidationService implements DriverValidation {
     private final DriverServiceClient driverClient;
 
     @Override
-    public void throwExceptionIfPassengerDoesNotExist(UUID passengerId) {
-        driverClient.getPassengerIfExists(passengerId);
+    public void throwExceptionIfDriverDoesNotExist(UUID driverId) {
+        driverClient.getDriverIfExists(driverId);
     }
 
 }
