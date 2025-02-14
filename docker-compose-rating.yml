@@ -1,0 +1,15 @@
+services:
+  mongo_db:
+    container_name: mongo_db
+    image: mongo
+    restart: always
+    environment:
+      - SPRING_DATA_MONGODB_URI=mongodb://localhost/ratings
+    ports:
+      - "27017:27017"
+    networks:
+      - microservices-net
+
+networks:
+  microservices-net:
+    driver: bridge
