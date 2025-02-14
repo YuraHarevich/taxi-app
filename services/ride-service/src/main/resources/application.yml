@@ -1,0 +1,46 @@
+app:
+  urls:
+    openrouteservice:
+      longitude: 27.56667
+      latitude: 53.9
+      radius: 11
+      base-url: https://api.openrouteservice.org
+      directions_relational_url: v2/directions/driving-car
+      geocode_relational_url: geocode/search
+      api-key: ${API_KEY:default}
+      country-iso-code: "BLR"
+    services:
+      passenger-service-url: "localhost:8010/api/v1/passengers"
+      driver-service-url: "localhost:8020/api/v1/drivers"
+      ride-service-url: "localhost:8030/api/v1/rides"
+server:
+  port: 8030
+spring:
+  application:
+    name: ride-service
+  datasource:
+    driver-class-name: ${DB_DRIVER:org.postgresql.Driver}
+    url: ${DB_URL:jdbc:postgresql://localhost:5435/ride}
+    username: ${DB_USERNAME:postgres}
+    password: ${DB_PASSWORD:password}
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    database: postgresql
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+  liquibase:
+    change-log: classpath:/db/changelog/app-changelog.xml
+
+logging:
+  level:
+    com.netflix.discovery: DEBUG
+    feign: DEBUG
+    org.springframework.web.client: DEBUG
+    org.apache.http: DEBUG
+    org.springframework.web: DEBUG
+
+feign:
+  client:
+    config:
+      geolocation-client:
+        loggerLevel: full
