@@ -80,11 +80,12 @@ public class CarServiceImpl implements CarService {
 
         car.setDeleted(true);
         Driver driver = car.getDriver();
-        if(!Objects.equals(driver,null)) {
+
+        if (driver != null) {
             driver.setCar(null);
         }
+        car.setDriver(null);
         carRepository.save(car);
-        driverRepository.save(driver);
     }
 
     @Override

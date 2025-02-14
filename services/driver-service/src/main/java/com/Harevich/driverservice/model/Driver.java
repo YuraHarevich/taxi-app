@@ -49,7 +49,7 @@ public class Driver {
     @Convert(converter = SexEnumConverter.class)
     private Sex sex;
 
-    @OneToOne(mappedBy = "driver",cascade = {CascadeType.MERGE, CascadeType.PERSIST})
+    @OneToOne(mappedBy = "driver")
     private Car car;
 
     @Builder.Default
