@@ -20,10 +20,15 @@ import java.util.UUID;
 @Service
 @RequiredArgsConstructor
 public class DriverServiceImpl implements DriverService {
+
     private final DriverRepository driverRepository;
+
     private final CarRepository carRepository;
+
     private final DriverMapper driverMapper;
+
     private final DriverValidation driverValidation;
+
     private final CarValidation carValidation;
 
     @Override
@@ -59,6 +64,7 @@ public class DriverServiceImpl implements DriverService {
     public void deleteById(UUID id) {
         Driver driver = driverValidation.findIfExistsById(id);
         driverValidation.isDeleted(id);
+
         driver.setDeleted(true);
         Car car = driver.getCar();
         if(Objects.equals(car,null)){

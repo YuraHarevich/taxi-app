@@ -13,7 +13,9 @@ import java.lang.annotation.*;
 public @interface ValidSex {
 
     String message() default DriverServiceResponseConstants.SEX_PARAM_IS_ABSENT;
+
     Class<?>[] groups() default {};
+
     Class<? extends Payload>[] payload() default {};
 
 }

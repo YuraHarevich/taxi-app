@@ -19,6 +19,7 @@ import java.util.UUID;
 @Setter
 @Table(name = "cars")
 public class Car {
+
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     @Column(name = "id")

@@ -18,8 +18,11 @@ import java.util.UUID;
 @Service
 @RequiredArgsConstructor
 public class PassengerServiceImpl implements PassengerService {
+
     private final PassengerMapper passengerMapper;
+
     private final PassengerRepository passengerRepository;
+
     private final PassengerValidation passengerValidation;
 
     @Transactional
@@ -34,11 +37,15 @@ public class PassengerServiceImpl implements PassengerService {
     @Transactional
     public PassengerResponse update(PassengerRequest request, UUID id) {
         passengerValidation.existsById(id);
+
         Passenger passenger = passengerRepository.findById(id).get();
+
         passengerValidation.isDeleted(id);
         passengerValidation.alreadyExistsByEmail(request.email());
         passengerValidation.alreadyExistsByNumber(request.number());
+
         passengerMapper.changePassengerByRequest(request,passenger);
+
         Passenger updatedPassenger = passengerRepository.saveAndFlush(passenger);
         return passengerMapper.toResponse(updatedPassenger);
     }
@@ -54,8 +61,10 @@ public class PassengerServiceImpl implements PassengerService {
     public void deleteById(UUID passenger_id){
         passengerValidation.existsById(passenger_id);
         passengerValidation.isDeleted(passenger_id);
+
         Passenger passenger = passengerRepository.findById(passenger_id).get();
         passenger.setDeleted(true);
         passengerRepository.save(passenger);
     }
+
 }

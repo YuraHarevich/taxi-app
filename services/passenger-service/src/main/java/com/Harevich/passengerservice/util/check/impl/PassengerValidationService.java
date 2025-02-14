@@ -13,6 +13,7 @@ import java.util.UUID;
 @Service
 @RequiredArgsConstructor
 public class PassengerValidationService implements PassengerValidation {
+
     private final PassengerRepository repository;
 
     @Override
@@ -38,4 +39,5 @@ public class PassengerValidationService implements PassengerValidation {
         repository.findByIdAndDeletedFalse(id)
                 .orElseThrow(() -> new EntityNotFoundException(PassengerValidationConstants.PASSENGER_DELETED));
     }
+
 }

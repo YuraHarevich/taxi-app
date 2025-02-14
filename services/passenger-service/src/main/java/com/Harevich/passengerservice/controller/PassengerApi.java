@@ -57,4 +57,5 @@ public interface PassengerApi {
                             schema = @Schema(implementation = ErrorMessage.class))),
     })
     public void deletePassengerById(@RequestParam("id") UUID id);
+
 }

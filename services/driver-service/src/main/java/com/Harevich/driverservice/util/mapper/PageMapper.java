@@ -3,13 +3,15 @@ package com.Harevich.driverservice.util.mapper;
 import com.Harevich.driverservice.dto.response.PageableResponse;
 import org.mapstruct.InjectionStrategy;
 import org.mapstruct.Mapper;
+import org.mapstruct.MappingConstants;
 import org.springframework.data.domain.Page;
 
 @Mapper(
-        componentModel = "spring",
+        componentModel = MappingConstants.ComponentModel.SPRING,
         injectionStrategy = InjectionStrategy.CONSTRUCTOR
 )
 public interface PageMapper{
+
     default <T> PageableResponse<T> toResponse(Page<T> page){
         return new PageableResponse(
                 page.getTotalElements(),
@@ -18,6 +20,6 @@ public interface PageMapper{
                 page.getSize(),
                 page.getContent()
         );
-
     }
+
 }

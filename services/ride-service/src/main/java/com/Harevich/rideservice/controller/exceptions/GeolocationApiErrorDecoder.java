@@ -15,6 +15,7 @@ import static com.Harevich.rideservice.util.constants.RideServiceResponseConstan
 import static com.Harevich.rideservice.util.constants.RideServiceResponseConstants.OUTSIDER_REST_API_UNAVAILABLE;
 
 public class GeolocationApiErrorDecoder implements ErrorDecoder {
+
     @Override
     public Exception decode(String methodKey, Response response) {
         ErrorMessage message  = null;
@@ -34,4 +35,5 @@ public class GeolocationApiErrorDecoder implements ErrorDecoder {
                 return new GeolocationServiceUnavailableException(OUTSIDER_REST_API_UNAVAILABLE);
         }
     }
+
 }

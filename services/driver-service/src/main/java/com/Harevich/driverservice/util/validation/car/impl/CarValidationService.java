@@ -15,7 +15,9 @@ import java.util.UUID;
 @Service
 @RequiredArgsConstructor
 public class CarValidationService implements CarValidation {
+
     private final CarRepository carRepository;
+
     @Override
     public void alreadyExistsByNumber(String number) {
         if(carRepository.existsByNumber(number))
@@ -48,4 +50,5 @@ public class CarValidationService implements CarValidation {
         if(car.getDriver() != null)
             throw new CarIsAlreadyOccupiedException(DriverServiceResponseConstants.CAR_IS_OCCUPIED);
     }
+
 }

@@ -19,6 +19,7 @@ import java.util.UUID;
 @Setter
 @Table(name = "drivers")
 public class Driver {
+
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     @Column(name = "id")
@@ -48,10 +49,11 @@ public class Driver {
     @Convert(converter = SexEnumConverter.class)
     private Sex sex;
 
-    @OneToOne(mappedBy = "driver")
+    @OneToOne(mappedBy = "driver",cascade = {CascadeType.MERGE, CascadeType.PERSIST})
     private Car car;
 
     @Builder.Default
     @Column(name = "deleted")
     private boolean deleted = false;
+
 }

@@ -16,6 +16,7 @@ import java.util.UUID;
 @Service
 @RequiredArgsConstructor
 public class DriverValidationService implements DriverValidation {
+
     private final DriverRepository driverRepository;
 
     @Override
@@ -49,4 +50,5 @@ public class DriverValidationService implements DriverValidation {
         return Objects.equals(driver.getCar().getId(),car.getId());
 
     }
+
 }
