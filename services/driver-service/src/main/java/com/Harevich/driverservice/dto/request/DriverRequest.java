@@ -21,6 +21,7 @@ public record DriverRequest(
         @Pattern(regexp = RegularExpressionConstants.PHONE_NUMBER_REGEX, message = "Invalid phone number format")
         String number,
         @ValidSex
+        @Schema(description = "Drivers sex", example = "MALE")
         String sex
 ) {
 }
