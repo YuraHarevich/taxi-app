@@ -1,6 +1,9 @@
 app:
   rating:
     number_to_evaluate: 10
+  urls:
+    services:
+      ride-service-url: "localhost:8030/api/v1/rides"
 server:
   port: 8040
 spring:

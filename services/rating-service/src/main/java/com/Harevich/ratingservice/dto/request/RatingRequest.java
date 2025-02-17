@@ -10,7 +10,6 @@ import java.util.UUID;
 public record RatingRequest(
 
         @Schema(description = "Ride id")
-        @org.hibernate.validator.constraints.UUID
         UUID rideId,
 
         @Schema(description = "rated by id")

@@ -2,6 +2,7 @@ package com.Harevich.ratingservice.controller.exceptions;
 
 import com.Harevich.ratingservice.dto.ErrorMessage;
 import com.Harevich.ratingservice.exception.RideAlreadyEstimatedException;
+import com.Harevich.ratingservice.exception.RideNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
@@ -35,6 +36,18 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ErrorMessage> handleValidationExceptions(Exception ex) {
         return ResponseEntity
                 .status(HttpStatus.BAD_REQUEST)
+                .body(ErrorMessage.builder()
+                        .message(ex.getMessage())
+                        .timestamp(LocalDateTime.now())
+                        .build());
+    }
+
+    @ExceptionHandler({
+            RideNotFoundException.class
+    })
+    public ResponseEntity<ErrorMessage> handleExceptions(RuntimeException ex) {
+        return ResponseEntity
+                .status(HttpStatus.NOT_FOUND)
                 .body(ErrorMessage.builder()
                         .message(ex.getMessage())
                         .timestamp(LocalDateTime.now())
