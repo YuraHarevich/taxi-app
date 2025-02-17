@@ -1,4 +1,8 @@
 app:
+  urls:
+    services:
+      passenger-service-url: "localhost:8010/api/v1/passengers"
+      driver-service-url: "localhost:8020/api/v1/drivers"
   rating:
     number_to_evaluate: 10
 server:
