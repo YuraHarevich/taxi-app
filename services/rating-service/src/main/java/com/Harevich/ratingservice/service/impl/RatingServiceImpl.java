@@ -46,7 +46,7 @@ public class RatingServiceImpl implements RatingService {
         RideResponse rideResponse = rideClient.getRideIfExists(request.rideId());
 
         passengerValidation.checkIfPersonExists(rideResponse.passengerId());
-        passengerValidation.checkIfPersonExists(rideResponse.driverId());
+        driverValidation.checkIfPersonExists(rideResponse.driverId());
 
         Rating rating = ratingMapper.toRating(request);
 
