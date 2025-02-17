@@ -30,3 +30,10 @@ spring:
     database-platform: org.hibernate.dialect.PostgreSQLDialect
   liquibase:
     change-log: classpath:/db/changelog/app-changelog.xml
+  cloud:
+    openfeign:
+      client:
+        config:
+          passenger-service-client:
+            url: "http://localhost:8010/api/v1/passengers"
+            loggerLevel: full
