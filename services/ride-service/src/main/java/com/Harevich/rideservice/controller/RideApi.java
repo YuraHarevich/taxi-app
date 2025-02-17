@@ -86,4 +86,22 @@ public interface RideApi {
                                                                 @RequestParam(defaultValue = "0") @Min(0) int pageNumber,
                                                                 @RequestParam(defaultValue = "10") int size);
 
+    @Operation(summary = "creating ride")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Ready to consume orders"),
+            @ApiResponse(responseCode = "400", description = "Invalid data format",
+                    content = @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = ErrorMessage.class))),
+    })
+    public void applyForDriver(@RequestParam("driver_id") UUID driverId);
+
+    @Operation(summary = "creating ride")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "201", description = "Order successfully created"),
+            @ApiResponse(responseCode = "400", description = "Invalid data format",
+                    content = @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = ErrorMessage.class))),
+    })
+    public void createOrder(@Valid @RequestBody RideRequest request,
+                                   @RequestParam("passenger_id") UUID passengerId);
 }

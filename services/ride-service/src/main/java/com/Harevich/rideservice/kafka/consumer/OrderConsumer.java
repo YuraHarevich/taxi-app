@@ -1,5 +1,6 @@
 package com.Harevich.rideservice.kafka.consumer;
 
+import com.Harevich.rideservice.dto.request.OrderRequest;
 import com.Harevich.rideservice.dto.request.RideRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -19,8 +20,8 @@ public class OrderConsumer {
 
     private final KafkaTemplate<String, RideRequest> kafkaTemplate;
     @KafkaListener(topics = "order-topic",groupId = "order-group")
-    public void consumeSupplyRequests(RideRequest rideRequest)throws MessagingException {
-        log.info("Consuming the message from topic {} for order {}", orderTopic, rideRequest.to());
+    public void consumeSupplyRequests(OrderRequest orderRequest) throws MessagingException {
+        log.info("Consuming the message from topic {} for passenger {}", orderTopic, orderRequest.passengerId());
     }
 
 }

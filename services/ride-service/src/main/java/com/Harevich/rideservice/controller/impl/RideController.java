@@ -1,10 +1,16 @@
 package com.Harevich.rideservice.controller.impl;
 
 import com.Harevich.rideservice.controller.RideApi;
+import com.Harevich.rideservice.dto.ErrorMessage;
 import com.Harevich.rideservice.dto.response.PageableResponse;
 import com.Harevich.rideservice.dto.request.RideRequest;
 import com.Harevich.rideservice.dto.response.RideResponse;
 import com.Harevich.rideservice.service.RideService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
 import lombok.RequiredArgsConstructor;
@@ -26,6 +32,19 @@ import java.util.UUID;
 public class RideController implements RideApi {
 
     private final RideService rideService;
+
+    @PostMapping("order/driver")
+    @ResponseStatus(HttpStatus.OK)
+    public void applyForDriver(@RequestParam("driver_id") UUID driverId){
+        rideService.applyForDriver(driverId);
+    }
+
+    @PostMapping("order/passenger")
+    @ResponseStatus(HttpStatus.OK)
+    public void createOrder(@Valid @RequestBody RideRequest request,
+                                    @RequestParam("passenger_id") UUID passengerId){
+        rideService.sendOrderRequest(request,passengerId);
+    }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
@@ -73,7 +92,7 @@ public class RideController implements RideApi {
                                                                    @RequestParam(defaultValue = "0") @Min(0) int pageNumber,
                                                                    @RequestParam(defaultValue = "10") int size) {
         PageableResponse<RideResponse> rideResponse = rideService
-                .getAllRidesByPassengerId(passengerId, pageNumber, size>50?50:size);
+                .getAllRidesByPassengerId(passengerId, pageNumber, size > 50 ? 50 : size);
         return rideResponse;
     }
 
@@ -83,7 +102,7 @@ public class RideController implements RideApi {
                                                                 @RequestParam(defaultValue = "0") @Min(0) int pageNumber,
                                                                 @RequestParam(defaultValue = "10") int size) {
         PageableResponse<RideResponse> rideResponse = rideService
-                .getAllRidesByDriverId(driverId, pageNumber, size>50?50:size);
+                .getAllRidesByDriverId(driverId, pageNumber, size > 50 ? 50 : size);
         return rideResponse;
     }
 

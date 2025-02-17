@@ -1,5 +1,6 @@
 package com.Harevich.rideservice.service.impl;
 
+import com.Harevich.rideservice.dto.request.OrderRequest;
 import com.Harevich.rideservice.dto.response.PageableResponse;
 import com.Harevich.rideservice.dto.request.RideRequest;
 import com.Harevich.rideservice.dto.response.RideResponse;
@@ -45,8 +46,6 @@ public class RideServiceImpl implements RideService {
         //todo: чек для сущностей driver и passenger
 
         rideDataValidation.checkIfDriverIsNotBusy(driverId);
-
-        orderProducer.sendOrderConfirmation(request);
 
         Ride ride = rideMapper.toRide(request);
             ride.setCreatedAt(LocalDateTime.now());
@@ -137,6 +136,16 @@ public class RideServiceImpl implements RideService {
                 .findByDriverIdOrderByCreatedAtDesc(driverId, PageRequest.of(pageNumber,size))
                 .map(rideMapper::toResponse);
         return pageMapper.toResponse(rides);
+    }
+
+    @Override
+    public void applyForDriver(UUID driverId) {
+        //todo запись в таблицу
+    }
+
+    @Override
+    public void sendOrderRequest(RideRequest request, UUID passengerId) {
+        orderProducer.sendOrderRequest(new OrderRequest(passengerId));
     }
 
 }
