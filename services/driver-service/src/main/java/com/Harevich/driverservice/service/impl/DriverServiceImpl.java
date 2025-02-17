@@ -68,7 +68,7 @@ public class DriverServiceImpl implements DriverService {
         driver.setDeleted(true);
         Car car = driver.getCar();
 
-        if(Objects.equals(car,null)){
+        if (Objects.equals(car,null)){
             car.setDriver(null);
         }
         driver.setCar(null);

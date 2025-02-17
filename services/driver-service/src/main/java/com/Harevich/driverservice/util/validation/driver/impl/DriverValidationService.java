@@ -34,7 +34,7 @@ public class DriverValidationService implements DriverValidation {
     @Override
     public Driver findIfExistsById(UUID id) {
         return driverRepository.findById(id)
-                .orElseThrow(()->new EntityNotFoundException(DriverServiceResponseConstants.DRIVER_NOT_FOUND));
+                .orElseThrow(() -> new EntityNotFoundException(DriverServiceResponseConstants.DRIVER_NOT_FOUND));
     }
 
     @Override
