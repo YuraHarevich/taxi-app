@@ -4,6 +4,7 @@ import com.Harevich.rideservice.dto.response.PageableResponse;
 import com.Harevich.rideservice.dto.request.RideRequest;
 import com.Harevich.rideservice.dto.response.RideResponse;
 import com.Harevich.rideservice.exception.CannotChangeRideStatusException;
+import com.Harevich.rideservice.kafka.producer.OrderProducer;
 import com.Harevich.rideservice.model.Ride;
 import com.Harevich.rideservice.model.enumerations.RideStatus;
 import com.Harevich.rideservice.repository.RideRepository;
@@ -37,11 +38,15 @@ public class RideServiceImpl implements RideService {
 
     private final PageMapper pageMapper;
 
+    private final OrderProducer orderProducer;
+
     @Override
     public RideResponse createRide(RideRequest request, UUID passengerId, UUID driverId) {
         //todo: чек для сущностей driver и passenger
 
         rideDataValidation.checkIfDriverIsNotBusy(driverId);
+
+        orderProducer.sendOrderConfirmation(request);
 
         Ride ride = rideMapper.toRide(request);
             ride.setCreatedAt(LocalDateTime.now());
