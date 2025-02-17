@@ -1,6 +1,6 @@
 package com.Harevich.rideservice.controller.exceptions;
 
-import com.Harevich.rideservice.exception.DriverServiceInternalError;
+import com.Harevich.rideservice.exception.DriverServiceInternalErrorException;
 import feign.Response;
 import feign.codec.ErrorDecoder;
 import jakarta.persistence.EntityNotFoundException;
@@ -14,6 +14,6 @@ public class DriverServiceErrorDecoder implements ErrorDecoder {
         if (response.status() == 404) {
             return new EntityNotFoundException(DRIVER_NOT_FOUND);
         }
-        return new DriverServiceInternalError(DRIVER_SERVICE_UNAVAILABLE);
+        return new DriverServiceInternalErrorException(DRIVER_SERVICE_UNAVAILABLE);
     }
 }
