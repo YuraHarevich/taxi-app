@@ -9,8 +9,7 @@ import java.util.UUID;
 
 public interface RideService {
 
-    @Deprecated(forRemoval = true)
-    RideResponse createRide(RideRequest request, UUID passengerId, UUID driverId);
+    RideResponse createRide(RideRequest request, UUID driverId);
 
     RideResponse updateRide(RideRequest request, UUID id);
 
@@ -26,5 +25,5 @@ public interface RideService {
 
     void applyForDriver(UUID driverId);
 
-    void sendRideRequest(@Valid RideRequest request, UUID passengerId);
+    void sendRideRequest(@Valid RideRequest request);
 }

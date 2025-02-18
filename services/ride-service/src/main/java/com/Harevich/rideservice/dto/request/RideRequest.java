@@ -14,7 +14,10 @@ public record RideRequest (
 
     @NotBlank(message = "finish point is mandatory")
     @Schema(description = "Ride finish address", example = "Таёжная 19")
-    String to
+    String to,
+
+    @Schema(description = "passenger's id")
+    UUID passengerId
 
 ) {
 }

@@ -43,19 +43,17 @@ public class RideServiceImpl implements RideService {
 
     private final OrderProducer orderProducer;
 
-    private final DriverQueueService driverQueueService;
-
-    private final PassengerQueueService passengerQueueService;
+    private final QueueService queueService;
 
     @Override
     public void applyForDriver(UUID driverId) {
-        driverQueueService.addElement(driverId);
-        //orderProducer.sendOrderRequest(new DriverQueueRequest(driverId));
+        queueService.addDriver(driverId);
+        orderProducer.sendOrderRequest(new DriverQueueRequest(driverId));
     }
 
     @Override
-    public void sendRideRequest(RideRequest request, UUID passengerId) {
-        passengerQueueService.addElement(passengerId, request);
+    public void sendRideRequest(RideRequest request) {
+        queueService.addPassenger(request);
     }
 
     @Override
@@ -136,7 +134,7 @@ public class RideServiceImpl implements RideService {
     }
 
     @Override
-    public RideResponse createRide(RideRequest request, UUID passengerId, UUID driverId) {
+    public RideResponse createRide(RideRequest request, UUID driverId) {
         //todo: чек для сущностей driver и passenger
 
         rideDataValidation.checkIfDriverIsNotBusy(driverId);
@@ -147,7 +145,7 @@ public class RideServiceImpl implements RideService {
                 request.from(),
                 request.to(),
                 LocalDateTime.now()));
-        ride.setPassengerId(passengerId);
+        ride.setPassengerId(request.passengerId());
         ride.setDriverId(driverId);
         ride.setRideStatus(RideStatus.CREATED);
 

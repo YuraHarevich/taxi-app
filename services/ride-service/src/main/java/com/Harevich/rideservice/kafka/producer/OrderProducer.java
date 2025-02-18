@@ -22,7 +22,7 @@ public class OrderProducer {
     private String topic;
 
     public void sendOrderRequest(DriverQueueRequest driverQueueRequest){
-        log.info("!!!!!!!!!!!!!!Sending order via KAFKA!!!!!!!!!!!!");
+        log.info("Sending order via KAFKA");
         Message<DriverQueueRequest> message = MessageBuilder
                 .withPayload(driverQueueRequest)
                 .setHeader(KafkaHeaders.TOPIC,topic)

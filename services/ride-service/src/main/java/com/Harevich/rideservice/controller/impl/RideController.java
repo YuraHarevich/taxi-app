@@ -41,17 +41,15 @@ public class RideController implements RideApi {
 
     @PostMapping("order/passenger")
     @ResponseStatus(HttpStatus.OK)
-    public void createOrder(@Valid @RequestBody RideRequest request,
-                                    @RequestParam("passenger_id") UUID passengerId){
-        rideService.sendRideRequest(request,passengerId);
+    public void createOrder(@Valid @RequestBody RideRequest request){
+        rideService.sendRideRequest(request);
     }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public RideResponse createRide(@Valid @RequestBody RideRequest request,
-                                   @RequestParam("passenger_id") UUID passengerId,
                                    @RequestParam("driver_id") UUID driverId) {
-        RideResponse rideResponse = rideService.createRide(request, passengerId, driverId);
+        RideResponse rideResponse = rideService.createRide(request, driverId);
         return rideResponse;
     }
 

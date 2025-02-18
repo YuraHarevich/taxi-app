@@ -30,7 +30,6 @@ public interface RideApi {
                             schema = @Schema(implementation = ErrorMessage.class))),
     })
     public RideResponse createRide(@Valid @RequestBody RideRequest request,
-                                   @RequestParam("passenger_id") UUID passengerId,
                                    @RequestParam("driver_id") UUID driverId);
 
     @Operation(summary = "updating the ride")
@@ -102,6 +101,5 @@ public interface RideApi {
                     content = @Content(mediaType = "application/json",
                             schema = @Schema(implementation = ErrorMessage.class))),
     })
-    public void createOrder(@Valid @RequestBody RideRequest request,
-                                   @RequestParam("passenger_id") UUID passengerId);
+    public void createOrder(@Valid @RequestBody RideRequest request);
 }
