@@ -47,6 +47,7 @@ public class RideServiceImpl implements RideService {
 
     @Override
     public void applyForDriver(UUID driverId) {
+        rideDataValidation.checkIfDriverIsNotBusy(driverId);
         queueService.addDriver(driverId);
         orderProducer.sendOrderRequest(new DriverQueueRequest(driverId));
     }
