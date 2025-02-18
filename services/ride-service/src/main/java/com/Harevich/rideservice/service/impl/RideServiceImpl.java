@@ -1,6 +1,6 @@
 package com.Harevich.rideservice.service.impl;
 
-import com.Harevich.rideservice.dto.request.OrderRequest;
+import com.Harevich.rideservice.dto.request.DriverQueueRequest;
 import com.Harevich.rideservice.dto.response.PageableResponse;
 import com.Harevich.rideservice.dto.request.RideRequest;
 import com.Harevich.rideservice.dto.response.RideResponse;
@@ -9,6 +9,8 @@ import com.Harevich.rideservice.kafka.producer.OrderProducer;
 import com.Harevich.rideservice.model.Ride;
 import com.Harevich.rideservice.model.enumerations.RideStatus;
 import com.Harevich.rideservice.repository.RideRepository;
+import com.Harevich.rideservice.service.DriverQueueService;
+import com.Harevich.rideservice.service.PassengerQueueService;
 import com.Harevich.rideservice.service.PriceService;
 import com.Harevich.rideservice.service.RideService;
 import com.Harevich.rideservice.util.constants.RideServiceResponseConstants;
@@ -41,24 +43,19 @@ public class RideServiceImpl implements RideService {
 
     private final OrderProducer orderProducer;
 
+    private final DriverQueueService driverQueueService;
+
+    private final PassengerQueueService passengerQueueService;
+
     @Override
-    public RideResponse createRide(RideRequest request, UUID passengerId, UUID driverId) {
-        //todo: чек для сущностей driver и passenger
+    public void applyForDriver(UUID driverId) {
+        driverQueueService.addElement(driverId);
+        //orderProducer.sendOrderRequest(new DriverQueueRequest(driverId));
+    }
 
-        rideDataValidation.checkIfDriverIsNotBusy(driverId);
-
-        Ride ride = rideMapper.toRide(request);
-            ride.setCreatedAt(LocalDateTime.now());
-            ride.setPrice(priceService.getPriceByTwoAddresses(
-                    request.from(),
-                    request.to(),
-                    LocalDateTime.now()));
-            ride.setPassengerId(passengerId);
-            ride.setDriverId(driverId);
-            ride.setRideStatus(RideStatus.CREATED);
-
-            rideRepository.saveAndFlush(ride);
-        return rideMapper.toResponse(ride);
+    @Override
+    public void sendRideRequest(RideRequest request, UUID passengerId) {
+        passengerQueueService.addElement(passengerId, request);
     }
 
     @Override
@@ -139,13 +136,23 @@ public class RideServiceImpl implements RideService {
     }
 
     @Override
-    public void applyForDriver(UUID driverId) {
-        //todo запись в таблицу
-    }
+    public RideResponse createRide(RideRequest request, UUID passengerId, UUID driverId) {
+        //todo: чек для сущностей driver и passenger
 
-    @Override
-    public void sendOrderRequest(RideRequest request, UUID passengerId) {
-        orderProducer.sendOrderRequest(new OrderRequest(passengerId));
+        rideDataValidation.checkIfDriverIsNotBusy(driverId);
+
+        Ride ride = rideMapper.toRide(request);
+        ride.setCreatedAt(LocalDateTime.now());
+        ride.setPrice(priceService.getPriceByTwoAddresses(
+                request.from(),
+                request.to(),
+                LocalDateTime.now()));
+        ride.setPassengerId(passengerId);
+        ride.setDriverId(driverId);
+        ride.setRideStatus(RideStatus.CREATED);
+
+        rideRepository.saveAndFlush(ride);
+        return rideMapper.toResponse(ride);
     }
 
 }

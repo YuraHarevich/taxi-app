@@ -43,7 +43,7 @@ public class RideController implements RideApi {
     @ResponseStatus(HttpStatus.OK)
     public void createOrder(@Valid @RequestBody RideRequest request,
                                     @RequestParam("passenger_id") UUID passengerId){
-        rideService.sendOrderRequest(request,passengerId);
+        rideService.sendRideRequest(request,passengerId);
     }
 
     @PostMapping

@@ -26,5 +26,5 @@ public interface RideService {
 
     void applyForDriver(UUID driverId);
 
-    void sendOrderRequest(@Valid RideRequest request, UUID passengerId);
+    void sendRideRequest(@Valid RideRequest request, UUID passengerId);
 }

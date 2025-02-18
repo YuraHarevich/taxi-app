@@ -1,6 +1,6 @@
 package com.Harevich.rideservice.kafka.producer;
 
-import com.Harevich.rideservice.dto.request.OrderRequest;
+import com.Harevich.rideservice.dto.request.DriverQueueRequest;
 import com.Harevich.rideservice.dto.request.RideRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -21,10 +21,10 @@ public class OrderProducer {
     @Value("${spring.kafka.topic.order-queue}")
     private String topic;
 
-    public void sendOrderRequest(OrderRequest orderRequest){
+    public void sendOrderRequest(DriverQueueRequest driverQueueRequest){
         log.info("!!!!!!!!!!!!!!Sending order via KAFKA!!!!!!!!!!!!");
-        Message<OrderRequest> message = MessageBuilder
-                .withPayload(orderRequest)
+        Message<DriverQueueRequest> message = MessageBuilder
+                .withPayload(driverQueueRequest)
                 .setHeader(KafkaHeaders.TOPIC,topic)
                 .build();
         kafkaTemplate.send(message);

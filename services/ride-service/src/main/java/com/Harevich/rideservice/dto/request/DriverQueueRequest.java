@@ -2,9 +2,9 @@ package com.Harevich.rideservice.dto.request;
 
 import java.util.UUID;
 
-public record OrderRequest(
+public record DriverQueueRequest(
 
-        UUID passengerId
+        UUID driverId
 
 ) {
 }

@@ -12,6 +12,12 @@
     <include file="v1/changelog-v1.0.xml" relativeToChangelogFile="true"/>
 
     <changeSet id="2" author="Yura">
+        <tagDatabase tag="create-queues"/>
+    </changeSet>
+
+    <include file="v1/2-changelog-v1.0.xml" relativeToChangelogFile="true"/>
+
+    <changeSet id="5" author="Yura">
         <tagDatabase tag="v1.0"/>
     </changeSet>
 
