@@ -1,6 +1,6 @@
 package com.Harevich.rideservice.kafka.consumer;
 
-import com.Harevich.rideservice.dto.request.DriverQueueRequest;
+import com.Harevich.rideservice.dto.request.QueueProceedRequest;
 import com.Harevich.rideservice.dto.request.RideRequest;
 import com.Harevich.rideservice.service.impl.QueueService;
 import com.Harevich.rideservice.service.impl.RideServiceImpl;
@@ -26,13 +26,20 @@ public class OrderConsumer {
 
     private final KafkaTemplate<String, RideRequest> kafkaTemplate;
     @KafkaListener(topics = "order-topic",groupId = "order-group")
-    public void consumeSupplyRequests(DriverQueueRequest driverQueueRequest) throws MessagingException {
-        log.info("Consuming the message from topic {} for driver {}", orderTopic, driverQueueRequest.driverId());
-        var rideRequestOptional = queueService.pickPassenger();
-        var driverRequestOptional = queueService.pickDriver();
+    public void consumeSupplyRequests(QueueProceedRequest queueProceedRequest) throws MessagingException {
+        log.info("Consuming the message from topic {} for driver {}", orderTopic, queueProceedRequest.entityId());
+        var queuePairOptional = queueService.pickPair();
 
-        if(rideRequestOptional.isPresent() && driverRequestOptional.isPresent()){
-            rideService.createRide(rideRequestOptional.get(),driverRequestOptional.get().driverId());
+        if(queuePairOptional.isPresent()){
+            log.info("make up pair from passenger {} and driver {}", queuePairOptional.get().passengerId(), queuePairOptional.get().driverId());
+            RideRequest rideRequest = new RideRequest(
+                    queuePairOptional.get().from(),
+                    queuePairOptional.get().to(),
+                    queuePairOptional.get().passengerId());
+            rideService.createRide(rideRequest, queuePairOptional.get().driverId());
+        }
+        else {
+            log.info("cant make pair for entity with id {}", queueProceedRequest.entityId());
         }
     }
 

@@ -10,6 +10,4 @@ public interface PassengerQueueService {
 
     public void addPassenger(RideRequest request);
 
-    public Optional<RideRequest> pickPassenger();
-
 }

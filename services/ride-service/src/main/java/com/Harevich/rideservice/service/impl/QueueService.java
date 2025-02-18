@@ -1,6 +1,6 @@
 package com.Harevich.rideservice.service.impl;
 
-import com.Harevich.rideservice.dto.request.DriverQueueRequest;
+import com.Harevich.rideservice.dto.QueuePairForMakingUpRide;
 import com.Harevich.rideservice.dto.request.RideRequest;
 import com.Harevich.rideservice.model.queue.DriverQueueElement;
 import com.Harevich.rideservice.model.queue.PassengerQueueElement;
@@ -9,11 +9,14 @@ import com.Harevich.rideservice.repository.PassengerQueueRepository;
 import com.Harevich.rideservice.service.DriverQueueService;
 import com.Harevich.rideservice.service.PassengerQueueService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.Optional;
 import java.util.UUID;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class QueueService implements PassengerQueueService, DriverQueueService {
@@ -40,27 +43,27 @@ public class QueueService implements PassengerQueueService, DriverQueueService {
         passengerQueueRepository.save(passengerQueueElement);
     }
 
-    @Override
-    public Optional<RideRequest> pickPassenger(){
-        var passengerOpt = passengerQueueRepository.findFirstByIsProceedFalseOrderByCreatedAtAsc();
-        RideRequest request = null;
-        if(passengerOpt.isPresent()){
-            request = new RideRequest(
-                    passengerOpt.get().getFrom(),
-                    passengerOpt.get().getTo(),
-                    passengerOpt.get().getPassengerId());
-        }
-        return Optional.ofNullable(request);
-    }
-
-    @Override
-    public Optional<DriverQueueRequest> pickDriver(){
+    public Optional<QueuePairForMakingUpRide> pickPair(){
         var driverOpt = driverQueueRepository.findFirstByIsProceedFalseOrderByCreatedAtAsc();
-        DriverQueueRequest request = null;
-        if(driverOpt.isPresent()){
-            request = new DriverQueueRequest(driverOpt.get().getDriverId());
+        var passengerOpt = passengerQueueRepository.findFirstByIsProceedFalseOrderByCreatedAtAsc();
+
+        QueuePairForMakingUpRide queuePair = null;
+        if(driverOpt.isPresent() && passengerOpt.isPresent()) {
+            queuePair = new QueuePairForMakingUpRide(
+                    passengerOpt.get().getPassengerId(),
+                    driverOpt.get().getDriverId(),
+                    passengerOpt.get().getFrom(),
+                    passengerOpt.get().getTo());
+
+            driverOpt.get().setIsProceed(true);
+            driverOpt.get().setProceedAt(LocalDateTime.now());
+            passengerOpt.get().setIsProceed(true);
+            passengerOpt.get().setProceedAt(LocalDateTime.now());
+
+            driverQueueRepository.save(driverOpt.get());
+            passengerQueueRepository.save(passengerOpt.get());
         }
-        return Optional.ofNullable(request);
+        return Optional.ofNullable(queuePair);
     }
 
 }

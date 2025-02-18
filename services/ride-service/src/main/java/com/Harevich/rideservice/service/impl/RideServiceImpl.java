@@ -1,6 +1,6 @@
 package com.Harevich.rideservice.service.impl;
 
-import com.Harevich.rideservice.dto.request.DriverQueueRequest;
+import com.Harevich.rideservice.dto.request.QueueProceedRequest;
 import com.Harevich.rideservice.dto.response.PageableResponse;
 import com.Harevich.rideservice.dto.request.RideRequest;
 import com.Harevich.rideservice.dto.response.RideResponse;
@@ -9,8 +9,6 @@ import com.Harevich.rideservice.kafka.producer.OrderProducer;
 import com.Harevich.rideservice.model.Ride;
 import com.Harevich.rideservice.model.enumerations.RideStatus;
 import com.Harevich.rideservice.repository.RideRepository;
-import com.Harevich.rideservice.service.DriverQueueService;
-import com.Harevich.rideservice.service.PassengerQueueService;
 import com.Harevich.rideservice.service.PriceService;
 import com.Harevich.rideservice.service.RideService;
 import com.Harevich.rideservice.util.constants.RideServiceResponseConstants;
@@ -49,12 +47,13 @@ public class RideServiceImpl implements RideService {
     public void applyForDriver(UUID driverId) {
         rideDataValidation.checkIfDriverIsNotBusy(driverId);
         queueService.addDriver(driverId);
-        orderProducer.sendOrderRequest(new DriverQueueRequest(driverId));
+        orderProducer.sendOrderRequest(new QueueProceedRequest(driverId));
     }
 
     @Override
     public void sendRideRequest(RideRequest request) {
         queueService.addPassenger(request);
+        orderProducer.sendOrderRequest(new QueueProceedRequest(request.passengerId()));
     }
 
     @Override

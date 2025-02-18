@@ -22,6 +22,7 @@ import java.util.UUID;
         description = "This controller is made to book rides")
 public interface RideApi {
 
+    @Deprecated(forRemoval = true)
     @Operation(summary = "creating ride")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "Ride successfully created"),
