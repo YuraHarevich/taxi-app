@@ -16,9 +16,9 @@ public final class RideServiceResponseConstants {
 
     public static final String ADDRESS_NOT_FOUND = "Your address %s not found, you can try to write it on belarusian)";
 
-    public static final String OUTSIDER_REST_API_BAD_REQUEST = "Address name is invalid";
+    public static final String EXTERNAL_REST_API_BAD_REQUEST = "Address name is invalid";
 
-    public static final String OUTSIDER_REST_API_UNAVAILABLE = "Geolocational api that we use to calculate price is unavailable";
+    public static final String EXTERNAL_REST_API_UNAVAILABLE = "Geolocational api that we use to calculate price is unavailable";
 
     public static final String UPDATE_NOT_ALLOWED = "You cant update ride when status is different from created";
 
