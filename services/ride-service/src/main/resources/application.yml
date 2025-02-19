@@ -37,3 +37,6 @@ spring:
           driver-service-client:
             url: "http://localhost:8020/api/v1/drivers"
             loggerLevel: full
+          passenger-service-client:
+            url: "http://localhost:8010/api/v1/passengers"
+            loggerLevel: full

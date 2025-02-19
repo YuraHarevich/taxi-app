@@ -13,6 +13,7 @@ import com.kharevich.rideservice.util.constants.RideServiceResponseConstants;
 import com.kharevich.rideservice.util.mapper.PageMapper;
 import com.kharevich.rideservice.util.mapper.RideMapper;
 import com.kharevich.rideservice.util.validation.driver.DriverValidation;
+import com.kharevich.rideservice.util.validation.passenger.PassengerValidation;
 import com.kharevich.rideservice.util.validation.ride.RideDataValidation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -38,10 +39,13 @@ public class RideServiceImpl implements RideService {
 
     private final PageMapper pageMapper;
 
+    private final PassengerValidation passengerValidation;
+    
     private final DriverValidation driverValidation;
 
     @Override
     public RideResponse createRide(RideRequest request, UUID passengerId, UUID driverId) {
+        passengerValidation.throwExceptionIfPassengerDoesNotExist(passengerId);
         driverValidation.throwExceptionIfDriverDoesNotExist(driverId);
 
         rideDataValidation.checkIfDriverIsNotBusy(driverId);
@@ -121,6 +125,7 @@ public class RideServiceImpl implements RideService {
 
     @Override
     public PageableResponse<RideResponse> getAllRidesByPassengerId(UUID passengerId, int pageNumber, int size) {
+        passengerValidation.throwExceptionIfPassengerDoesNotExist(passengerId);
 
         var rides = rideRepository
                 .findByPassengerIdOrderByCreatedAtDesc(passengerId,PageRequest.of(pageNumber,size))

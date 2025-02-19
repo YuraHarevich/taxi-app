@@ -1,0 +1,12 @@
+app:
+  rating:
+    number_to_evaluate: 10
+server:
+  port: 8040
+spring:
+  data:
+    mongodb:
+      port: 27017
+      host: localhost
+      database: ratings
+      uri: mongodb://localhost:27017/ratings
