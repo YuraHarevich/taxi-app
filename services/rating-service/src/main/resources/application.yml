@@ -1,6 +1,13 @@
 app:
+  urls:
+    services:
+      passenger-service-url: "localhost:8010/api/v1/passengers"
+      driver-service-url: "localhost:8020/api/v1/drivers"
   rating:
     number_to_evaluate: 10
+  urls:
+    services:
+      ride-service-url: "localhost:8030/api/v1/rides"
 server:
   port: 8040
 spring:
@@ -10,3 +17,17 @@ spring:
       host: localhost
       database: ratings
       uri: mongodb://localhost:27017/ratings
+  cloud:
+    openfeign:
+      client:
+        config:
+          passenger-service-client:
+            url: "http://localhost:8010/api/v1/passengers"
+            loggerLevel: full
+          driver-service-client:
+            url: "http://localhost:8020/api/v1/drivers"
+            loggerLevel: full
+          ride-service-client:
+            url: "http://localhost:8030/api/v1/rides"
+            loggerLevel: full
+            

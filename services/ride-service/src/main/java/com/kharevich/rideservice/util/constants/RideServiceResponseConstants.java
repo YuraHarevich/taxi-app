@@ -26,4 +26,12 @@ public final class RideServiceResponseConstants {
 
     public static final String UNEXPECTED_SERVER_ERROR = "unexpected inner behavior";
 
+    public static final String PASSENGER_NOT_FOUND = "passenger with id %s not found";
+
+    public static final String PASSENGER_SERVICE_UNAVAILABLE = "Passenger service is currently unavailable";
+
+    public static final String DRIVER_SERVICE_UNAVAILABLE = "Driver service is currently unavailable";
+
+    public static final String DRIVER_NOT_FOUND = "Driver with id not found";
+
 }
