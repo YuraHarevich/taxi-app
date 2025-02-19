@@ -85,9 +85,10 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler({
-            GeolocationServiceUnavailableException.class
+            RuntimeException.class
     })
     public ResponseEntity<ErrorMessage> handleExceptions(GeolocationServiceUnavailableException ex) {
+        log.error("GeolocationServiceUnavailableException with cause: {}", ex.getMessage());
         return ResponseEntity
                 .status(HttpStatus.SERVICE_UNAVAILABLE)
                 .body(ErrorMessage.builder()

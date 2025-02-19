@@ -48,7 +48,13 @@ spring:
       properties:
         spring.json.trusted.packages: '*'
         spring.json.type.mapping: queueProceedRequest:com.Harevich.rideservice.dto.request.QueueProceedRequest
-
+  cloud:
+    openfeign:
+      client:
+        config:
+          driver-service-client:
+            url: "https://api.openrouteservice.org"
+            loggerLevel: full
 logging:
   level:
     com.netflix.discovery: DEBUG

@@ -13,6 +13,7 @@ import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
 
+import static com.Harevich.rideservice.util.constants.RideServiceResponseConstants.EXTERNAL_REST_API_FORBIDDEN;
 import static com.Harevich.rideservice.util.constants.RideServiceResponseConstants.OUTSIDER_REST_API_BAD_REQUEST;
 import static com.Harevich.rideservice.util.constants.RideServiceResponseConstants.OUTSIDER_REST_API_BAD_UNAVAILABLE;
 
@@ -30,7 +31,9 @@ public class RetreiveMessageErrorDecoder implements ErrorDecoder {
         }
 
         switch (response.status()) {
-            case 400:
+            case 403:
+                return new GeolocationServiceBadRequestException(
+                        message.getMessage() != null ? message.getMessage() : EXTERNAL_REST_API_FORBIDDEN);
             case 404:
                 return new GeolocationServiceBadRequestException(
                         message.getMessage() != null ? message.getMessage() : OUTSIDER_REST_API_BAD_REQUEST);

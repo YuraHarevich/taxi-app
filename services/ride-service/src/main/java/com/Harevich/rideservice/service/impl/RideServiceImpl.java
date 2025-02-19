@@ -5,6 +5,7 @@ import com.Harevich.rideservice.dto.response.PageableResponse;
 import com.Harevich.rideservice.dto.request.RideRequest;
 import com.Harevich.rideservice.dto.response.RideResponse;
 import com.Harevich.rideservice.exception.CannotChangeRideStatusException;
+import com.Harevich.rideservice.exception.GeolocationServiceUnavailableException;
 import com.Harevich.rideservice.kafka.producer.OrderProducer;
 import com.Harevich.rideservice.model.Ride;
 import com.Harevich.rideservice.model.enumerations.RideStatus;
@@ -141,10 +142,14 @@ public class RideServiceImpl implements RideService {
 
         Ride ride = rideMapper.toRide(request);
         ride.setCreatedAt(LocalDateTime.now());
-        ride.setPrice(priceService.getPriceByTwoAddresses(
-                request.from(),
-                request.to(),
-                LocalDateTime.now()));
+        try {
+            ride.setPrice(priceService.getPriceByTwoAddresses(
+                    request.from(),
+                    request.to(),
+                    LocalDateTime.now()));
+        } catch (Exception e){
+            throw new GeolocationServiceUnavailableException(e.getMessage());
+        }
         ride.setPassengerId(request.passengerId());
         ride.setDriverId(driverId);
         ride.setRideStatus(RideStatus.CREATED);

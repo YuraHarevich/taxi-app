@@ -27,20 +27,7 @@ public class OrderConsumer {
     private final KafkaTemplate<String, RideRequest> kafkaTemplate;
     @KafkaListener(topics = "order-topic",groupId = "order-group")
     public void consumeSupplyRequests(QueueProceedRequest queueProceedRequest) throws MessagingException {
-        log.info("Consuming the message from topic {} for driver {}", orderTopic, queueProceedRequest.entityId());
-        var queuePairOptional = queueService.pickPair();
-
-        if(queuePairOptional.isPresent()){
-            log.info("make up pair from passenger {} and driver {}", queuePairOptional.get().passengerId(), queuePairOptional.get().driverId());
-            RideRequest rideRequest = new RideRequest(
-                    queuePairOptional.get().from(),
-                    queuePairOptional.get().to(),
-                    queuePairOptional.get().passengerId());
-            rideService.createRide(rideRequest, queuePairOptional.get().driverId());
-        }
-        else {
-            log.info("cant make pair for entity with id {}", queueProceedRequest.entityId());
-        }
+        rideService.tryToCreate
     }
 
 }

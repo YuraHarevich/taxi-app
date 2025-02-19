@@ -18,6 +18,8 @@ public final class RideServiceResponseConstants {
 
     public static final String OUTSIDER_REST_API_BAD_REQUEST = "Address name is invalid";
 
+    public static final String EXTERNAL_REST_API_FORBIDDEN = "invalid api key";
+
     public static final String OUTSIDER_REST_API_BAD_UNAVAILABLE = "Geolocational api that we use to calculate price is unavailable";
 
     public static final String UPDATE_NOT_ALLOWED = "You cant update ride when status is different from created";
