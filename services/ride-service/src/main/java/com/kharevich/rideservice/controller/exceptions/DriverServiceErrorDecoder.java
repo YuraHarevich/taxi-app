@@ -9,8 +9,8 @@ import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
 
-import static com.kharevich.rideservice.util.constants.GeolocationResponseConstants.DRIVER_NOT_FOUND;
-import static com.kharevich.rideservice.util.constants.GeolocationResponseConstants.DRIVER_SERVICE_UNAVAILABLE;
+import static com.kharevich.rideservice.util.constants.RideServiceResponseConstants.DRIVER_NOT_FOUND;
+import static com.kharevich.rideservice.util.constants.RideServiceResponseConstants.DRIVER_SERVICE_UNAVAILABLE;
 @Slf4j
 public class DriverServiceErrorDecoder implements ErrorDecoder {
     @Override

@@ -92,7 +92,7 @@ public class RideServiceImpl implements RideService {
         RideStatus status = ride.getRideStatus();
         if (status.equals(CREATED)){
             var temp = new Random().nextInt(100);
-            if (temp < 80) {
+            if (temp < 20) {
                 ride.setRideStatus(RideStatus.DECLINED);
             }
             else {

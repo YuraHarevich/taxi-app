@@ -67,7 +67,6 @@ public class PriceServiceIml implements PriceService {
     private BigDecimal increaseTariffByTheEndOfHour(LocalDateTime currentTime, BigDecimal price){
         ZonedDateTime minskTime = currentTime.atZone(ZoneId.of(zoneId));
         LocalTime orderTime = minskTime.toLocalTime();
-        LocalTime orderTime = currentTime.toLocalTime();
         
         int minute = orderTime.getMinute();
         if (minute >= MINUTES_IN_HOUR_WITHOUT_INCREASED_TARIFF) {

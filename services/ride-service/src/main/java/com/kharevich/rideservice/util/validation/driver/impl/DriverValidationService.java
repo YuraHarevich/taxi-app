@@ -9,7 +9,7 @@ import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
-public class PassengerValidationService implements DriverValidation {
+public class DriverValidationService implements DriverValidation {
 
     private final DriverServiceClient driverClient;
 

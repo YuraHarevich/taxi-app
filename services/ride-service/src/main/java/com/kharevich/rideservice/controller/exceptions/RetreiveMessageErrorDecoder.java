@@ -11,8 +11,8 @@ import lombok.extern.slf4j.Slf4j;
 import java.io.IOException;
 import java.io.InputStream;
 
-import static com.kharevich.rideservice.util.constants.RideServiceResponseConstants.OUTSIDER_REST_API_BAD_REQUEST;
-import static com.kharevich.rideservice.util.constants.RideServiceResponseConstants.OUTSIDER_REST_API_BAD_UNAVAILABLE;
+import static com.kharevich.rideservice.util.constants.RideServiceResponseConstants.EXTERNAL_REST_API_UNAVAILABLE;
+import static com.kharevich.rideservice.util.constants.RideServiceResponseConstants.EXTERNAL_REST_API_BAD_REQUEST;
 
 @Slf4j
 public class RetreiveMessageErrorDecoder implements ErrorDecoder {
@@ -25,7 +25,7 @@ public class RetreiveMessageErrorDecoder implements ErrorDecoder {
             ObjectMapper mapper = new ObjectMapper();
             message = mapper.readValue(bodyIs, ErrorMessage.class);
         } catch (IOException e) {
-            return new Exception(OUTSIDER_REST_API_BAD_UNAVAILABLE);
+            return new Exception(EXTERNAL_REST_API_UNAVAILABLE);
         }
 
         log.error(message.getMessage());
@@ -33,9 +33,9 @@ public class RetreiveMessageErrorDecoder implements ErrorDecoder {
         switch (response.status()) {
             case 404:
                 return new GeolocationServiceBadRequestException(
-                        message.getMessage() != null ? message.getMessage() : OUTSIDER_REST_API_BAD_REQUEST);
+                        message.getMessage() != null ? message.getMessage() : EXTERNAL_REST_API_BAD_REQUEST);
             default:
-                return new GeolocationServiceUnavailableException(OUTSIDER_REST_API_BAD_UNAVAILABLE);
+                return new GeolocationServiceUnavailableException(EXTERNAL_REST_API_UNAVAILABLE);
         }
     }
 }
