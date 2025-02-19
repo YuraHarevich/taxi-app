@@ -11,6 +11,7 @@ import com.Harevich.rideservice.service.PassengerQueueService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.Optional;
@@ -43,6 +44,7 @@ public class QueueService implements PassengerQueueService, DriverQueueService {
         passengerQueueRepository.save(passengerQueueElement);
     }
 
+    @Transactional
     public Optional<QueuePairForMakingUpRide> pickPair(){
         var driverOpt = driverQueueRepository.findFirstByIsProceedFalseOrderByCreatedAtAsc();
         var passengerOpt = passengerQueueRepository.findFirstByIsProceedFalseOrderByCreatedAtAsc();
@@ -66,4 +68,7 @@ public class QueueService implements PassengerQueueService, DriverQueueService {
         return Optional.ofNullable(queuePair);
     }
 
+    public void confirmOfProcessing() {
+
+    }
 }

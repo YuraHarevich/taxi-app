@@ -27,7 +27,8 @@ public class OrderConsumer {
     private final KafkaTemplate<String, RideRequest> kafkaTemplate;
     @KafkaListener(topics = "order-topic",groupId = "order-group")
     public void consumeSupplyRequests(QueueProceedRequest queueProceedRequest) throws MessagingException {
-        rideService.tryToCreate
+        log.info("Consuming the message from topic {} for driver {}", orderTopic, queueProceedRequest.entityId());
+        rideService.tryToCreatePairFromQueue();
     }
 
 }

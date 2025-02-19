@@ -26,4 +26,6 @@ public interface RideService {
     void applyForDriver(UUID driverId);
 
     void sendRideRequest(@Valid RideRequest request);
+
+    void tryToCreatePairFromQueue();
 }

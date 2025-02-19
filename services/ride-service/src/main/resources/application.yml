@@ -52,7 +52,7 @@ spring:
     openfeign:
       client:
         config:
-          driver-service-client:
+          geolocation-client:
             url: "https://api.openrouteservice.org"
             loggerLevel: full
 logging:

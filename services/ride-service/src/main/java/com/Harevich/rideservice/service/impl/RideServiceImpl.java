@@ -17,10 +17,13 @@ import com.Harevich.rideservice.util.mapper.PageMapper;
 import com.Harevich.rideservice.util.mapper.RideMapper;
 import com.Harevich.rideservice.util.validation.ride.RideDataValidation;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.interceptor.TransactionAspectSupport;
+
 import java.util.Random;
 
 import java.time.LocalDateTime;
@@ -28,6 +31,7 @@ import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class RideServiceImpl implements RideService {
 
     private final RideRepository rideRepository;
@@ -156,6 +160,28 @@ public class RideServiceImpl implements RideService {
 
         rideRepository.saveAndFlush(ride);
         return rideMapper.toResponse(ride);
+    }
+
+    @Override
+    public void tryToCreatePairFromQueue() {
+        var queuePairOptional = queueService.pickPair();
+
+        if(queuePairOptional.isPresent()){
+            log.info("make up pair from passenger {} and driver {}", queuePairOptional.get().passengerId(), queuePairOptional.get().driverId());
+            RideRequest rideRequest = new RideRequest(
+                    queuePairOptional.get().from(),
+                    queuePairOptional.get().to(),
+                    queuePairOptional.get().passengerId());
+            try {
+                createRide(rideRequest, queuePairOptional.get().driverId());
+            } catch (GeolocationServiceUnavailableException ex) {
+                log.info("Returning pair to the queue cause of external error");
+                //todo rollback
+            }
+        }
+        else {
+            log.info("cant make pair for entity");
+        }
     }
 
 }
