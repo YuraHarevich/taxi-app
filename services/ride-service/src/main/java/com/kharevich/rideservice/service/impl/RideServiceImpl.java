@@ -12,6 +12,7 @@ import com.kharevich.rideservice.service.RideService;
 import com.kharevich.rideservice.util.constants.RideServiceResponseConstants;
 import com.kharevich.rideservice.util.mapper.PageMapper;
 import com.kharevich.rideservice.util.mapper.RideMapper;
+import com.kharevich.rideservice.util.validation.driver.DriverValidation;
 import com.kharevich.rideservice.util.validation.passenger.PassengerValidation;
 import com.kharevich.rideservice.util.validation.ride.RideDataValidation;
 import lombok.RequiredArgsConstructor;
@@ -39,11 +40,13 @@ public class RideServiceImpl implements RideService {
     private final PageMapper pageMapper;
 
     private final PassengerValidation passengerValidation;
+    
+    private final DriverValidation driverValidation;
 
     @Override
     public RideResponse createRide(RideRequest request, UUID passengerId, UUID driverId) {
-        //todo: чек для сущностей driver
         passengerValidation.throwExceptionIfPassengerDoesNotExist(passengerId);
+        driverValidation.throwExceptionIfDriverDoesNotExist(driverId);
 
         rideDataValidation.checkIfDriverIsNotBusy(driverId);
 
@@ -122,7 +125,6 @@ public class RideServiceImpl implements RideService {
 
     @Override
     public PageableResponse<RideResponse> getAllRidesByPassengerId(UUID passengerId, int pageNumber, int size) {
-        //todo: чек для сущностей driver
         passengerValidation.throwExceptionIfPassengerDoesNotExist(passengerId);
 
         var rides = rideRepository
@@ -133,7 +135,7 @@ public class RideServiceImpl implements RideService {
 
     @Override
     public PageableResponse<RideResponse> getAllRidesByDriverId(UUID driverId, int pageNumber, int size) {
-        //todo: чек для сущностей driver
+        driverValidation.throwExceptionIfDriverDoesNotExist(driverId);
 
         var rides = rideRepository
                 .findByDriverIdOrderByCreatedAtDesc(driverId, PageRequest.of(pageNumber,size))
