@@ -25,6 +25,8 @@ import java.util.Random;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
+import static com.kharevich.rideservice.model.enumerations.RideStatus.CREATED;
+
 @Service
 @RequiredArgsConstructor
 public class RideServiceImpl implements RideService {
@@ -58,7 +60,7 @@ public class RideServiceImpl implements RideService {
                     LocalDateTime.now()));
             ride.setPassengerId(passengerId);
             ride.setDriverId(driverId);
-            ride.setRideStatus(RideStatus.CREATED);
+            ride.setRideStatus(CREATED);
 
             rideRepository.saveAndFlush(ride);
         return rideMapper.toResponse(ride);
@@ -83,9 +85,12 @@ public class RideServiceImpl implements RideService {
     @Transactional
     public RideResponse changeRideStatus(UUID id) {
         Ride ride = rideDataValidation.findIfExistsByRideId(id);
-        rideDataValidation.checkIfDriverIsNotBusy(ride.getDriverId());
+
+        if(ride.getRideStatus().equals(CREATED)) {
+            rideDataValidation.checkIfDriverIsNotBusy(ride.getDriverId());
+        }
         RideStatus status = ride.getRideStatus();
-        if (status.equals(RideStatus.CREATED)){
+        if (status.equals(CREATED)){
             var temp = new Random().nextInt(100);
             if (temp < 80) {
                 ride.setRideStatus(RideStatus.DECLINED);

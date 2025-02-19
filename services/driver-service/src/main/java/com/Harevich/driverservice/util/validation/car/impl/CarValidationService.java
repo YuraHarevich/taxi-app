@@ -15,11 +15,14 @@ import java.util.UUID;
 @Service
 @RequiredArgsConstructor
 public class CarValidationService implements CarValidation {
+
     private final CarRepository carRepository;
+
     @Override
     public void alreadyExistsByNumber(String number) {
-        if(carRepository.existsByNumber(number))
+        if (carRepository.existsByNumber(number))
             throw new RepeatedDataException(DriverServiceResponseConstants.REPEATED_CAR_NUMBER);
+
     }
 
     @Override
@@ -45,7 +48,8 @@ public class CarValidationService implements CarValidation {
     public void carIsAlreadyOccupied(UUID id) {
         Car car = carRepository.findById(id)
                 .orElseThrow(()->new EntityNotFoundException(DriverServiceResponseConstants.CAR_NOT_FOUND));
-        if(car.getDriver() != null)
+        if (car.getDriver() != null)
             throw new CarIsAlreadyOccupiedException(DriverServiceResponseConstants.CAR_IS_OCCUPIED);
     }
+
 }

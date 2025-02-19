@@ -4,7 +4,9 @@ import com.Harevich.driverservice.dto.request.CarRequest;
 import com.Harevich.driverservice.dto.response.CarResponse;
 import com.Harevich.driverservice.dto.response.PageableResponse;
 import com.Harevich.driverservice.model.Car;
+import com.Harevich.driverservice.model.Driver;
 import com.Harevich.driverservice.repository.CarRepository;
+import com.Harevich.driverservice.repository.DriverRepository;
 import com.Harevich.driverservice.service.CarService;
 import com.Harevich.driverservice.util.validation.car.CarValidation;
 import com.Harevich.driverservice.util.constants.RegularExpressionConstants;
@@ -20,12 +22,20 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.Objects;
 import java.util.UUID;
 
+import static com.Harevich.driverservice.util.constants.RegularExpressionConstants.CAR_NUMBER_REGEX;
+
 @Service
 @RequiredArgsConstructor
 public class CarServiceImpl implements CarService {
+
     private final CarRepository carRepository;
+
+    private final DriverRepository driverRepository;
+
     private final CarMapper carMapper;
+
     private final CarValidation carValidation;
+
     private final PageMapper pageMapper;
 
     @Override
@@ -39,8 +49,10 @@ public class CarServiceImpl implements CarService {
     @Transactional
     public CarResponse updateCar(@Valid CarRequest request, UUID id) {
         Car car = carValidation.findIfExistsById(id);
+
         carValidation.alreadyExistsByNumber(request.number());
         carValidation.isDeleted(id);
+
         carMapper.changeCarByRequest(request,car);
         Car updatedCar = carRepository.saveAndFlush(car);
         return carMapper.toResponse(updatedCar);
@@ -54,7 +66,7 @@ public class CarServiceImpl implements CarService {
     }
 
     @Override
-    public CarResponse getCarByNumber(@Pattern(regexp = RegularExpressionConstants.CAR_NUMBER_REGEX) String number) {
+    public CarResponse getCarByNumber(@Pattern(regexp = CAR_NUMBER_REGEX) String number) {
         Car car = carValidation.findIfExistsByNumber(number);
         carValidation.isDeleted(car.getId());
         return carMapper.toResponse(car);
@@ -65,9 +77,14 @@ public class CarServiceImpl implements CarService {
     public void deleteCarById(UUID id) {
         Car car = carValidation.findIfExistsById(id);
         carValidation.isDeleted(id);
+
         car.setDeleted(true);
-        if(!Objects.equals(car.getDriver(),null))
-            car.getDriver().setDeleted(true);
+        Driver driver = car.getDriver();
+
+        if (driver != null) {
+            driver.setCar(null);
+        }
+        car.setDriver(null);
         carRepository.save(car);
     }
 
@@ -76,4 +93,5 @@ public class CarServiceImpl implements CarService {
         return pageMapper
                 .toResponse(carRepository.findByDriverIsNullAndDeletedFalse(PageRequest.of(pageNumber,size)));
     }
+
 }

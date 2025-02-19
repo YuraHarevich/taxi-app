@@ -19,6 +19,7 @@ import java.util.UUID;
 @Setter
 @Table(name = "drivers")
 public class Driver {
+
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     @Column(name = "id")
@@ -54,4 +55,5 @@ public class Driver {
     @Builder.Default
     @Column(name = "deleted")
     private boolean deleted = false;
+
 }

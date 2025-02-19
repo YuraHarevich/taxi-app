@@ -16,6 +16,7 @@ import java.util.UUID;
 @RequiredArgsConstructor
 @RequestMapping("api/v1/drivers")
 public class DriverController implements DriverApi {
+
     private final DriverService driverService;
 
     @PostMapping("create")

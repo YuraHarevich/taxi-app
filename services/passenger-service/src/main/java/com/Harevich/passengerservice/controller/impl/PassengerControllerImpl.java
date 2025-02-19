@@ -16,6 +16,7 @@ import java.util.UUID;
 @AllArgsConstructor
 @RequestMapping("api/v1/passengers")
 public class PassengerControllerImpl implements PassengerApi {
+
     private final PassengerService passengerService;
 
     @PostMapping
@@ -41,4 +42,5 @@ public class PassengerControllerImpl implements PassengerApi {
     public void deletePassengerById(@RequestParam("id") UUID id){
         passengerService.deleteById(id);
     }
+
 }

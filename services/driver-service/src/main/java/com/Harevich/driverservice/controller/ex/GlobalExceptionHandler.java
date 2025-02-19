@@ -18,8 +18,10 @@ import java.util.Map;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
-    @ExceptionHandler(EntityNotFoundException.class)
-    public ResponseEntity<ErrorMessage> handle(EntityNotFoundException exception) {
+    @ExceptionHandler({
+            EntityNotFoundException.class
+    })
+    public ResponseEntity<ErrorMessage> handle(RuntimeException exception) {
         return ResponseEntity
                 .status(HttpStatus.NOT_FOUND)
                 .body(ErrorMessage.builder()
@@ -28,8 +30,12 @@ public class GlobalExceptionHandler {
                         .build());
     }
 
-    @ExceptionHandler(RepeatedDataException.class)
-    public ResponseEntity<ErrorMessage> handle(RepeatedDataException exception) {
+    @ExceptionHandler({
+            RepeatedDataException.class,
+            CarIsAlreadyOccupiedException.class,
+            SexConvertionException.class
+    })
+    public ResponseEntity<ErrorMessage> handle(Exception exception) {
         return ResponseEntity
                 .status(HttpStatus.CONFLICT)
                 .body(ErrorMessage.builder()
@@ -49,27 +55,10 @@ public class GlobalExceptionHandler {
                         .build());
     }
 
-    @ExceptionHandler(CarIsAlreadyOccupiedException.class)
-    public ResponseEntity<ErrorMessage> handleValidationExceptions(CarIsAlreadyOccupiedException ex) {
-        return ResponseEntity
-                .status(HttpStatus.CONFLICT)
-                .body(ErrorMessage.builder()
-                        .message(ex.getMessage())
-                        .timestamp(LocalDateTime.now())
-                        .build());
-    }
-
-    @ExceptionHandler(SexConvertionException.class)
-    public ResponseEntity<ErrorMessage> handleValidationExceptions(SexConvertionException ex) {
-        return ResponseEntity
-                .status(HttpStatus.CONFLICT)
-                .body(ErrorMessage.builder()
-                        .message(ex.getMessage())
-                        .timestamp(LocalDateTime.now())
-                        .build());
-    }
-    @ExceptionHandler(ConstraintViolationException.class)
-    public ResponseEntity<ErrorMessage> handleConstraintViolationExceptions(ConstraintViolationException ex) {
+    @ExceptionHandler({
+            ConstraintViolationException.class
+    })
+    public ResponseEntity<ErrorMessage> handleConstraintViolationExceptions(RuntimeException ex) {
         return ResponseEntity
                 .status(HttpStatus.BAD_REQUEST)
                 .body(ErrorMessage.builder()
@@ -77,6 +66,5 @@ public class GlobalExceptionHandler {
                         .timestamp(LocalDateTime.now())
                         .build());
     }
-
 
 }

@@ -9,10 +9,11 @@ import org.mapstruct.*;
 import java.util.List;
 
 @Mapper(
-        componentModel = "spring",
+        componentModel = MappingConstants.ComponentModel.SPRING,
         injectionStrategy = InjectionStrategy.CONSTRUCTOR
 )
 public interface CarMapper {
+
     @Mapping(source = "driver.id", target = "driverId")
     CarResponse toResponse(Car car);
 

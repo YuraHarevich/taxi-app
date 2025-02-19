@@ -6,10 +6,11 @@ import com.Harevich.driverservice.model.Driver;
 import org.mapstruct.*;
 
 @Mapper(
-        componentModel = "spring",
+        componentModel = MappingConstants.ComponentModel.SPRING,
         injectionStrategy = InjectionStrategy.CONSTRUCTOR
 )
 public interface DriverMapper {
+
     @Mapping(source = "car.id", target = "carId")
     DriverResponse toResponse(Driver driver);
 
@@ -19,4 +20,5 @@ public interface DriverMapper {
 
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
     void changeDriverByRequest(DriverRequest driverRequest, @MappingTarget Driver driver);
+
 }

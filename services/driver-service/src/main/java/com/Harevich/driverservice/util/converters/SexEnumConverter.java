@@ -10,6 +10,7 @@ import java.util.Arrays;
 
 @Converter
 public class SexEnumConverter implements AttributeConverter<Sex, Integer> {
+
     @Override
     public Integer convertToDatabaseColumn(Sex sex) {
         if (sex == null) {
@@ -23,4 +24,5 @@ public class SexEnumConverter implements AttributeConverter<Sex, Integer> {
         return Sex.fromCode(code)
                 .orElseThrow(() -> new SexConvertionException(DriverServiceResponseConstants.ERROR_WHILE_CONVERTING_SEX));
     }
+
 }

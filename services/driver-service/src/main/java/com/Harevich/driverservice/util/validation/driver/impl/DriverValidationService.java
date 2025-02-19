@@ -16,6 +16,7 @@ import java.util.UUID;
 @Service
 @RequiredArgsConstructor
 public class DriverValidationService implements DriverValidation {
+
     private final DriverRepository driverRepository;
 
     @Override
@@ -33,7 +34,7 @@ public class DriverValidationService implements DriverValidation {
     @Override
     public Driver findIfExistsById(UUID id) {
         return driverRepository.findById(id)
-                .orElseThrow(()->new RepeatedDataException(DriverServiceResponseConstants.DRIVER_NOT_FOUND));
+                .orElseThrow(() -> new EntityNotFoundException(DriverServiceResponseConstants.DRIVER_NOT_FOUND));
     }
 
     @Override
@@ -49,4 +50,5 @@ public class DriverValidationService implements DriverValidation {
         return Objects.equals(driver.getCar().getId(),car.getId());
 
     }
+
 }

@@ -9,9 +9,13 @@ import java.util.Optional;
 @RequiredArgsConstructor
 @Getter
 public enum Sex {
+
     MALE(1),
+
     FEMALE(2),
+
     NON_BINARY(3),
+
     OTHERS(0);
 
     private final int sexCode;
@@ -21,4 +25,5 @@ public enum Sex {
                 .filter(sex -> sex.sexCode == code)
                 .findAny();
     }
+
 }

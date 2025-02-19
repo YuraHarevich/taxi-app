@@ -6,6 +6,7 @@ import com.Harevich.driverservice.dto.response.DriverResponse;
 import java.util.UUID;
 
 public interface DriverService {
+
     public DriverResponse createNewDriver(DriverRequest request);
 
     public DriverResponse updateDriver(DriverRequest request, UUID id);
@@ -15,4 +16,5 @@ public interface DriverService {
     void deleteById(UUID id);
 
     DriverResponse assignPersonalCar(UUID driverId, UUID carId);
+
 }

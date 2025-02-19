@@ -1,4 +1,6 @@
 app:
+  time:
+    zoneId: "Europe/Minsk"
   urls:
     openrouteservice:
       longitude: 27.56667

@@ -6,12 +6,13 @@ import com.Harevich.passengerservice.model.Passenger;
 import org.mapstruct.*;
 
 @Mapper(
-        componentModel = "spring",
+        componentModel = MappingConstants.ComponentModel.SPRING,
         injectionStrategy = InjectionStrategy.CONSTRUCTOR
 )
 public interface PassengerMapper {
 
     PassengerResponse toResponse(Passenger passenger);
+
     PassengerRequest toRequest(PassengerResponse passenger);
 
     Passenger toPassenger(PassengerRequest passengerRequest);

@@ -21,7 +21,9 @@ import java.util.UUID;
 @RequiredArgsConstructor
 @RequestMapping("api/v1/cars")
 public class CarController implements CarApi {
+
     private final CarService carService;
+
     @PostMapping("create")
     @ResponseStatus(HttpStatus.CREATED)
     public CarResponse createNewCar(@Valid @RequestBody CarRequest request){
