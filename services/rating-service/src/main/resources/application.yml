@@ -13,3 +13,10 @@ spring:
       host: localhost
       database: ratings
       uri: mongodb://localhost:27017/ratings
+  cloud:
+    openfeign:
+      client:
+        config:
+          ride-service-client:
+            url: "http://localhost:8030/api/v1/rides"
+            loggerLevel: full
