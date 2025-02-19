@@ -3,6 +3,7 @@ package com.kharevich.ratingservice.util.validation.impl;
 import com.kharevich.ratingservice.client.PassengerServiceClient;
 import com.kharevich.ratingservice.util.validation.PersonValidationService;
 import lombok.RequiredArgsConstructor;
+import com.kharevich.ratingservice.util.validation.PersonValidationService;
 import org.springframework.stereotype.Service;
 
 import java.util.UUID;

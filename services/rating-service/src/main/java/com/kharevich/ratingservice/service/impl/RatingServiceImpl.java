@@ -1,5 +1,6 @@
 package com.kharevich.ratingservice.service.impl;
 
+import com.kharevich.ratingservice.client.RideServiceClient;
 import com.kharevich.ratingservice.dto.request.RatingRequest;
 import com.kharevich.ratingservice.dto.response.PageableResponse;
 import com.kharevich.ratingservice.dto.response.PersonalRatingResponse;
@@ -8,6 +9,7 @@ import com.kharevich.ratingservice.model.Rating;
 import com.kharevich.ratingservice.model.enumerations.RatingPerson;
 import com.kharevich.ratingservice.repository.RatingRepository;
 import com.kharevich.ratingservice.service.RatingService;
+import com.kharevich.ratingservice.sideservices.ride.RideResponse;
 import com.kharevich.ratingservice.util.mapper.RatingMapper;
 import com.kharevich.ratingservice.util.validation.PersonValidationService;
 import com.kharevich.ratingservice.util.validation.RatingValidationService;
@@ -18,9 +20,14 @@ import org.springframework.stereotype.Service;
 
 import java.util.UUID;
 
+import static com.kharevich.ratingservice.model.enumerations.RatingPerson.DRIVER;
+import static com.kharevich.ratingservice.model.enumerations.RatingPerson.PASSENGER;
+
 @Service
 @RequiredArgsConstructor
 public class RatingServiceImpl implements RatingService {
+
+    private final RideServiceClient rideClient;
 
     private final RatingRepository ratingRepository;
 
@@ -32,7 +39,15 @@ public class RatingServiceImpl implements RatingService {
 
     @Override
     public RatingResponse estimateTheRide(RatingRequest request) {
-        //todo получать id пассажира и водителя из другого сервиса
+       
+        PersonValidationService passengerValidation = personValidationFactory.validatorFor(PASSENGER);
+        PersonValidationService driverValidation = personValidationFactory.validatorFor(DRIVER);
+
+        RideResponse rideResponse = rideClient.getRideIfExists(request.rideId());
+
+        passengerValidation.checkIfPersonExists(rideResponse.passengerId());
+        driverValidation.checkIfPersonExists(rideResponse.driverId());
+
         Rating rating = ratingMapper.toRating(request);
 
         ratingValidationService.checkIfRideIsAlreadyEstimated(request.rideId(),request.whoIsRated());
