@@ -14,3 +14,13 @@ spring:
       host: localhost
       database: ratings
       uri: mongodb://localhost:27017/ratings
+  cloud:
+    openfeign:
+      client:
+        config:
+          passenger-service-client:
+            url: "http://localhost:8010/api/v1/passengers"
+            loggerLevel: full
+          driver-service-client:
+            url: "http://localhost:8010/api/v1/drivers"
+            loggerLevel: full
