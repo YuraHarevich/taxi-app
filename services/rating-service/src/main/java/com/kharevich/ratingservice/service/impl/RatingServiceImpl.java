@@ -39,7 +39,7 @@ public class RatingServiceImpl implements RatingService {
 
     @Override
     public RatingResponse estimateTheRide(RatingRequest request) {
-        //todo получать id пассажира и водителя из другого сервиса
+       
         PersonValidationService passengerValidation = personValidationFactory.validatorFor(PASSENGER);
         PersonValidationService driverValidation = personValidationFactory.validatorFor(DRIVER);
 
