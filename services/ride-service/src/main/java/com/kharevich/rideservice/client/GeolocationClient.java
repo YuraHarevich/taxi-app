@@ -1,7 +1,6 @@
 package com.kharevich.rideservice.client;
 
-import com.kharevich.rideservice.controller.exceptions.GeolocationApiErrorDecoder;
-import com.kharevich.rideservice.util.config.FeignConfig;
+import com.kharevich.rideservice.controller.exceptions.RetreiveMessageErrorDecoder;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -11,8 +10,7 @@ import java.util.Map;
 
 @FeignClient(
         name = "geolocation-client",
-        url = "${app.urls.openrouteservice.base-url}",
-        configuration = {FeignConfig.class, GeolocationApiErrorDecoder.class}
+        configuration = RetreiveMessageErrorDecoder.class
 )
 public interface GeolocationClient {
 

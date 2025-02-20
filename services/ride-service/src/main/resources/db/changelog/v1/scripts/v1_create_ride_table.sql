@@ -1,3 +1,6 @@
+CREATE EXTENSION IF NOT EXISTS pgcrypto;
+GO
+
 CREATE TABLE ride (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     from_address VARCHAR(256) NOT NULL,

@@ -44,7 +44,6 @@ public class PriceServiceIml implements PriceService {
     }
 
     private BigDecimal increaseTariffByMorningPeak(LocalDateTime currentTime, BigDecimal price){
-    
         ZonedDateTime minskTime = currentTime.atZone(ZoneId.of(zoneId));
         LocalTime orderTime = minskTime.toLocalTime();
 
@@ -57,7 +56,7 @@ public class PriceServiceIml implements PriceService {
     private BigDecimal increaseTariffByEveningPeak(LocalDateTime currentTime, BigDecimal price){
         ZonedDateTime minskTime = currentTime.atZone(ZoneId.of(zoneId));
         LocalTime orderTime = minskTime.toLocalTime();
-
+      
         if (orderTime.isAfter(EVENING_PEAK_START) && orderTime.isBefore(EVENING_PEAK_END)) {
             price.multiply(BigDecimal.valueOf(EVENING_MULTIPLY_CONSTANT));
         }

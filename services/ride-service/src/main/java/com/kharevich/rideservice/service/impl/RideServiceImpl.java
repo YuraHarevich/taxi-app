@@ -1,9 +1,13 @@
 package com.kharevich.rideservice.service.impl;
 
+import com.kharevich.rideservice.dto.queue.PassengerDriverRideQueuePair;
+import com.kharevich.rideservice.dto.request.QueueProceedRequest;
 import com.kharevich.rideservice.dto.response.PageableResponse;
 import com.kharevich.rideservice.dto.request.RideRequest;
 import com.kharevich.rideservice.dto.response.RideResponse;
 import com.kharevich.rideservice.exception.CannotChangeRideStatusException;
+import com.kharevich.rideservice.exception.GeolocationServiceUnavailableException;
+import com.kharevich.rideservice.kafka.producer.OrderProducer;
 import com.kharevich.rideservice.model.Ride;
 import com.kharevich.rideservice.model.enumerations.RideStatus;
 import com.kharevich.rideservice.repository.RideRepository;
@@ -12,6 +16,9 @@ import com.kharevich.rideservice.service.RideService;
 import com.kharevich.rideservice.util.constants.RideServiceResponseConstants;
 import com.kharevich.rideservice.util.mapper.PageMapper;
 import com.kharevich.rideservice.util.mapper.RideMapper;
+import com.kharevich.rideservice.util.validation.ride.RideDataValidation;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import com.kharevich.rideservice.util.validation.driver.DriverValidation;
 import com.kharevich.rideservice.util.validation.passenger.PassengerValidation;
 import com.kharevich.rideservice.util.validation.ride.RideDataValidation;
@@ -29,6 +36,7 @@ import static com.kharevich.rideservice.model.enumerations.RideStatus.CREATED;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class RideServiceImpl implements RideService {
 
     private final RideRepository rideRepository;
@@ -41,9 +49,25 @@ public class RideServiceImpl implements RideService {
 
     private final PageMapper pageMapper;
 
+    private final OrderProducer orderProducer;
+
+    private final QueueService queueService;
+    
     private final PassengerValidation passengerValidation;
     
     private final DriverValidation driverValidation;
+
+    @Override
+    public void applyForDriver(UUID driverId) {
+        rideDataValidation.checkIfDriverIsNotBusy(driverId);
+        queueService.addDriver(driverId);
+        orderProducer.sendOrderRequest(new QueueProceedRequest(driverId));
+    }
+
+    @Override
+    public void sendRideRequest(RideRequest request) {
+        queueService.addPassenger(request);
+        orderProducer.sendOrderRequest(new QueueProceedRequest(request.passengerId()));
 
     @Override
     public RideResponse createRide(RideRequest request, UUID passengerId, UUID driverId) {
@@ -85,7 +109,6 @@ public class RideServiceImpl implements RideService {
     @Transactional
     public RideResponse changeRideStatus(UUID id) {
         Ride ride = rideDataValidation.findIfExistsByRideId(id);
-
         if(ride.getRideStatus().equals(CREATED)) {
             rideDataValidation.checkIfDriverIsNotBusy(ride.getDriverId());
         }
@@ -131,7 +154,7 @@ public class RideServiceImpl implements RideService {
     @Override
     public PageableResponse<RideResponse> getAllRidesByPassengerId(UUID passengerId, int pageNumber, int size) {
         passengerValidation.throwExceptionIfPassengerDoesNotExist(passengerId);
-
+        
         var rides = rideRepository
                 .findByPassengerIdOrderByCreatedAtDesc(passengerId,PageRequest.of(pageNumber,size))
                 .map(rideMapper::toResponse);
@@ -146,6 +169,36 @@ public class RideServiceImpl implements RideService {
                 .findByDriverIdOrderByCreatedAtDesc(driverId, PageRequest.of(pageNumber,size))
                 .map(rideMapper::toResponse);
         return pageMapper.toResponse(rides);
+    }
+
+    @Override
+    public void tryToCreatePairFromQueue() {
+        var queuePairOptional = queueService.pickPair();
+        PassengerDriverRideQueuePair passengerDriverRideQueuePair = null;
+
+        if(queuePairOptional.isPresent()){
+            passengerDriverRideQueuePair = queuePairOptional.get();
+
+            log.info("making up pair from passenger {} and driver {}", queuePairOptional.get().passengerId(), queuePairOptional.get().driverId());
+
+            RideRequest rideRequest = new RideRequest(
+                    passengerDriverRideQueuePair.from(),
+                    passengerDriverRideQueuePair.to(),
+                    passengerDriverRideQueuePair.passengerId());
+            try {
+                createRide(rideRequest, passengerDriverRideQueuePair.driverId());
+            } catch (GeolocationServiceUnavailableException ex) {
+                log.info("Pair of driver {} and passenger {} can't be processed cause of external error",
+                        passengerDriverRideQueuePair.driverId(),
+                        passengerDriverRideQueuePair.passengerId());
+                return;
+            }
+            log.info("Pair successfully processed");
+            queueService.markAsProcessed(passengerDriverRideQueuePair);
+        }
+        else {
+            log.info("cant make pair for entity");
+        }
     }
 
 }

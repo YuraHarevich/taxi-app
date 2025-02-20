@@ -16,6 +16,8 @@ public final class RideServiceResponseConstants {
 
     public static final String ADDRESS_NOT_FOUND = "Your address %s not found, you can try to write it on belarusian)";
 
+    public static final String EXTERNAL_REST_API_FORBIDDEN = "invalid api key";
+
     public static final String EXTERNAL_REST_API_BAD_REQUEST = "Address name is invalid";
 
     public static final String EXTERNAL_REST_API_UNAVAILABLE = "Geolocational api that we use to calculate price is unavailable";
@@ -26,6 +28,9 @@ public final class RideServiceResponseConstants {
 
     public static final String UNEXPECTED_SERVER_ERROR = "unexpected inner behavior";
 
+    public static final String ERROR_WHILE_CONVERTING_PROCESSING_STATUS = "The field processing status was determined incorrectly";
+
+    public static final String PROCESSING_STATUS_IS_ABSENT = "Parameter processing status is absent";
     public static final String PASSENGER_NOT_FOUND = "passenger with id %s not found";
 
     public static final String PASSENGER_SERVICE_UNAVAILABLE = "Passenger service is currently unavailable";

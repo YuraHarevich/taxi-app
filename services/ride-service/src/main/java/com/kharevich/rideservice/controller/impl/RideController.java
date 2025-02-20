@@ -27,12 +27,23 @@ public class RideController implements RideApi {
 
     private final RideService rideService;
 
+    @PostMapping("order/driver")
+    @ResponseStatus(HttpStatus.OK)
+    public void applyForDriver(@RequestParam("driver_id") UUID driverId){
+        rideService.applyForDriver(driverId);
+    }
+
+    @PostMapping("order/passenger")
+    @ResponseStatus(HttpStatus.OK)
+    public void createOrder(@Valid @RequestBody RideRequest request){
+        rideService.sendRideRequest(request);
+    }
+
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public RideResponse createRide(@Valid @RequestBody RideRequest request,
-                                   @RequestParam("passenger_id") UUID passengerId,
                                    @RequestParam("driver_id") UUID driverId) {
-        RideResponse rideResponse = rideService.createRide(request, passengerId, driverId);
+        RideResponse rideResponse = rideService.createRide(request, driverId);
         return rideResponse;
     }
 
@@ -73,7 +84,7 @@ public class RideController implements RideApi {
                                                                    @RequestParam(defaultValue = "0") @Min(0) int pageNumber,
                                                                    @RequestParam(defaultValue = "10") int size) {
         PageableResponse<RideResponse> rideResponse = rideService
-                .getAllRidesByPassengerId(passengerId, pageNumber, size>50?50:size);
+                .getAllRidesByPassengerId(passengerId, pageNumber, size > 50 ? 50 : size);
         return rideResponse;
     }
 
@@ -83,7 +94,7 @@ public class RideController implements RideApi {
                                                                 @RequestParam(defaultValue = "0") @Min(0) int pageNumber,
                                                                 @RequestParam(defaultValue = "10") int size) {
         PageableResponse<RideResponse> rideResponse = rideService
-                .getAllRidesByDriverId(driverId, pageNumber, size>50?50:size);
+                .getAllRidesByDriverId(driverId, pageNumber, size > 50 ? 50 : size);
         return rideResponse;
     }
 
