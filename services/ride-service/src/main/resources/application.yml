@@ -44,7 +44,7 @@ spring:
       key-serializer: org.apache.kafka.common.serialization.StringSerializer
       value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
       properties:
-        spring.json.type.mapping: queueProceedRequest:com.Harevich.rideservice.dto.request.QueueProceedRequest
+        spring.json.type.mapping: queueProceedRequest:com.kharevich.rideservice.dto.request.QueueProceedRequest
     consumer:
       bootstrap-servers: localhost:9092
       group-id: order-group
@@ -53,7 +53,7 @@ spring:
       value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
       properties:
         spring.json.trusted.packages: '*'
-        spring.json.type.mapping: queueProceedRequest:com.Harevich.rideservice.dto.request.QueueProceedRequest
+        spring.json.type.mapping: queueProceedRequest:com.kharevich.rideservice.dto.request.QueueProceedRequest
         
   cloud:
     openfeign:

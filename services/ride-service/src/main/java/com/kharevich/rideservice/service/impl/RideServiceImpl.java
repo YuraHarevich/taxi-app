@@ -6,7 +6,9 @@ import com.kharevich.rideservice.dto.response.PageableResponse;
 import com.kharevich.rideservice.dto.request.RideRequest;
 import com.kharevich.rideservice.dto.response.RideResponse;
 import com.kharevich.rideservice.exception.CannotChangeRideStatusException;
+import com.kharevich.rideservice.exception.DriverNotFoundException;
 import com.kharevich.rideservice.exception.GeolocationServiceUnavailableException;
+import com.kharevich.rideservice.exception.PassengerNotFoundException;
 import com.kharevich.rideservice.kafka.producer.OrderProducer;
 import com.kharevich.rideservice.model.Ride;
 import com.kharevich.rideservice.model.enumerations.RideStatus;
@@ -21,8 +23,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import com.kharevich.rideservice.util.validation.driver.DriverValidation;
 import com.kharevich.rideservice.util.validation.passenger.PassengerValidation;
-import com.kharevich.rideservice.util.validation.ride.RideDataValidation;
-import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
@@ -33,6 +33,8 @@ import java.time.LocalDateTime;
 import java.util.UUID;
 
 import static com.kharevich.rideservice.model.enumerations.RideStatus.CREATED;
+import static com.kharevich.rideservice.util.constants.RideServiceResponseConstants.DRIVER_NOT_FOUND;
+import static com.kharevich.rideservice.util.constants.RideServiceResponseConstants.PASSENGER_NOT_FOUND;
 
 @Service
 @RequiredArgsConstructor
@@ -68,25 +70,39 @@ public class RideServiceImpl implements RideService {
     public void sendRideRequest(RideRequest request) {
         queueService.addPassenger(request);
         orderProducer.sendOrderRequest(new QueueProceedRequest(request.passengerId()));
+    }
 
     @Override
-    public RideResponse createRide(RideRequest request, UUID passengerId, UUID driverId) {
-        passengerValidation.throwExceptionIfPassengerDoesNotExist(passengerId);
-        driverValidation.throwExceptionIfDriverDoesNotExist(driverId);
+    public RideResponse createRide(RideRequest request, UUID driverId) {
+        try {
+            passengerValidation.throwExceptionIfPassengerDoesNotExist(request.passengerId());
+        } catch (Exception ex) {
+            throw new PassengerNotFoundException(PASSENGER_NOT_FOUND);
+        }
+        try {
+            driverValidation.throwExceptionIfDriverDoesNotExist(driverId);
+        } catch (Exception ex) {
+            throw new DriverNotFoundException(DRIVER_NOT_FOUND);
+        }
+
 
         rideDataValidation.checkIfDriverIsNotBusy(driverId);
 
         Ride ride = rideMapper.toRide(request);
-            ride.setCreatedAt(LocalDateTime.now());
+        ride.setCreatedAt(LocalDateTime.now());
+        try {
             ride.setPrice(priceService.getPriceByTwoAddresses(
                     request.from(),
                     request.to(),
                     LocalDateTime.now()));
-            ride.setPassengerId(passengerId);
-            ride.setDriverId(driverId);
-            ride.setRideStatus(CREATED);
+        } catch (Exception e){
+            throw new GeolocationServiceUnavailableException(e.getMessage());
+        }
+        ride.setPassengerId(request.passengerId());
+        ride.setDriverId(driverId);
+        ride.setRideStatus(RideStatus.CREATED);
 
-            rideRepository.saveAndFlush(ride);
+        rideRepository.saveAndFlush(ride);
         return rideMapper.toResponse(ride);
     }
 
@@ -191,6 +207,15 @@ public class RideServiceImpl implements RideService {
                 log.info("Pair of driver {} and passenger {} can't be processed cause of external error",
                         passengerDriverRideQueuePair.driverId(),
                         passengerDriverRideQueuePair.passengerId());
+                return;
+            } catch (DriverNotFoundException ex) {
+                log.info("DriverNotFoundException caught");
+                return;
+            } catch (PassengerNotFoundException ex) {
+                log.info("PassengerNotFoundException caught");
+                return;
+            } catch (Exception exception) {
+                log.error("exception: {}", exception.getMessage());
                 return;
             }
             log.info("Pair successfully processed");

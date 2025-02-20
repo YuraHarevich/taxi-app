@@ -97,4 +97,9 @@ public class QueueService implements PassengerQueueService, DriverQueueService {
             log.info("Couldn't mark as processed driver {}",passengerDriverRideQueuePair.driverId());
         }
     }
+
+    public void removeQueueItems(PassengerDriverRideQueuePair passengerDriverRideQueuePair){
+
+    }
+
 }
