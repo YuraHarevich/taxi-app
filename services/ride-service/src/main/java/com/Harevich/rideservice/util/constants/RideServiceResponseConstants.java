@@ -28,4 +28,8 @@ public final class RideServiceResponseConstants {
 
     public static final String UNEXPECTED_SERVER_ERROR = "unexpected inner behavior";
 
+    public static final String ERROR_WHILE_CONVERTING_PROCESSING_STATUS = "The field processing status was determined incorrectly";
+
+    public static final String PROCESSING_STATUS_IS_ABSENT = "Parameter processing status is absent";
+
 }

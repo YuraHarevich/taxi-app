@@ -3,8 +3,8 @@ package com.Harevich.rideservice.service.impl;
 import com.Harevich.rideservice.dto.queue.PassengerDriverQueueItemIdPair;
 import com.Harevich.rideservice.dto.queue.PassengerDriverRideQueuePair;
 import com.Harevich.rideservice.dto.request.RideRequest;
-import com.Harevich.rideservice.model.queue.DriverQueueElement;
-import com.Harevich.rideservice.model.queue.PassengerQueueElement;
+import com.Harevich.rideservice.model.DriverQueueElement;
+import com.Harevich.rideservice.model.PassengerQueueElement;
 import com.Harevich.rideservice.repository.DriverQueueRepository;
 import com.Harevich.rideservice.repository.PassengerQueueRepository;
 import com.Harevich.rideservice.service.DriverQueueService;
@@ -14,9 +14,12 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDateTime;
 import java.util.Optional;
 import java.util.UUID;
+
+import static com.Harevich.rideservice.model.enumerations.ProcessingStatus.IN_PROCESS;
+import static com.Harevich.rideservice.model.enumerations.ProcessingStatus.NOT_PROCESSED;
+import static com.Harevich.rideservice.model.enumerations.ProcessingStatus.PROCESSED;
 
 @Slf4j
 @Service
@@ -47,10 +50,11 @@ public class QueueService implements PassengerQueueService, DriverQueueService {
 
     @Transactional
     public Optional<PassengerDriverRideQueuePair> pickPair(){
-        var driverOpt = driverQueueRepository.findFirstByIsProceedFalseOrderByCreatedAtAsc();
-        var passengerOpt = passengerQueueRepository.findFirstByIsProceedFalseOrderByCreatedAtAsc();
+        var driverOpt = driverQueueRepository.findFirstByProcessingStatusOrderByCreatedAtAsc(NOT_PROCESSED);
+        var passengerOpt = passengerQueueRepository.findFirstByProcessingStatusOrderByCreatedAtAsc(NOT_PROCESSED);
 
         PassengerDriverRideQueuePair queuePair = null;
+
         if(driverOpt.isPresent() && passengerOpt.isPresent()) {
             DriverQueueElement driverQueueElement = driverOpt.get();
             PassengerQueueElement passengerQueueElement = passengerOpt.get();
@@ -62,41 +66,35 @@ public class QueueService implements PassengerQueueService, DriverQueueService {
 
             queuePair = new PassengerDriverRideQueuePair(
                     idsPair,
-                    passengerOpt.get().getPassengerId(),
-                    driverOpt.get().getDriverId(),
-                    passengerOpt.get().getFrom(),
-                    passengerOpt.get().getTo()
+                    passengerQueueElement.getPassengerId(),
+                    driverQueueElement.getDriverId(),
+                    passengerQueueElement.getFrom(),
+                    passengerQueueElement.getTo()
             );
 
-            driverOpt.get().setIsProceed(true);
-            driverOpt.get().setProceedAt(LocalDateTime.now());
-            passengerOpt.get().setIsProceed(true);
-            passengerOpt.get().setProceedAt(LocalDateTime.now());
+            driverQueueElement.setProcessingStatus(IN_PROCESS);
+            passengerQueueElement.setProcessingStatus(IN_PROCESS);
 
-            driverQueueRepository.save(driverOpt.get());
-            passengerQueueRepository.save(passengerOpt.get());
+            driverQueueRepository.save(driverQueueElement);
+            passengerQueueRepository.save(passengerQueueElement);
         }
         return Optional.ofNullable(queuePair);
     }
 
-    public void rollBackProcessing(PassengerDriverRideQueuePair queuePair) {
-        PassengerQueueElement passenger = passengerQueueRepository.findById(queuePair
-                .queueItemsPair()
-                .passengerQueueItemId())
-                .get();
-        DriverQueueElement driver = driverQueueRepository.findById(queuePair
-                        .queueItemsPair()
-                        .driverQueueItemId())
-                .get();
-
-        passenger.setIsProceed(false);
-        driver.setIsProceed(false);
-
-        passenger.setProceedAt(null);
-        driver.setProceedAt(null);
-
-        passengerQueueRepository.save(passenger);
-        driverQueueRepository.save(driver);
+    public void markAsProcessed(PassengerDriverRideQueuePair passengerDriverRideQueuePair) {
+        var passengerOpt = passengerQueueRepository.findById(passengerDriverRideQueuePair.queueItemsPair().passengerQueueItemId());
+        if(passengerOpt.isPresent()){
+            passengerOpt.get().setProcessingStatus(PROCESSED);
+            passengerQueueRepository.save(passengerOpt.get());
+        } else {
+            log.info("Couldn't mark as processed passenger {}",passengerDriverRideQueuePair.passengerId());
+        }
+        var driverOpt = driverQueueRepository.findById(passengerDriverRideQueuePair.queueItemsPair().driverQueueItemId());
+        if(driverOpt.isPresent()){
+            driverOpt.get().setProcessingStatus(PROCESSED);
+            driverQueueRepository.save(driverOpt.get());
+        } else {
+            log.info("Couldn't mark as processed driver {}",passengerDriverRideQueuePair.driverId());
+        }
     }
-
 }

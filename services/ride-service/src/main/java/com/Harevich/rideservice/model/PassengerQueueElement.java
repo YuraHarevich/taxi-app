@@ -1,12 +1,15 @@
-package com.Harevich.rideservice.model.queue;
+package com.Harevich.rideservice.model;
 
+import com.Harevich.rideservice.model.enumerations.ProcessingStatus;
+import com.Harevich.rideservice.util.converter.ProcessingStatusConverter;
+import com.Harevich.rideservice.util.converter.RideStatusConverter;
 import jakarta.persistence.Column;
+import jakarta.persistence.Convert;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
-import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -17,6 +20,8 @@ import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
+
+import static com.Harevich.rideservice.model.enumerations.ProcessingStatus.NOT_PROCESSED;
 
 @Entity
 @AllArgsConstructor
@@ -35,9 +40,10 @@ public class PassengerQueueElement {
     @Column(name = "passenger_id")
     private UUID passengerId;
 
-    @Column(name = "is_proceed")
+    @Column(name = "processing_status")
     @Builder.Default
-    private Boolean isProceed = false;
+    @Convert(converter = ProcessingStatusConverter.class)
+    private ProcessingStatus processingStatus = NOT_PROCESSED;
 
     @Column(name = "from_address", nullable = false)
     private String from;
@@ -49,7 +55,8 @@ public class PassengerQueueElement {
     @Column(name = "created_at", updatable = false)
     private LocalDateTime createdAt;
 
-    @Column(name = "proceed_at")
-    private LocalDateTime proceedAt;
+    @UpdateTimestamp
+    @Column(name = "modified_at")
+    private LocalDateTime modifiedAt;
 
 }

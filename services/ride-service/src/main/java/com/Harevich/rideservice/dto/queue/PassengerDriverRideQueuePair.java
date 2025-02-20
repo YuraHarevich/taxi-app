@@ -1,5 +1,7 @@
 package com.Harevich.rideservice.dto.queue;
 
+import lombok.Setter;
+
 import java.util.UUID;
 
 public record PassengerDriverRideQueuePair(

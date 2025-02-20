@@ -169,7 +169,9 @@ public class RideServiceImpl implements RideService {
 
         if(queuePairOptional.isPresent()){
             passengerDriverRideQueuePair = queuePairOptional.get();
-            log.info("make up pair from passenger {} and driver {}", queuePairOptional.get().passengerId(), queuePairOptional.get().driverId());
+
+            log.info("making up pair from passenger {} and driver {}", queuePairOptional.get().passengerId(), queuePairOptional.get().driverId());
+
             RideRequest rideRequest = new RideRequest(
                     passengerDriverRideQueuePair.from(),
                     passengerDriverRideQueuePair.to(),
@@ -177,9 +179,13 @@ public class RideServiceImpl implements RideService {
             try {
                 createRide(rideRequest, passengerDriverRideQueuePair.driverId());
             } catch (GeolocationServiceUnavailableException ex) {
-                log.info("Returning pair to the queue cause of external error");
-                queueService.rollBackProcessing(passengerDriverRideQueuePair);
+                log.info("Pair of driver {} and passenger {} can't be processed cause of external error",
+                        passengerDriverRideQueuePair.driverId(),
+                        passengerDriverRideQueuePair.passengerId());
+                return;
             }
+            log.info("Pair successfully processed");
+            queueService.markAsProcessed(passengerDriverRideQueuePair);
         }
         else {
             log.info("cant make pair for entity");
