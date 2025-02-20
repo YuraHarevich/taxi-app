@@ -4,8 +4,10 @@ import com.kharevich.rideservice.dto.ErrorMessage;
 import com.kharevich.rideservice.exception.AddressNotFoundException;
 import com.kharevich.rideservice.exception.CannotChangeRideStatusException;
 import com.kharevich.rideservice.exception.DriverIsBusyException;
+import com.kharevich.rideservice.exception.DriverServiceInternalErrorException;
 import com.kharevich.rideservice.exception.GeolocationServiceBadRequestException;
 import com.kharevich.rideservice.exception.GeolocationServiceUnavailableException;
+import com.kharevich.rideservice.exception.PassengerServiceInternalErrorException;
 import com.kharevich.rideservice.exception.RideStatusConvertionException;
 import com.kharevich.rideservice.exception.UpdateNotAllowedException;
 import jakarta.persistence.EntityNotFoundException;
@@ -85,10 +87,11 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler({
-            RuntimeException.class
+            GeolocationServiceUnavailableException.class,
+            DriverServiceInternalErrorException.class,
+            PassengerServiceInternalErrorException.class
     })
-    public ResponseEntity<ErrorMessage> handleExceptions(GeolocationServiceUnavailableException ex) {
-        log.error("GeolocationServiceUnavailableException with cause: {}", ex.getMessage());
+    public ResponseEntity<ErrorMessage> handleExceptions(RuntimeException ex) {
         return ResponseEntity
                 .status(HttpStatus.SERVICE_UNAVAILABLE)
                 .body(ErrorMessage.builder()

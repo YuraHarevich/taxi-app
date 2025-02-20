@@ -3,6 +3,8 @@ app:
     time_of_queue_item_to_become_outdated_in_days: 1
     period_of_performing_cleaning_of_outdated_data_in_millis: 1440000
     period_of_performing_cleaning_stuck_orders_in_millis: 60000
+  time:
+    zoneId: "Europe/Minsk"
   urls:
     openrouteservice:
       longitude: 27.56667
@@ -52,6 +54,7 @@ spring:
       properties:
         spring.json.trusted.packages: '*'
         spring.json.type.mapping: queueProceedRequest:com.Harevich.rideservice.dto.request.QueueProceedRequest
+        
   cloud:
     openfeign:
       client:
@@ -59,16 +62,9 @@ spring:
           geolocation-client:
             url: "https://api.openrouteservice.org"
             loggerLevel: full
-logging:
-  level:
-    com.netflix.discovery: DEBUG
-    feign: DEBUG
-    org.springframework.web.client: DEBUG
-    org.apache.http: DEBUG
-    org.springframework.web: DEBUG
-
-feign:
-  client:
-    config:
-      geolocation-client:
-        loggerLevel: full
+          driver-service-client:
+            url: "http://localhost:8020/api/v1/drivers"
+            loggerLevel: full
+          passenger-service-client:
+            url: "http://localhost:8010/api/v1/passengers"
+            loggerLevel: full

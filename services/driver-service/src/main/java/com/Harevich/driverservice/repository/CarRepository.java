@@ -10,8 +10,13 @@ import java.util.Optional;
 import java.util.UUID;
 
 public interface CarRepository extends JpaRepository<Car, UUID> {
+
     boolean existsByNumber(String number);
+
     Optional<Car> findByIdAndDeletedFalse(UUID id);
+
     Optional<Car> findByNumber(String number);
+
     Page<CarResponse> findByDriverIsNullAndDeletedFalse(Pageable pageable);
+
 }

@@ -14,15 +14,21 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Objects;
 import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
 public class DriverServiceImpl implements DriverService {
+
     private final DriverRepository driverRepository;
+
     private final CarRepository carRepository;
+
     private final DriverMapper driverMapper;
+
     private final DriverValidation driverValidation;
+
     private final CarValidation carValidation;
 
     @Override
@@ -58,8 +64,14 @@ public class DriverServiceImpl implements DriverService {
     public void deleteById(UUID id) {
         Driver driver = driverValidation.findIfExistsById(id);
         driverValidation.isDeleted(id);
+
         driver.setDeleted(true);
-        driver.getCar().setDriver(null);
+        Car car = driver.getCar();
+
+        if (Objects.equals(car,null)){
+            car.setDriver(null);
+        }
+        driver.setCar(null);
         driverRepository.save(driver);
     }
 

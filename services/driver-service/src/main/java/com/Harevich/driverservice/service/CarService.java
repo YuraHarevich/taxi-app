@@ -10,6 +10,7 @@ import org.springframework.data.domain.Page;
 import java.util.UUID;
 
 public interface CarService {
+
     CarResponse createNewCar(@Valid CarRequest request);
 
     CarResponse updateCar(@Valid CarRequest request, UUID id);
@@ -21,4 +22,5 @@ public interface CarService {
     void deleteCarById(UUID id);
 
     PageableResponse<CarResponse> getAllAvailableCars(@Min(0) int pageNumber, int size);
+
 }

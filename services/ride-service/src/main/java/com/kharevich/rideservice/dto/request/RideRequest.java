@@ -5,7 +5,6 @@ import jakarta.validation.constraints.NotBlank;
 
 import java.util.UUID;
 
-
 public record RideRequest (
 
     @NotBlank(message = "start point is mandatory")

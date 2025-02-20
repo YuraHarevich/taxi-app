@@ -22,6 +22,7 @@ import java.util.UUID;
 @Tag(name = "Car api",
         description = "This controller is made to communicate with cars from driver service")
 public interface CarApi {
+
     @Operation(summary = "creating car")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "Car successfully created"),
@@ -68,7 +69,7 @@ public interface CarApi {
     })
     public CarResponse getCarByNumber(@RequestParam("number") @Pattern(regexp = RegularExpressionConstants.CAR_NUMBER_REGEX) String number);
 
-    @Operation(summary = "getting car by id")
+    @Operation(summary = "deleting car by id")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Car successfully deleted"),
             @ApiResponse(responseCode = "404", description = "Car not found",
@@ -83,4 +84,5 @@ public interface CarApi {
     })
     public PageableResponse<CarResponse> getAllAvailableCars(@RequestParam(defaultValue = "0") @Min(0) int page_number,
                                                              @RequestParam(defaultValue = "10") int size);
+
 }

@@ -19,15 +19,20 @@ import com.kharevich.rideservice.util.mapper.RideMapper;
 import com.kharevich.rideservice.util.validation.ride.RideDataValidation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import com.kharevich.rideservice.util.validation.driver.DriverValidation;
+import com.kharevich.rideservice.util.validation.passenger.PassengerValidation;
+import com.kharevich.rideservice.util.validation.ride.RideDataValidation;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
 import java.util.Random;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
+
+import static com.kharevich.rideservice.model.enumerations.RideStatus.CREATED;
 
 @Service
 @RequiredArgsConstructor
@@ -47,6 +52,10 @@ public class RideServiceImpl implements RideService {
     private final OrderProducer orderProducer;
 
     private final QueueService queueService;
+    
+    private final PassengerValidation passengerValidation;
+    
+    private final DriverValidation driverValidation;
 
     @Override
     public void applyForDriver(UUID driverId) {
@@ -59,6 +68,26 @@ public class RideServiceImpl implements RideService {
     public void sendRideRequest(RideRequest request) {
         queueService.addPassenger(request);
         orderProducer.sendOrderRequest(new QueueProceedRequest(request.passengerId()));
+
+    @Override
+    public RideResponse createRide(RideRequest request, UUID passengerId, UUID driverId) {
+        passengerValidation.throwExceptionIfPassengerDoesNotExist(passengerId);
+        driverValidation.throwExceptionIfDriverDoesNotExist(driverId);
+
+        rideDataValidation.checkIfDriverIsNotBusy(driverId);
+
+        Ride ride = rideMapper.toRide(request);
+            ride.setCreatedAt(LocalDateTime.now());
+            ride.setPrice(priceService.getPriceByTwoAddresses(
+                    request.from(),
+                    request.to(),
+                    LocalDateTime.now()));
+            ride.setPassengerId(passengerId);
+            ride.setDriverId(driverId);
+            ride.setRideStatus(CREATED);
+
+            rideRepository.saveAndFlush(ride);
+        return rideMapper.toResponse(ride);
     }
 
     @Override
@@ -80,11 +109,13 @@ public class RideServiceImpl implements RideService {
     @Transactional
     public RideResponse changeRideStatus(UUID id) {
         Ride ride = rideDataValidation.findIfExistsByRideId(id);
-        rideDataValidation.checkIfDriverIsNotBusy(ride.getDriverId());
+        if(ride.getRideStatus().equals(CREATED)) {
+            rideDataValidation.checkIfDriverIsNotBusy(ride.getDriverId());
+        }
         RideStatus status = ride.getRideStatus();
-        if (status.equals(RideStatus.CREATED)){
+        if (status.equals(CREATED)){
             var temp = new Random().nextInt(100);
-            if (temp < 80) {
+            if (temp < 20) {
                 ride.setRideStatus(RideStatus.DECLINED);
             }
             else {
@@ -122,7 +153,8 @@ public class RideServiceImpl implements RideService {
 
     @Override
     public PageableResponse<RideResponse> getAllRidesByPassengerId(UUID passengerId, int pageNumber, int size) {
-        //todo: чек для сущностей driver и passenger
+        passengerValidation.throwExceptionIfPassengerDoesNotExist(passengerId);
+        
         var rides = rideRepository
                 .findByPassengerIdOrderByCreatedAtDesc(passengerId,PageRequest.of(pageNumber,size))
                 .map(rideMapper::toResponse);
@@ -131,35 +163,12 @@ public class RideServiceImpl implements RideService {
 
     @Override
     public PageableResponse<RideResponse> getAllRidesByDriverId(UUID driverId, int pageNumber, int size) {
-        //todo: чек для сущностей driver и passenger
+        driverValidation.throwExceptionIfDriverDoesNotExist(driverId);
+
         var rides = rideRepository
                 .findByDriverIdOrderByCreatedAtDesc(driverId, PageRequest.of(pageNumber,size))
                 .map(rideMapper::toResponse);
         return pageMapper.toResponse(rides);
-    }
-
-    @Override
-    public RideResponse createRide(RideRequest request, UUID driverId) {
-        //todo: чек для сущностей driver и passenger
-
-        rideDataValidation.checkIfDriverIsNotBusy(driverId);
-
-        Ride ride = rideMapper.toRide(request);
-        ride.setCreatedAt(LocalDateTime.now());
-        try {
-            ride.setPrice(priceService.getPriceByTwoAddresses(
-                    request.from(),
-                    request.to(),
-                    LocalDateTime.now()));
-        } catch (Exception e){
-            throw new GeolocationServiceUnavailableException(e.getMessage());
-        }
-        ride.setPassengerId(request.passengerId());
-        ride.setDriverId(driverId);
-        ride.setRideStatus(RideStatus.CREATED);
-
-        rideRepository.saveAndFlush(ride);
-        return rideMapper.toResponse(ride);
     }
 
     @Override

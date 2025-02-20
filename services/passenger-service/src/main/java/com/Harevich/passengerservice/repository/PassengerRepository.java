@@ -7,7 +7,11 @@ import java.util.Optional;
 import java.util.UUID;
 
 public interface PassengerRepository extends JpaRepository<Passenger, UUID> {
+
     boolean existsByEmail(String email);
+
     boolean existsByNumber(String email);
+
     Optional<Passenger> findByIdAndDeletedFalse(UUID id);
+
 }
