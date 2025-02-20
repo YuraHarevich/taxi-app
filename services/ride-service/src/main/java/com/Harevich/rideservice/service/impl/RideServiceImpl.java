@@ -1,5 +1,6 @@
 package com.Harevich.rideservice.service.impl;
 
+import com.Harevich.rideservice.dto.queue.PassengerDriverRideQueuePair;
 import com.Harevich.rideservice.dto.request.QueueProceedRequest;
 import com.Harevich.rideservice.dto.response.PageableResponse;
 import com.Harevich.rideservice.dto.request.RideRequest;
@@ -22,7 +23,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.transaction.interceptor.TransactionAspectSupport;
 
 import java.util.Random;
 
@@ -165,18 +165,20 @@ public class RideServiceImpl implements RideService {
     @Override
     public void tryToCreatePairFromQueue() {
         var queuePairOptional = queueService.pickPair();
+        PassengerDriverRideQueuePair passengerDriverRideQueuePair = null;
 
         if(queuePairOptional.isPresent()){
+            passengerDriverRideQueuePair = queuePairOptional.get();
             log.info("make up pair from passenger {} and driver {}", queuePairOptional.get().passengerId(), queuePairOptional.get().driverId());
             RideRequest rideRequest = new RideRequest(
-                    queuePairOptional.get().from(),
-                    queuePairOptional.get().to(),
-                    queuePairOptional.get().passengerId());
+                    passengerDriverRideQueuePair.from(),
+                    passengerDriverRideQueuePair.to(),
+                    passengerDriverRideQueuePair.passengerId());
             try {
-                createRide(rideRequest, queuePairOptional.get().driverId());
+                createRide(rideRequest, passengerDriverRideQueuePair.driverId());
             } catch (GeolocationServiceUnavailableException ex) {
                 log.info("Returning pair to the queue cause of external error");
-                //todo rollback
+                queueService.rollBackProcessing(passengerDriverRideQueuePair);
             }
         }
         else {

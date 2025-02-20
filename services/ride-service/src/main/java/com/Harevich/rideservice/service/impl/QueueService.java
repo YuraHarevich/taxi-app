@@ -1,6 +1,7 @@
 package com.Harevich.rideservice.service.impl;
 
-import com.Harevich.rideservice.dto.QueuePairForMakingUpRide;
+import com.Harevich.rideservice.dto.queue.PassengerDriverQueueItemIdPair;
+import com.Harevich.rideservice.dto.queue.PassengerDriverRideQueuePair;
 import com.Harevich.rideservice.dto.request.RideRequest;
 import com.Harevich.rideservice.model.queue.DriverQueueElement;
 import com.Harevich.rideservice.model.queue.PassengerQueueElement;
@@ -45,17 +46,27 @@ public class QueueService implements PassengerQueueService, DriverQueueService {
     }
 
     @Transactional
-    public Optional<QueuePairForMakingUpRide> pickPair(){
+    public Optional<PassengerDriverRideQueuePair> pickPair(){
         var driverOpt = driverQueueRepository.findFirstByIsProceedFalseOrderByCreatedAtAsc();
         var passengerOpt = passengerQueueRepository.findFirstByIsProceedFalseOrderByCreatedAtAsc();
 
-        QueuePairForMakingUpRide queuePair = null;
+        PassengerDriverRideQueuePair queuePair = null;
         if(driverOpt.isPresent() && passengerOpt.isPresent()) {
-            queuePair = new QueuePairForMakingUpRide(
+            DriverQueueElement driverQueueElement = driverOpt.get();
+            PassengerQueueElement passengerQueueElement = passengerOpt.get();
+
+            PassengerDriverQueueItemIdPair idsPair = new PassengerDriverQueueItemIdPair(
+                    passengerQueueElement.getId(),
+                    driverQueueElement.getId()
+            );
+
+            queuePair = new PassengerDriverRideQueuePair(
+                    idsPair,
                     passengerOpt.get().getPassengerId(),
                     driverOpt.get().getDriverId(),
                     passengerOpt.get().getFrom(),
-                    passengerOpt.get().getTo());
+                    passengerOpt.get().getTo()
+            );
 
             driverOpt.get().setIsProceed(true);
             driverOpt.get().setProceedAt(LocalDateTime.now());
@@ -68,7 +79,24 @@ public class QueueService implements PassengerQueueService, DriverQueueService {
         return Optional.ofNullable(queuePair);
     }
 
-    public void confirmOfProcessing() {
+    public void rollBackProcessing(PassengerDriverRideQueuePair queuePair) {
+        PassengerQueueElement passenger = passengerQueueRepository.findById(queuePair
+                .queueItemsPair()
+                .passengerQueueItemId())
+                .get();
+        DriverQueueElement driver = driverQueueRepository.findById(queuePair
+                        .queueItemsPair()
+                        .driverQueueItemId())
+                .get();
 
+        passenger.setIsProceed(false);
+        driver.setIsProceed(false);
+
+        passenger.setProceedAt(null);
+        driver.setProceedAt(null);
+
+        passengerQueueRepository.save(passenger);
+        driverQueueRepository.save(driver);
     }
+
 }
