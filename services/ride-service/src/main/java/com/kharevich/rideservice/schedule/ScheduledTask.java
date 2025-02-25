@@ -4,6 +4,9 @@ import com.kharevich.rideservice.model.DriverQueueElement;
 import com.kharevich.rideservice.model.PassengerQueueElement;
 import com.kharevich.rideservice.repository.DriverQueueRepository;
 import com.kharevich.rideservice.repository.PassengerQueueRepository;
+import com.kharevich.rideservice.service.RideService;
+import com.kharevich.rideservice.service.impl.QueueService;
+import com.kharevich.rideservice.service.impl.RideServiceImpl;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -27,24 +30,29 @@ public class ScheduledTask {
 
     private final PassengerQueueRepository passengerQueueRepository;
 
+    private final RideService rideService;
+
     private final DriverQueueRepository driverQueueRepository;
 
     private static final SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm:ss");
 
-    @Scheduled(fixedRateString = "${app.scheduling.period_of_performing_cleaning_of_outdated_data_in_millis}")
+    //@Scheduled(fixedRateString = "${app.scheduling.period_of_performing_cleaning_of_outdated_data_in_millis}")
+    @Scheduled(fixedRate = 60000)
     public void clearingTheQueueOfOutdated() {
         log.info("clearing the old data from queue {}", LocalDateTime.now());
         List<PassengerQueueElement> list1 = passengerQueueRepository.findByCreatedAtBefore(
                 LocalDateTime
                         .now()
-                        .minusDays(timeOfQueueItemToBecomeUnnecessaryInDays)
+                        .minusMinutes(1)
+                        //.minusDays(timeOfQueueItemToBecomeUnnecessaryInDays)
         );
         list1.stream().forEach(passengerQueueElement -> passengerQueueRepository.delete(passengerQueueElement));
 
         List<DriverQueueElement> list2 = driverQueueRepository.findByCreatedAtBefore(
                 LocalDateTime
                         .now()
-                        .minusDays(timeOfQueueItemToBecomeUnnecessaryInDays)
+                        .minusMinutes(1)
+                        //.minusDays(timeOfQueueItemToBecomeUnnecessaryInDays)
         );
         list2.stream().forEach(driverQueueElement -> driverQueueRepository.delete(driverQueueElement));
 
@@ -53,7 +61,8 @@ public class ScheduledTask {
         }
     }
 
-    @Scheduled(fixedRateString = "${app.scheduling.period_of_performing_cleaning_stuck_orders_in_millis}")
+    //@Scheduled(fixedRateString = "${app.scheduling.period_of_performing_cleaning_stuck_orders_in_millis}")
+    @Scheduled(fixedRate = 60000)
     public void changingInProcessStatusIntoNotProcessed() {
         log.info("changing queue item statuses from IN_PROCESS into NOT_PROCESSED {}",  LocalDateTime.now());
         List<PassengerQueueElement> list1 = passengerQueueRepository.findByProcessingStatus(IN_PROCESS);
@@ -73,4 +82,13 @@ public class ScheduledTask {
         }
 
     }
+
+    //@Scheduled(fixedRateString = "${app.scheduling.period_of_performing_processed_data_check}")
+    @Scheduled(fixedRate = 60000)
+    public void processingUnprocessedItems() {
+        while (rideService.tryToCreatePairFromQueue()){
+            log.info("New pair in scheduled process");
+        }
+    }
+
 }

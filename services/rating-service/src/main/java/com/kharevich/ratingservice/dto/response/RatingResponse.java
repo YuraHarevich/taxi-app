@@ -6,10 +6,6 @@ public record RatingResponse (
 
         UUID rideId,
 
-        UUID ratedById,
-
-        UUID ratedId,
-
         String whoIsRated,
 
         int rating,
