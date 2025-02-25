@@ -195,7 +195,7 @@ public class RideServiceImpl implements RideService {
         if(queuePairOptional.isPresent()){
             passengerDriverRideQueuePair = queuePairOptional.get();
 
-            log.info("making up pair from passenger {} and driver {}", queuePairOptional.get().passengerId(), queuePairOptional.get().driverId());
+            log.info("RideService.trying to make up pair from passenger {} and driver {}", queuePairOptional.get().passengerId(), queuePairOptional.get().driverId());
 
             RideRequest rideRequest = new RideRequest(
                     passengerDriverRideQueuePair.from(),
@@ -204,29 +204,29 @@ public class RideServiceImpl implements RideService {
             try {
                 createRide(rideRequest, passengerDriverRideQueuePair.driverId());
             } catch (GeolocationServiceUnavailableException ex) {
-                log.info("Pair of driver {} and passenger {} can't be processed cause of external error",
+                log.info("RideService.pair of driver {} and passenger {} can't be processed cause of external error in geo service",
                         passengerDriverRideQueuePair.driverId(),
                         passengerDriverRideQueuePair.passengerId());
                 return false;
             } catch (DriverNotFoundException ex) {
                 queueService.removeDriver(passengerDriverRideQueuePair.driverId());
-                log.info("successfully removed driver");
+                log.info("RideService.successfully removed driver");
                 return true;
             } catch (PassengerNotFoundException ex) {
                 queueService.removePassenger(passengerDriverRideQueuePair.passengerId());
-                log.info("successfully removed passenger ");
+                log.info("RideService.successfully removed passenger ");
                 return true;
             } catch (Exception exception) {
-                log.error("exception: {}", exception.getMessage());
+                log.error("RideService.exception: {}", exception.getMessage());
                 return false;
             }
             queueService.markAsProcessed(passengerDriverRideQueuePair);
             createRide(rideRequest,passengerDriverRideQueuePair.driverId());
-            log.info("Pair successfully processed");
+            log.info("RideService.pair successfully processed");
             return true;
         }
         else {
-            log.info("cant make pair for entity");
+            log.info("RideService. make pair for entity");
             return false;
         }
     }

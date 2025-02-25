@@ -36,54 +36,53 @@ public class ScheduledTask {
 
     @Scheduled(fixedRateString = "${app.scheduling.period_of_performing_cleaning_of_outdated_data_in_millis}")
     public void clearingTheQueueOfOutdated() {
-        log.info("clearing the old data from queue {}", LocalDateTime.now());
-        List<PassengerQueueElement> list1 = passengerQueueRepository.findByCreatedAtBefore(
+        log.info("ScheduledTask.clearingTheQueueOfOutdated.clearing the old data from queue {}", LocalDateTime.now());
+        List<PassengerQueueElement> passengersOutdatedList = passengerQueueRepository.findByCreatedAtBefore(
                 LocalDateTime
                         .now()
                         .minusDays(timeOfQueueItemToBecomeUnnecessaryInDays)
         );
-        list1.stream().forEach(passengerQueueElement -> passengerQueueRepository.delete(passengerQueueElement));
+        passengersOutdatedList.stream().forEach(passengerQueueElement -> passengerQueueRepository.delete(passengerQueueElement));
 
-        List<DriverQueueElement> list2 = driverQueueRepository.findByCreatedAtBefore(
+        List<DriverQueueElement> driversOutdatedList = driverQueueRepository.findByCreatedAtBefore(
                 LocalDateTime
                         .now()
                         .minusDays(timeOfQueueItemToBecomeUnnecessaryInDays)
         );
-        list2.stream().forEach(driverQueueElement -> driverQueueRepository.delete(driverQueueElement));
+        driversOutdatedList.stream().forEach(driverQueueElement -> driverQueueRepository.delete(driverQueueElement));
 
-        if(!list1.isEmpty() || !list2.isEmpty()){
-            log.info("Successfully cleared {} entities", list1.size()+list2.size());
+        if(!passengersOutdatedList.isEmpty() || !driversOutdatedList.isEmpty()){
+            log.info("ScheduledTask.clearingTheQueueOfOutdated.successfully cleared {} entities", passengersOutdatedList.size()+driversOutdatedList.size());
         }
     }
 
     @Scheduled(fixedRateString = "${app.scheduling.period_of_performing_cleaning_stuck_orders_in_millis}")
     public void changingInProcessStatusIntoNotProcessed() {
         log.info("changing queue item statuses from IN_PROCESS into NOT_PROCESSED {}",  LocalDateTime.now());
-        List<PassengerQueueElement> list1 = passengerQueueRepository.findByProcessingStatus(IN_PROCESS);
-        list1.stream().forEach(passengerQueueElement->{
+        List<PassengerQueueElement> passengersInProcessList = passengerQueueRepository.findByProcessingStatus(IN_PROCESS);
+        passengersInProcessList.stream().forEach(passengerQueueElement->{
             passengerQueueElement.setProcessingStatus(NOT_PROCESSED);
             passengerQueueRepository.save(passengerQueueElement);
         });
 
-        List<DriverQueueElement> list2 = driverQueueRepository.findByProcessingStatus(IN_PROCESS);
-        list2.stream().forEach(driverQueueElement->{
+        List<DriverQueueElement> driversInProcessList = driverQueueRepository.findByProcessingStatus(IN_PROCESS);
+        driversInProcessList.stream().forEach(driverQueueElement->{
             driverQueueElement.setProcessingStatus(NOT_PROCESSED);
             driverQueueRepository.save(driverQueueElement);
         });
 
-        if(!list1.isEmpty() || !list2.isEmpty()){
-            log.info("Successfully modified {} entities", list1.size()+list2.size());
+        if(!passengersInProcessList.isEmpty() || !driversInProcessList.isEmpty()){
+            log.info("Successfully modified {} entities", passengersInProcessList.size()+driversInProcessList.size());
         }
 
     }
 
     @Scheduled(fixedRateString = "${app.scheduling.period_of_processing_queue_items}")
     public void processingQueueItems() {
-        log.info("processing queue items {}",  LocalDateTime.now());
-        List<PassengerQueueElement> list1 = passengerQueueRepository.findByProcessingStatus(NOT_PROCESSED);
-        List<DriverQueueElement> list2 = driverQueueRepository.findByProcessingStatus(NOT_PROCESSED);
+        log.info("ScheduledTask.processingQueueItems.starting processing queue items {}",  LocalDateTime.now());
+        int i = 0;
         while(rideService.tryToCreatePairFromQueue()){
-            log.info("Trying to create pair");
+            log.info("ScheduledTask.processingQueueItems.processed queue {} item {}", ++i, LocalDateTime.now());
         }
     }
 
