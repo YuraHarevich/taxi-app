@@ -4,6 +4,7 @@ import com.kharevich.rideservice.model.DriverQueueElement;
 import com.kharevich.rideservice.model.PassengerQueueElement;
 import com.kharevich.rideservice.repository.DriverQueueRepository;
 import com.kharevich.rideservice.repository.PassengerQueueRepository;
+import com.kharevich.rideservice.service.RideService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -26,6 +27,8 @@ public class ScheduledTask {
     private long timeOfQueueItemToBecomeUnnecessaryInDays;
 
     private final PassengerQueueRepository passengerQueueRepository;
+
+    private final RideService rideService;
 
     private final DriverQueueRepository driverQueueRepository;
 
@@ -73,4 +76,15 @@ public class ScheduledTask {
         }
 
     }
+
+    @Scheduled(fixedRateString = "${app.scheduling.period_of_processing_queue_items}")
+    public void processingQueueItems() {
+        log.info("processing queue items {}",  LocalDateTime.now());
+        List<PassengerQueueElement> list1 = passengerQueueRepository.findByProcessingStatus(NOT_PROCESSED);
+        List<DriverQueueElement> list2 = driverQueueRepository.findByProcessingStatus(NOT_PROCESSED);
+        while(rideService.tryToCreatePairFromQueue()){
+            log.info("Trying to create pair");
+        }
+    }
+
 }

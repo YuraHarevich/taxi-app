@@ -188,7 +188,7 @@ public class RideServiceImpl implements RideService {
     }
 
     @Override
-    public void tryToCreatePairFromQueue() {
+    public boolean tryToCreatePairFromQueue() {
         var queuePairOptional = queueService.pickPair();
         PassengerDriverRideQueuePair passengerDriverRideQueuePair = null;
 
@@ -207,22 +207,24 @@ public class RideServiceImpl implements RideService {
                 log.info("Pair of driver {} and passenger {} can't be processed cause of external error",
                         passengerDriverRideQueuePair.driverId(),
                         passengerDriverRideQueuePair.passengerId());
-                return;
+                return false;
             } catch (DriverNotFoundException ex) {
                 log.info("DriverNotFoundException caught");
-                return;
+                return false;
             } catch (PassengerNotFoundException ex) {
                 log.info("PassengerNotFoundException caught");
-                return;
+                return false;
             } catch (Exception exception) {
                 log.error("exception: {}", exception.getMessage());
-                return;
+                return false;
             }
             log.info("Pair successfully processed");
             queueService.markAsProcessed(passengerDriverRideQueuePair);
+            return true;
         }
         else {
             log.info("cant make pair for entity");
+            return false;
         }
     }
 

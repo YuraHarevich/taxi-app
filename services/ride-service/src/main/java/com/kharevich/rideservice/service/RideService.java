@@ -27,5 +27,5 @@ public interface RideService {
 
     void sendRideRequest(@Valid RideRequest request);
 
-    void tryToCreatePairFromQueue();
+    boolean tryToCreatePairFromQueue();
 }
