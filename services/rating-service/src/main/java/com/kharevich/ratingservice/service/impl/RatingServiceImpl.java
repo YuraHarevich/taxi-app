@@ -5,13 +5,12 @@ import com.kharevich.ratingservice.dto.request.RatingRequest;
 import com.kharevich.ratingservice.dto.response.PageableResponse;
 import com.kharevich.ratingservice.dto.response.PersonalRatingResponse;
 import com.kharevich.ratingservice.dto.response.RatingResponse;
-import com.kharevich.ratingservice.exception.CantEstimateUnCompletedRideException;
+import com.kharevich.ratingservice.exception.RideNotFininshedException;
 import com.kharevich.ratingservice.model.Rating;
 import com.kharevich.ratingservice.model.enumerations.RatingPerson;
 import com.kharevich.ratingservice.repository.RatingRepository;
 import com.kharevich.ratingservice.service.RatingService;
 import com.kharevich.ratingservice.sideservices.ride.RideResponse;
-import com.kharevich.ratingservice.sideservices.ride.enumerations.RideStatus;
 import com.kharevich.ratingservice.util.mapper.RatingMapper;
 import com.kharevich.ratingservice.util.validation.PersonValidationService;
 import com.kharevich.ratingservice.util.validation.RatingValidationService;
@@ -24,7 +23,8 @@ import java.util.UUID;
 
 import static com.kharevich.ratingservice.model.enumerations.RatingPerson.DRIVER;
 import static com.kharevich.ratingservice.model.enumerations.RatingPerson.PASSENGER;
-import static com.kharevich.ratingservice.util.constants.RideServiceConstantResponses.CANT_ESTIMATE_UN_COMPLETED_RIDE;
+import static com.kharevich.ratingservice.sideservices.ride.enumerations.RideStatus.FINISHED;
+import static com.kharevich.ratingservice.util.constants.RideServiceConstantResponses.RIDE_IS_NOT_FINISHED;
 
 @Service
 @RequiredArgsConstructor
@@ -48,8 +48,9 @@ public class RatingServiceImpl implements RatingService {
 
         RideResponse rideResponse = rideClient.getRideIfExists(request.rideId());
 
-        if(!rideResponse.rideStatus().equals(RideStatus.FINISHED))
-            throw new CantEstimateUnCompletedRideException(CANT_ESTIMATE_UN_COMPLETED_RIDE);
+        if(!rideResponse.rideStatus().equals(FINISHED)){
+            throw new RideNotFininshedException(RIDE_IS_NOT_FINISHED);
+        }
 
         passengerValidation.checkIfPersonExists(rideResponse.passengerId());
         driverValidation.checkIfPersonExists(rideResponse.driverId());
