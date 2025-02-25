@@ -2,7 +2,8 @@ app:
   scheduling:
     time_of_queue_item_to_become_outdated_in_days: 1
     period_of_performing_cleaning_of_outdated_data_in_millis: 1440000
-    period_of_performing_cleaning_stuck_orders_in_millis: 6000
+    period_of_performing_cleaning_stuck_orders_in_millis: 60000
+    period_of_processing_queue_items: 60000
   time:
     zoneId: "Europe/Minsk"
   urls:

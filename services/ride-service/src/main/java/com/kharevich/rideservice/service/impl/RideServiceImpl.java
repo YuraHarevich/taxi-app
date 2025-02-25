@@ -209,19 +209,20 @@ public class RideServiceImpl implements RideService {
                         passengerDriverRideQueuePair.passengerId());
                 return false;
             } catch (DriverNotFoundException ex) {
-                log.info("DriverNotFoundException caught");
                 queueService.removeDriver(passengerDriverRideQueuePair.driverId());
-                return false;
+                log.info("successfully removed driver");
+                return true;
             } catch (PassengerNotFoundException ex) {
-                log.info("PassengerNotFoundException caught");
                 queueService.removePassenger(passengerDriverRideQueuePair.passengerId());
-                return false;
+                log.info("successfully removed passenger ");
+                return true;
             } catch (Exception exception) {
                 log.error("exception: {}", exception.getMessage());
                 return false;
             }
-            log.info("Pair successfully processed");
             queueService.markAsProcessed(passengerDriverRideQueuePair);
+            createRide(rideRequest,passengerDriverRideQueuePair.driverId());
+            log.info("Pair successfully processed");
             return true;
         }
         else {

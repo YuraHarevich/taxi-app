@@ -17,4 +17,6 @@ public interface DriverQueueRepository extends JpaRepository<DriverQueueElement,
 
     List<DriverQueueElement> findByProcessingStatus(ProcessingStatus status);
 
+    void deleteByDriverId(UUID queueDriverId);
+
 }
