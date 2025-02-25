@@ -20,4 +20,6 @@ public final class RideServiceConstantResponses {
 
     public static final String RIDE_SERVICE_UNAVAILABLE = "Ride service is currently unavailable";
 
+    public static final String CANT_ESTIMATE_UN_COMPLETED_RIDE = "you cant estimate ride when it s not yet finished";
+
 }

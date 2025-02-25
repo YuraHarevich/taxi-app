@@ -5,11 +5,13 @@ import com.kharevich.ratingservice.dto.request.RatingRequest;
 import com.kharevich.ratingservice.dto.response.PageableResponse;
 import com.kharevich.ratingservice.dto.response.PersonalRatingResponse;
 import com.kharevich.ratingservice.dto.response.RatingResponse;
+import com.kharevich.ratingservice.exception.CantEstimateUnCompletedRideException;
 import com.kharevich.ratingservice.model.Rating;
 import com.kharevich.ratingservice.model.enumerations.RatingPerson;
 import com.kharevich.ratingservice.repository.RatingRepository;
 import com.kharevich.ratingservice.service.RatingService;
 import com.kharevich.ratingservice.sideservices.ride.RideResponse;
+import com.kharevich.ratingservice.sideservices.ride.enumerations.RideStatus;
 import com.kharevich.ratingservice.util.mapper.RatingMapper;
 import com.kharevich.ratingservice.util.validation.PersonValidationService;
 import com.kharevich.ratingservice.util.validation.RatingValidationService;
@@ -22,6 +24,7 @@ import java.util.UUID;
 
 import static com.kharevich.ratingservice.model.enumerations.RatingPerson.DRIVER;
 import static com.kharevich.ratingservice.model.enumerations.RatingPerson.PASSENGER;
+import static com.kharevich.ratingservice.util.constants.RideServiceConstantResponses.CANT_ESTIMATE_UN_COMPLETED_RIDE;
 
 @Service
 @RequiredArgsConstructor
@@ -44,6 +47,9 @@ public class RatingServiceImpl implements RatingService {
         PersonValidationService driverValidation = personValidationFactory.validatorFor(DRIVER);
 
         RideResponse rideResponse = rideClient.getRideIfExists(request.rideId());
+
+        if(!rideResponse.rideStatus().equals(RideStatus.FINISHED))
+            throw new CantEstimateUnCompletedRideException(CANT_ESTIMATE_UN_COMPLETED_RIDE);
 
         passengerValidation.checkIfPersonExists(rideResponse.passengerId());
         driverValidation.checkIfPersonExists(rideResponse.driverId());

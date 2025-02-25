@@ -1,6 +1,7 @@
 package com.kharevich.ratingservice.controller.exceptions;
 
 import com.kharevich.ratingservice.dto.ErrorMessage;
+import com.kharevich.ratingservice.exception.CantEstimateUnCompletedRideException;
 import com.kharevich.ratingservice.exception.RideAlreadyEstimatedException;
 import com.kharevich.ratingservice.exception.RideNotFoundException;
 import org.springframework.http.HttpStatus;
@@ -48,6 +49,18 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ErrorMessage> handleExceptions(RuntimeException ex) {
         return ResponseEntity
                 .status(HttpStatus.NOT_FOUND)
+                .body(ErrorMessage.builder()
+                        .message(ex.getMessage())
+                        .timestamp(LocalDateTime.now())
+                        .build());
+    }
+
+    @ExceptionHandler({
+            CantEstimateUnCompletedRideException.class
+    })
+    public ResponseEntity<ErrorMessage> handleConflictExceptions(RuntimeException ex) {
+        return ResponseEntity
+                .status(HttpStatus.CONFLICT)
                 .body(ErrorMessage.builder()
                         .message(ex.getMessage())
                         .timestamp(LocalDateTime.now())

@@ -39,6 +39,11 @@ public class QueueService implements PassengerQueueService, DriverQueueService {
     }
 
     @Override
+    public void removeDriver(UUID queue_driver_id) {
+        driverQueueRepository.deleteById(queue_driver_id);
+    }
+
+    @Override
     public void addPassenger(RideRequest request) {
         PassengerQueueElement passengerQueueElement = PassengerQueueElement.builder()
                 .passengerId(request.passengerId())
@@ -46,6 +51,11 @@ public class QueueService implements PassengerQueueService, DriverQueueService {
                 .from(request.from())
                 .build();
         passengerQueueRepository.save(passengerQueueElement);
+    }
+
+    @Override
+    public void removePassenger(UUID queue_passenger_id) {
+        passengerQueueRepository.deleteById(queue_passenger_id);
     }
 
     @Transactional

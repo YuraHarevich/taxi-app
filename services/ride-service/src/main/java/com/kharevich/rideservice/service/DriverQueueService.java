@@ -6,4 +6,6 @@ public interface DriverQueueService {
 
     public void addDriver(UUID driverId);
 
+    public void removeDriver(UUID queue_driver_id);
+
 }
