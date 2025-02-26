@@ -20,6 +20,6 @@ public final class RideServiceConstantResponses {
 
     public static final String RIDE_SERVICE_UNAVAILABLE = "Ride service is currently unavailable";
 
-    public static final String RIDE_IS_NOT_FINISHED = "Ride is not yet finished";
+    public static final String RIDE_IS_NOT_FINISHED = "Ride is not finished yet";
 
 }

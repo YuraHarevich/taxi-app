@@ -52,7 +52,7 @@ public class ScheduledTask {
         driversOutdatedList.stream().forEach(driverQueueElement -> driverQueueRepository.delete(driverQueueElement));
 
         if(!passengersOutdatedList.isEmpty() || !driversOutdatedList.isEmpty()){
-            log.info("ScheduledTask.clearingTheQueueOfOutdated.successfully cleared {} entities", passengersOutdatedList.size()+driversOutdatedList.size());
+            log.info("ScheduledTask.clearingTheQueueOfOutdated.successfully cleared {} entities", passengersOutdatedList.size() + driversOutdatedList.size());
         }
     }
 
@@ -60,19 +60,19 @@ public class ScheduledTask {
     public void changingInProcessStatusIntoNotProcessed() {
         log.info("changing queue item statuses from IN_PROCESS into NOT_PROCESSED {}",  LocalDateTime.now());
         List<PassengerQueueElement> passengersInProcessList = passengerQueueRepository.findByProcessingStatus(IN_PROCESS);
-        passengersInProcessList.stream().forEach(passengerQueueElement->{
+        passengersInProcessList.stream().forEach(passengerQueueElement -> {
             passengerQueueElement.setProcessingStatus(NOT_PROCESSED);
             passengerQueueRepository.save(passengerQueueElement);
         });
 
         List<DriverQueueElement> driversInProcessList = driverQueueRepository.findByProcessingStatus(IN_PROCESS);
-        driversInProcessList.stream().forEach(driverQueueElement->{
+        driversInProcessList.stream().forEach(driverQueueElement -> {
             driverQueueElement.setProcessingStatus(NOT_PROCESSED);
             driverQueueRepository.save(driverQueueElement);
         });
 
         if(!passengersInProcessList.isEmpty() || !driversInProcessList.isEmpty()){
-            log.info("Successfully modified {} entities", passengersInProcessList.size()+driversInProcessList.size());
+            log.info("Successfully modified {} entities", passengersInProcessList.size() + driversInProcessList.size());
         }
 
     }

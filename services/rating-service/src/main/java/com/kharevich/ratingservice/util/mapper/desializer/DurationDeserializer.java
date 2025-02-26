@@ -8,10 +8,12 @@ import java.time.Duration;
 import java.time.LocalTime;
 
 public class DurationDeserializer extends JsonDeserializer<Duration> {
+
     @Override
     public Duration deserialize(JsonParser p, DeserializationContext ctxt) throws IOException {
         String timeString = p.getText();
-        LocalTime time = LocalTime.parse(timeString); // Парсим "00:03" в LocalTime
+        LocalTime time = LocalTime.parse(timeString); 
         return Duration.ofHours(time.getHour()).plusMinutes(time.getMinute());
     }
+
 }
