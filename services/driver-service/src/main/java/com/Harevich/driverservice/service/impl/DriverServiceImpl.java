@@ -68,7 +68,7 @@ public class DriverServiceImpl implements DriverService {
         driver.setDeleted(true);
         Car car = driver.getCar();
 
-        if (Objects.equals(car,null)){
+        if (!Objects.equals(car,null)){
             car.setDriver(null);
         }
         driver.setCar(null);
@@ -84,7 +84,7 @@ public class DriverServiceImpl implements DriverService {
         Car car = carValidation.findIfExistsById(carId);
         carValidation.isDeleted(carId);
 
-        if(driverValidation.carToChangeIsTheSameAsPrevious(driver,car))
+        if (driverValidation.carToChangeIsTheSameAsPrevious(driver,car))
             return driverMapper.toResponse(driver);
 
         carValidation.carIsAlreadyOccupied(carId);

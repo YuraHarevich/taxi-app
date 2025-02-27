@@ -26,7 +26,7 @@ public class RetreiveMessageErrorDecoder implements ErrorDecoder {
             ObjectMapper mapper = new ObjectMapper();
             message = mapper.readValue(bodyIs, ErrorMessage.class);
         } catch (IOException e) {
-            return new Exception(OUTSIDER_REST_API_BAD_UNAVAILABLE);
+            return new Exception(EXTERNAL_REST_API_UNAVAILABLE);
         }
         switch (response.status()) {
             case 403:
