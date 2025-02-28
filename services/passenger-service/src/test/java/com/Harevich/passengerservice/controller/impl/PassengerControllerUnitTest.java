@@ -78,4 +78,42 @@ public class PassengerControllerUnitTest {
         mockMvc.perform(delete("/api/v1/passengers?id=" + invalidId))
                 .andExpect(status().isBadRequest());
     }
+
+    @Test
+    public void testCreatePassenger_ValidRequest() throws Exception {
+        PassengerRequest validRequest = new PassengerRequest("John Doe", "Doe", "john.doe@example.com", "+375447525709");
+
+        mockMvc.perform(post("/api/v1/passengers")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(validRequest)))
+                .andExpect(status().isCreated());
+    }
+
+    @Test
+    public void testUpdatePassenger_ValidRequest() throws Exception {
+        PassengerRequest validRequest = new PassengerRequest("John", "Doe", "john.doe@example.com", "+375447525709");
+        UUID id = UUID.randomUUID();
+
+        mockMvc.perform(patch("/api/v1/passengers?id=" + id)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(validRequest)))
+                .andExpect(status().isAccepted());
+    }
+
+    @Test
+    public void testGetPassengerById_ValidId() throws Exception {
+        UUID validId = UUID.randomUUID();
+
+        mockMvc.perform(get("/api/v1/passengers?id=" + validId))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    public void testDeletePassengerById_ValidId() throws Exception {
+        UUID validId = UUID.randomUUID();
+
+        mockMvc.perform(delete("/api/v1/passengers?id=" + validId))
+                .andExpect(status().isOk());
+    }
+
 }

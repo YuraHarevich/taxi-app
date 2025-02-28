@@ -83,4 +83,77 @@ public class RatingControllerUnitTest {
                         .param("driverId", "123"))
                 .andExpect(status().isBadRequest());
     }
+
+    @Test
+    public void testEstimateTheRide_ValidRequest() throws Exception {
+        ratingRequest = new RatingRequest(UUID.randomUUID(), UUID.randomUUID(), UUID.randomUUID(), 5, DRIVER, "Great ride!");
+
+        mockMvc.perform(post("/api/v1/ratings/estimation")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(ratingRequest)))
+                .andExpect(status().isCreated());
+    }
+
+    @Test
+    public void testGetAllRatingsByDriverId_ValidId() throws Exception {
+        UUID driverId = UUID.randomUUID();
+
+        mockMvc.perform(get("/api/v1/ratings/driver/all")
+                        .param("driverId", driverId.toString())
+                        .param("pageNumber", "0")
+                        .param("size", "10"))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    public void testGetAllRatingsByPassengerId_ValidId() throws Exception {
+        UUID passengerId = UUID.randomUUID();
+
+        mockMvc.perform(get("/api/v1/ratings/passenger/all")
+                        .param("passengerId", passengerId.toString())
+                        .param("pageNumber", "0")
+                        .param("size", "10"))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    public void testGetAllRatingsByPassengerIdInvalidSize() throws Exception {
+        UUID passengerId = UUID.randomUUID();
+
+        mockMvc.perform(get("/api/v1/ratings/passenger/all")
+                        .param("passengerId", passengerId.toString())
+                        .param("pageNumber", "0")
+                        .param("size", "1000"))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    public void testGetPassengerRating_ValidId() throws Exception {
+        UUID passengerId = UUID.randomUUID();
+
+        mockMvc.perform(get("/api/v1/ratings/passenger")
+                        .param("passengerId", passengerId.toString()))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    public void testGetDriverRating_ValidId() throws Exception {
+        UUID driverId = UUID.randomUUID();
+
+        mockMvc.perform(get("/api/v1/ratings/driver")
+                        .param("driverId", driverId.toString()))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    public void testGetAllRatingsByDriverIdInvalidSize() throws Exception {
+        UUID driverId = UUID.randomUUID();
+
+        mockMvc.perform(get("/api/v1/ratings/driver/all")
+                        .param("driverId", driverId.toString())
+                        .param("pageNumber", "0")
+                        .param("size", "10000"))
+                .andExpect(status().isOk());
+    }
+
 }

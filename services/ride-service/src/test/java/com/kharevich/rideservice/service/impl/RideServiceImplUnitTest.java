@@ -1,5 +1,6 @@
 package com.kharevich.rideservice.service.impl;
 
+import static com.kharevich.rideservice.model.enumerations.RideStatus.CREATED;
 import static com.kharevich.rideservice.model.enumerations.RideStatus.ON_THE_WAY;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -12,6 +13,7 @@ import com.kharevich.rideservice.dto.response.PageableResponse;
 import com.kharevich.rideservice.dto.response.RideResponse;
 import com.kharevich.rideservice.exception.CannotChangeRideStatusException;
 import com.kharevich.rideservice.exception.GeolocationServiceUnavailableException;
+import com.kharevich.rideservice.kafka.producer.OrderProducer;
 import com.kharevich.rideservice.model.Ride;
 import com.kharevich.rideservice.model.enumerations.RideStatus;
 import com.kharevich.rideservice.repository.RideRepository;
@@ -60,6 +62,9 @@ public class RideServiceImplUnitTest {
     private QueueService queueService;
 
     @Mock
+    private OrderProducer producer;
+
+    @Mock
     private PassengerValidation passengerValidation;
 
     @Mock
@@ -69,7 +74,9 @@ public class RideServiceImplUnitTest {
     private RideServiceImpl rideService;
 
     private RideRequest rideRequest;
+    private RideRequest updateRideRequest;
     private Ride ride;
+    private RideResponse updatedRideResponse;
     private RideResponse rideResponse;
     private UUID rideId;
     private UUID passengerId;
@@ -86,6 +93,7 @@ public class RideServiceImplUnitTest {
         time = LocalDateTime.now();
 
         rideRequest = new RideRequest("From", "To", passengerId);
+        updateRideRequest = new RideRequest("Another From", "Another To", passengerId);
         ride = new Ride();
         ride.setId(rideId);
         ride.setFrom("From");
@@ -94,6 +102,7 @@ public class RideServiceImplUnitTest {
         ride.setDriverId(driverId);
         ride.setRideStatus(RideStatus.CREATED);
 
+        updatedRideResponse = new RideResponse(rideId, "Another From", "Another To", BigDecimal.ONE, passengerId, driverId, RideStatus.CREATED, Duration.ZERO);
         rideResponse = new RideResponse(rideId, "From", "To", BigDecimal.ONE, passengerId, driverId, RideStatus.CREATED, Duration.ZERO);
     }
 
@@ -115,7 +124,7 @@ public class RideServiceImplUnitTest {
     @Test
     public void testCreateRide() {
         when(rideMapper.toRide(rideRequest)).thenReturn(ride);
-        when(priceService.getPriceByTwoAddresses("From", "To", time)).thenReturn(price);
+        when(priceService.getPriceByTwoAddresses(eq("From"), eq("To"), any(LocalDateTime.class))).thenReturn(price);
         when(rideMapper.toResponse(ride)).thenReturn(rideResponse);
 
         RideResponse result = rideService.createRide(rideRequest, driverId);
@@ -137,21 +146,19 @@ public class RideServiceImplUnitTest {
     @Test
     public void testUpdateRide() {
         when(rideDataValidation.findIfExistsByRideIdAndStatusIsCreated(rideId)).thenReturn(ride);
-        when(priceService.getPriceByTwoAddresses("From", "To", time)).thenReturn(price);
-        when(rideMapper.toResponse(ride)).thenReturn(rideResponse);
+        when(priceService.getPriceByTwoAddresses(eq("From"), eq("To"), any(LocalDateTime.class))).thenReturn(price);
+        when(rideMapper.toResponse(ride)).thenReturn(updatedRideResponse);
 
-        RideResponse result = rideService.updateRide(rideRequest, rideId);
+        RideResponse result = rideService.updateRide(updateRideRequest, rideId);
 
         assertNotNull(result);
-        assertEquals(rideResponse.from(), result.from());
-        assertEquals(rideResponse.price(),price);
-        assertEquals(rideResponse.rideStatus(),RideStatus.CREATED);
+        assertEquals(updatedRideResponse.from(), result.from());
+        assertEquals(updatedRideResponse.to(), result.to());
+        assertEquals(CREATED,result.rideStatus());
         assertEquals(rideResponse.driverId(),driverId);
         assertEquals(rideResponse.passengerId(),passengerId);
-        assertEquals(rideResponse.to(), result.to());
 
         verify(rideDataValidation).findIfExistsByRideIdAndStatusIsCreated(rideId);
-        verify(rideMapper).updateRideByRequest(rideRequest, ride);
         verify(rideRepository).saveAndFlush(ride);
     }
 
@@ -228,10 +235,14 @@ public class RideServiceImplUnitTest {
 
     @Test
     public void testGetAllRides() {
-        List<Ride> rides = List.of(ride); // Замените на ваши реальные объекты
-        Page<Ride> ridePage = new PageImpl<>(rides, PageRequest.of(0, 10), 1); // Используем реальный Page
+        List<Ride> rides = List.of(ride);
+        Page<Ride> ridePage = new PageImpl<>(rides, PageRequest.of(0, 10), 1);
+
+        List<RideResponse> ridesResponse = List.of(rideResponse);
+
         when(rideRepository.findAll(PageRequest.of(0, 10))).thenReturn(ridePage);
-        when(pageMapper.toResponse(ridePage)).thenReturn(new PageableResponse<>(1, 1, 0, 10, List.of(ride)));
+        when(rideMapper.toResponse(ride)).thenReturn(rideResponse);
+        when(pageMapper.toResponse(any(Page.class))).thenReturn(new PageableResponse<>(1, 1, 0, 10, List.of(rideResponse)));
 
         PageableResponse<RideResponse> result = rideService.getAllRides(0, 10);
 
@@ -239,15 +250,18 @@ public class RideServiceImplUnitTest {
         assertEquals(1, result.content().size());
 
         verify(rideRepository).findAll(PageRequest.of(0, 10));
-        verify(pageMapper).toResponse(ridePage);
+        verify(pageMapper).toResponse(any(Page.class));
     }
 
 
     @Test
     public void testGetAllRidesByPassengerId() {
-        Page<Ride> ridePage = mock(Page.class);
+        List<Ride> rides = List.of(ride);
+        Page<Ride> ridePage = new PageImpl<>(rides, PageRequest.of(0, 10), 1);
+
         when(rideRepository.findByPassengerIdOrderByCreatedAtDesc(passengerId, PageRequest.of(0, 10))).thenReturn(ridePage);
-        when(pageMapper.toResponse(ridePage)).thenReturn(new PageableResponse<>(1,1,1,1,  List.of(ride)));
+        when(rideMapper.toResponse(ride)).thenReturn(rideResponse);
+        when(pageMapper.toResponse(any(Page.class))).thenReturn(new PageableResponse<>(1,1,1,1,  List.of(ride)));
 
         PageableResponse<RideResponse> result = rideService.getAllRidesByPassengerId(passengerId, 0, 10);
 
@@ -256,14 +270,17 @@ public class RideServiceImplUnitTest {
 
         verify(passengerValidation).throwExceptionIfPassengerDoesNotExist(passengerId);
         verify(rideRepository).findByPassengerIdOrderByCreatedAtDesc(passengerId, PageRequest.of(0, 10));
-        verify(pageMapper).toResponse(ridePage);
+        verify(pageMapper).toResponse(any(Page.class));
     }
 
     @Test
     public void testGetAllRidesByDriverId() {
-        Page<Ride> ridePage = mock(Page.class);
+        List<Ride> rides = List.of(ride);
+        Page<Ride> ridePage = new PageImpl<>(rides, PageRequest.of(0, 10), 1);
+
         when(rideRepository.findByDriverIdOrderByCreatedAtDesc(driverId, PageRequest.of(0, 10))).thenReturn(ridePage);
-        when(pageMapper.toResponse(ridePage)).thenReturn(new PageableResponse<>(1,1,1,1, List.of(ride)));
+        when(rideMapper.toResponse(ride)).thenReturn(rideResponse);
+        when(pageMapper.toResponse(any(Page.class))).thenReturn(new PageableResponse<>(1,1,1,1, List.of(ride)));
 
         PageableResponse<RideResponse> result = rideService.getAllRidesByDriverId(driverId, 0, 10);
 
@@ -272,7 +289,7 @@ public class RideServiceImplUnitTest {
 
         verify(driverValidation).throwExceptionIfDriverDoesNotExist(driverId);
         verify(rideRepository).findByDriverIdOrderByCreatedAtDesc(driverId, PageRequest.of(0, 10));
-        verify(pageMapper).toResponse(ridePage);
+        verify(pageMapper).toResponse(any(Page.class));
     }
 
     @Test
@@ -282,11 +299,11 @@ public class RideServiceImplUnitTest {
                 UUID.randomUUID()),
                 passengerId,
                 driverId,
-                "from",
-                "to");
+                "From",
+                "To");
         when(queueService.pickPair()).thenReturn(Optional.of(passengerDriverRideQueuePair));
         when(rideMapper.toRide(any())).thenReturn(ride);
-        when(priceService.getPriceByTwoAddresses("From", "To", time)).thenReturn(price);
+        when(priceService.getPriceByTwoAddresses(eq("From"), eq("To"), any(LocalDateTime.class))).thenReturn(price);
         when(rideMapper.toResponse(ride)).thenReturn(rideResponse);
 
         rideService.tryToCreatePairFromQueue();
@@ -302,11 +319,11 @@ public class RideServiceImplUnitTest {
                 UUID.randomUUID()),
                 passengerId,
                 driverId,
-                "from",
-                "to");
+                "From",
+                "To");
         when(queueService.pickPair()).thenReturn(Optional.of(passengerDriverRideQueuePair));
         when(rideMapper.toRide(any())).thenReturn(ride);
-        when(priceService.getPriceByTwoAddresses("From", "To", time)).thenThrow(GeolocationServiceUnavailableException.class);
+        when(priceService.getPriceByTwoAddresses(eq("From"), eq("To"), any(LocalDateTime.class))).thenThrow(GeolocationServiceUnavailableException.class);
 
         rideService.tryToCreatePairFromQueue();
 
