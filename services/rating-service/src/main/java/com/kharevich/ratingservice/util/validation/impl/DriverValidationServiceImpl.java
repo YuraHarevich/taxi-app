@@ -12,7 +12,7 @@ import java.util.UUID;
 @Service
 @RequiredArgsConstructor
 @Slf4j
-public class DriverValidationServiceIml implements PersonValidationService {
+public class DriverValidationServiceImpl implements PersonValidationService {
 
     private final DriverServiceClient driverServiceClient;
 

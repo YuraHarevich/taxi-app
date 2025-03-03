@@ -27,6 +27,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.math.BigDecimal;
 import java.util.Random;
 
 import java.time.LocalDateTime;
@@ -90,14 +92,13 @@ public class RideServiceImpl implements RideService {
 
         Ride ride = rideMapper.toRide(request);
         ride.setCreatedAt(LocalDateTime.now());
-        try {
-            ride.setPrice(priceService.getPriceByTwoAddresses(
-                    request.from(),
-                    request.to(),
-                    LocalDateTime.now()));
-        } catch (Exception e){
-            throw new GeolocationServiceUnavailableException(e.getMessage());
-        }
+
+        BigDecimal totalPrice = priceService.getPriceByTwoAddresses(
+                request.from(),
+                request.to(),
+                LocalDateTime.now());
+        ride.setPrice(totalPrice);
+
         ride.setPassengerId(request.passengerId());
         ride.setDriverId(driverId);
         ride.setRideStatus(RideStatus.CREATED);
@@ -197,23 +198,26 @@ public class RideServiceImpl implements RideService {
 
             log.info("RideService.trying to make up pair from passenger {} and driver {}", queuePairOptional.get().passengerId(), queuePairOptional.get().driverId());
 
+            UUID passengerId = passengerDriverRideQueuePair.passengerId();
+            UUID driverId = passengerDriverRideQueuePair.driverId();
+
             RideRequest rideRequest = new RideRequest(
                     passengerDriverRideQueuePair.from(),
                     passengerDriverRideQueuePair.to(),
-                    passengerDriverRideQueuePair.passengerId());
+                    passengerId);
             try {
-                createRide(rideRequest, passengerDriverRideQueuePair.driverId());
+                createRide(rideRequest, driverId);
             } catch (GeolocationServiceUnavailableException ex) {
                 log.info("RideService.pair of driver {} and passenger {} can't be processed cause of external error in geo service",
                         passengerDriverRideQueuePair.driverId(),
                         passengerDriverRideQueuePair.passengerId());
                 return false;
             } catch (DriverNotFoundException ex) {
-                queueService.removeDriver(passengerDriverRideQueuePair.driverId());
+                queueService.removeDriver(driverId);
                 log.info("RideService.successfully removed driver");
                 return true;
             } catch (PassengerNotFoundException ex) {
-                queueService.removePassenger(passengerDriverRideQueuePair.passengerId());
+                queueService.removePassenger(passengerId);
                 log.info("RideService.successfully removed passenger");
                 return true;
             } catch (Exception exception) {
@@ -221,7 +225,6 @@ public class RideServiceImpl implements RideService {
                 return false;
             }
             queueService.markAsProcessed(passengerDriverRideQueuePair);
-            createRide(rideRequest, passengerDriverRideQueuePair.driverId());
             log.info("RideService.pair successfully processed");
             return true;
         }

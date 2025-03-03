@@ -12,7 +12,7 @@ import java.util.UUID;
 @Service
 @RequiredArgsConstructor
 @Slf4j
-public class PassengerValidationServiceIml implements PersonValidationService {
+public class PassengerValidationServiceImpl implements PersonValidationService {
 
     private final PassengerServiceClient passengerServiceClient;
 

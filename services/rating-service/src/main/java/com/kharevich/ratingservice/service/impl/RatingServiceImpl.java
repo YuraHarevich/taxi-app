@@ -48,7 +48,7 @@ public class RatingServiceImpl implements RatingService {
 
         RideResponse rideResponse = rideClient.getRideIfExists(request.rideId());
 
-        if(!rideResponse.rideStatus().equals(FINISHED)){
+        if(!FINISHED.equals(rideResponse.rideStatus())) {
             throw new RideNotFininshedException(RIDE_IS_NOT_FINISHED);
         }
 
