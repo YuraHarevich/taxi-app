@@ -193,7 +193,11 @@ public class RideServiceImpl implements RideService {
         var queuePairOptional = queueService.pickPair();
         PassengerDriverRideQueuePair passengerDriverRideQueuePair = null;
 
-        if(queuePairOptional.isPresent()){
+            if(queuePairOptional.isEmpty()) {
+                log.info("RideService. make pair for entity");
+                return false;
+            }
+
             passengerDriverRideQueuePair = queuePairOptional.get();
 
             log.info("RideService.trying to make up pair from passenger {} and driver {}", queuePairOptional.get().passengerId(), queuePairOptional.get().driverId());
@@ -227,11 +231,7 @@ public class RideServiceImpl implements RideService {
             queueService.markAsProcessed(passengerDriverRideQueuePair);
             log.info("RideService.pair successfully processed");
             return true;
-        }
-        else {
-            log.info("RideService. make pair for entity");
-            return false;
-        }
+
     }
 
 }
