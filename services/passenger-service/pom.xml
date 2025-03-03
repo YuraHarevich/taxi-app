@@ -20,8 +20,27 @@
 		<mapstruct.version>1.6.3</mapstruct.version>
 		<rest-assured.version>5.5.1</rest-assured.version>
 		<maven-checkstyle-plugin.version>3.4.0</maven-checkstyle-plugin.version>
+		<cucumber.version>7.21.1</cucumber.version>
 	</properties>
 	<dependencies>
+		<dependency>
+			<groupId>io.cucumber</groupId>
+			<artifactId>cucumber-java</artifactId>
+			<version>${cucumber.version}</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>io.cucumber</groupId>
+			<artifactId>cucumber-junit</artifactId>
+			<version>${cucumber.version}</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>io.cucumber</groupId>
+			<artifactId>cucumber-spring</artifactId>
+			<version>${cucumber.version}</version>
+			<scope>test</scope>
+		</dependency>
 		<dependency>
 			<groupId>io.rest-assured</groupId>
 			<artifactId>rest-assured</artifactId>

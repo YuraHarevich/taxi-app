@@ -10,5 +10,6 @@ public class TestConstants {
     public static final String SQL_INSERT_DATA = "INSERT INTO passenger (id, name, surname, email, number)\n" +
             "VALUES ('" + BASIC_UUID + "','" + BASIC_NAME + "','" + BASIC_SURNAME + "','" + BASIC_MAIL + "','" + BASIC_NUMBER +"');";
     public static final String SQL_CLEAR_TABLE = "DELETE FROM passenger";
+    public static final String BASE_PASSENGERS_URL = "http://localhost:8010/api/v1/passengers";
 
 }

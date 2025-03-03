@@ -68,10 +68,11 @@ public class RideServiceImpl implements RideService {
     public void sendRideRequest(RideRequest request) {
         queueService.addPassenger(request);
         orderProducer.sendOrderRequest(new QueueProceedRequest(request.passengerId()));
+        }
 
     @Override
-    public RideResponse createRide(RideRequest request, UUID passengerId, UUID driverId) {
-        passengerValidation.throwExceptionIfPassengerDoesNotExist(passengerId);
+    public RideResponse createRide(RideRequest request, UUID driverId) {
+        passengerValidation.throwExceptionIfPassengerDoesNotExist(request.passengerId());
         driverValidation.throwExceptionIfDriverDoesNotExist(driverId);
 
         rideDataValidation.checkIfDriverIsNotBusy(driverId);
@@ -82,7 +83,7 @@ public class RideServiceImpl implements RideService {
                     request.from(),
                     request.to(),
                     LocalDateTime.now()));
-            ride.setPassengerId(passengerId);
+            ride.setPassengerId(request.passengerId());
             ride.setDriverId(driverId);
             ride.setRideStatus(CREATED);
 
