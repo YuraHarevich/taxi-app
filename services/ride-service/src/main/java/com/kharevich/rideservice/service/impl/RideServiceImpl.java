@@ -87,7 +87,6 @@ public class RideServiceImpl implements RideService {
             throw new DriverNotFoundException(DRIVER_NOT_FOUND);
         }
 
-
         rideDataValidation.checkIfDriverIsNotBusy(driverId);
 
         Ride ride = rideMapper.toRide(request);

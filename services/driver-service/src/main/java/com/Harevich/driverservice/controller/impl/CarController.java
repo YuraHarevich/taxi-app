@@ -7,11 +7,9 @@ import com.Harevich.driverservice.dto.response.PageableResponse;
 import com.Harevich.driverservice.service.CarService;
 import com.Harevich.driverservice.util.constants.RegularExpressionConstants;
 import jakarta.validation.Valid;
-import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.Pattern;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
