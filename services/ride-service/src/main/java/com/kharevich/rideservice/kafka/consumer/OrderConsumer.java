@@ -25,7 +25,7 @@ public class OrderConsumer {
 
     @KafkaListener(topics = "order-topic",groupId = "order-group")
     public void consumeSupplyRequests(QueueProceedRequest queueProceedRequest) throws MessagingException {
-        log.info("Consuming the message from topic {} for driver {}", orderTopic, queueProceedRequest.entityId());
+        log.info("OrderConsumer.Consuming the message from topic {} for entity {}", orderTopic, queueProceedRequest.entityId());
         rideService.tryToCreatePairFromQueue();
     }
 

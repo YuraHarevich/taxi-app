@@ -6,7 +6,9 @@ import com.kharevich.rideservice.dto.response.PageableResponse;
 import com.kharevich.rideservice.dto.request.RideRequest;
 import com.kharevich.rideservice.dto.response.RideResponse;
 import com.kharevich.rideservice.exception.CannotChangeRideStatusException;
+import com.kharevich.rideservice.exception.DriverNotFoundException;
 import com.kharevich.rideservice.exception.GeolocationServiceUnavailableException;
+import com.kharevich.rideservice.exception.PassengerNotFoundException;
 import com.kharevich.rideservice.kafka.producer.OrderProducer;
 import com.kharevich.rideservice.model.Ride;
 import com.kharevich.rideservice.model.enumerations.RideStatus;
@@ -21,18 +23,20 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import com.kharevich.rideservice.util.validation.driver.DriverValidation;
 import com.kharevich.rideservice.util.validation.passenger.PassengerValidation;
-import com.kharevich.rideservice.util.validation.ride.RideDataValidation;
-import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.math.BigDecimal;
 import java.util.Random;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
 
 import static com.kharevich.rideservice.model.enumerations.RideStatus.CREATED;
+import static com.kharevich.rideservice.util.constants.RideServiceResponseConstants.DRIVER_NOT_FOUND;
+import static com.kharevich.rideservice.util.constants.RideServiceResponseConstants.PASSENGER_NOT_FOUND;
 
 @Service
 @RequiredArgsConstructor
@@ -72,22 +76,33 @@ public class RideServiceImpl implements RideService {
 
     @Override
     public RideResponse createRide(RideRequest request, UUID driverId) {
-        passengerValidation.throwExceptionIfPassengerDoesNotExist(request.passengerId());
-        driverValidation.throwExceptionIfDriverDoesNotExist(driverId);
+        try {
+            passengerValidation.throwExceptionIfPassengerDoesNotExist(request.passengerId());
+        } catch (Exception ex) {
+            throw new PassengerNotFoundException(PASSENGER_NOT_FOUND);
+        }
+        try {
+            driverValidation.throwExceptionIfDriverDoesNotExist(driverId);
+        } catch (Exception ex) {
+            throw new DriverNotFoundException(DRIVER_NOT_FOUND);
+        }
 
         rideDataValidation.checkIfDriverIsNotBusy(driverId);
 
         Ride ride = rideMapper.toRide(request);
-            ride.setCreatedAt(LocalDateTime.now());
-            ride.setPrice(priceService.getPriceByTwoAddresses(
-                    request.from(),
-                    request.to(),
-                    LocalDateTime.now()));
-            ride.setPassengerId(request.passengerId());
-            ride.setDriverId(driverId);
-            ride.setRideStatus(CREATED);
+        ride.setCreatedAt(LocalDateTime.now());
 
-            rideRepository.saveAndFlush(ride);
+        BigDecimal totalPrice = priceService.getPriceByTwoAddresses(
+                request.from(),
+                request.to(),
+                LocalDateTime.now());
+        ride.setPrice(totalPrice);
+
+        ride.setPassengerId(request.passengerId());
+        ride.setDriverId(driverId);
+        ride.setRideStatus(RideStatus.CREATED);
+
+        rideRepository.saveAndFlush(ride);
         return rideMapper.toResponse(ride);
     }
 
@@ -173,33 +188,49 @@ public class RideServiceImpl implements RideService {
     }
 
     @Override
-    public void tryToCreatePairFromQueue() {
+    public boolean tryToCreatePairFromQueue() {
         var queuePairOptional = queueService.pickPair();
         PassengerDriverRideQueuePair passengerDriverRideQueuePair = null;
 
-        if(queuePairOptional.isPresent()){
+            if(queuePairOptional.isEmpty()) {
+                log.info("RideService. make pair for entity");
+                return false;
+            }
+
             passengerDriverRideQueuePair = queuePairOptional.get();
 
-            log.info("making up pair from passenger {} and driver {}", queuePairOptional.get().passengerId(), queuePairOptional.get().driverId());
+            log.info("RideService.trying to make up pair from passenger {} and driver {}", queuePairOptional.get().passengerId(), queuePairOptional.get().driverId());
+
+            UUID passengerId = passengerDriverRideQueuePair.passengerId();
+            UUID driverId = passengerDriverRideQueuePair.driverId();
 
             RideRequest rideRequest = new RideRequest(
                     passengerDriverRideQueuePair.from(),
                     passengerDriverRideQueuePair.to(),
-                    passengerDriverRideQueuePair.passengerId());
+                    passengerId);
             try {
-                createRide(rideRequest, passengerDriverRideQueuePair.driverId());
+                createRide(rideRequest, driverId);
             } catch (GeolocationServiceUnavailableException ex) {
-                log.info("Pair of driver {} and passenger {} can't be processed cause of external error",
+                log.info("RideService.pair of driver {} and passenger {} can't be processed cause of external error in geo service",
                         passengerDriverRideQueuePair.driverId(),
                         passengerDriverRideQueuePair.passengerId());
-                return;
+                return false;
+            } catch (DriverNotFoundException ex) {
+                queueService.removeDriver(driverId);
+                log.info("RideService.successfully removed driver");
+                return true;
+            } catch (PassengerNotFoundException ex) {
+                queueService.removePassenger(passengerId);
+                log.info("RideService.successfully removed passenger");
+                return true;
+            } catch (Exception exception) {
+                log.error("RideService.exception: {}", exception.getMessage());
+                return false;
             }
-            log.info("Pair successfully processed");
             queueService.markAsProcessed(passengerDriverRideQueuePair);
-        }
-        else {
-            log.info("cant make pair for entity");
-        }
+            log.info("RideService.pair successfully processed");
+            return true;
+
     }
 
 }

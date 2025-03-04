@@ -1,5 +1,6 @@
 package com.kharevich.rideservice.dto.response;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.kharevich.rideservice.model.enumerations.RideStatus;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -30,6 +31,7 @@ public record RideResponse(
     @Schema(description = "Ride status", example = "ACCEPTED")
     RideStatus rideStatus,
 
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "HH:mm")
     @Schema(description = "Ride time", example = "12:30")
     Duration rideTime
 

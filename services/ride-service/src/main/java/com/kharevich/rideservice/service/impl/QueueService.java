@@ -39,6 +39,12 @@ public class QueueService implements PassengerQueueService, DriverQueueService {
     }
 
     @Override
+    @Transactional
+    public void removeDriver(UUID queue_driver_id) {
+        driverQueueRepository.deleteByDriverId(queue_driver_id);
+    }
+
+    @Override
     public void addPassenger(RideRequest request) {
         PassengerQueueElement passengerQueueElement = PassengerQueueElement.builder()
                 .passengerId(request.passengerId())
@@ -46,6 +52,12 @@ public class QueueService implements PassengerQueueService, DriverQueueService {
                 .from(request.from())
                 .build();
         passengerQueueRepository.save(passengerQueueElement);
+    }
+
+    @Override
+    @Transactional
+    public void removePassenger(UUID queue_passenger_id) {
+        passengerQueueRepository.deleteByPassengerId(queue_passenger_id);
     }
 
     @Transactional
@@ -97,4 +109,5 @@ public class QueueService implements PassengerQueueService, DriverQueueService {
             log.info("Couldn't mark as processed driver {}",passengerDriverRideQueuePair.driverId());
         }
     }
+
 }

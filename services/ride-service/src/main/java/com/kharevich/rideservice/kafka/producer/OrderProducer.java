@@ -22,7 +22,7 @@ public class OrderProducer {
     private String topic;
 
     public void sendOrderRequest(QueueProceedRequest queueProceedRequest){
-        log.info("Sending order via KAFKA");
+        log.info("OrderProducer.Sending order kafka request");
         Message<QueueProceedRequest> message = MessageBuilder
                 .withPayload(queueProceedRequest)
                 .setHeader(KafkaHeaders.TOPIC,topic)

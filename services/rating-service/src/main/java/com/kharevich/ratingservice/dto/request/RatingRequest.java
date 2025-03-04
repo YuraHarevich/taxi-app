@@ -12,12 +12,6 @@ public record RatingRequest(
         @Schema(description = "Ride id")
         UUID rideId,
 
-        @Schema(description = "rated by id")
-        UUID ratedById,
-
-        @Schema(description = "rated id")
-        UUID ratedId,
-
         @Max(5)
         @Min(1)
         @Schema(description = "rating(stars)", example = "5")

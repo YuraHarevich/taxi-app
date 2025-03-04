@@ -10,6 +10,7 @@ import static com.kharevich.rideservice.util.constants.TimeTariffConstantValues.
 import static com.kharevich.rideservice.util.constants.TimeTariffConstantValues.MORNING_PEAK_START;
 import static com.kharevich.rideservice.util.constants.TimeTariffConstantValues.TARIFF_PER_KM;
 
+import com.kharevich.rideservice.exception.GeolocationServiceUnavailableException;
 import com.kharevich.rideservice.service.GeolocationService;
 import com.kharevich.rideservice.service.PriceService;
 import lombok.RequiredArgsConstructor;
@@ -34,7 +35,12 @@ public class PriceServiceIml implements PriceService {
 
     @Override
     public BigDecimal getPriceByTwoAddresses(String from, String to, LocalDateTime currentTime) {
-        double distance = geolocationService.getRouteDistanceByTwoAddresses(from, to);
+        double distance;
+        try {
+            distance = geolocationService.getRouteDistanceByTwoAddresses(from, to);
+        } catch (Exception e){
+            throw new GeolocationServiceUnavailableException(e.getMessage());
+        }
         BigDecimal price = BigDecimal.valueOf(distance * TARIFF_PER_KM);
         BigDecimal finalPrice =
                 increaseTariffByMorningPeak(currentTime,
