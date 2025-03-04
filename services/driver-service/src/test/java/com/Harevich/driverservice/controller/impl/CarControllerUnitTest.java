@@ -37,19 +37,22 @@ public class CarControllerUnitTest {
 
     private ObjectMapper objectMapper;
 
+    private String baseUrl;
+
     @BeforeEach
     public void setUp() {
         mockMvc = MockMvcBuilders.standaloneSetup(carController)
                 .setControllerAdvice(new GlobalExceptionHandler())
                 .build();
         objectMapper = new ObjectMapper();
+        baseUrl = "/api/v1/cars";
     }
 
     @Test
     public void testCreateNewCar_InvalidRequest() throws Exception {
         CarRequest invalidRequest = new CarRequest("", "123", "");
 
-        mockMvc.perform(post("/api/v1/cars/create")
+        mockMvc.perform(post(baseUrl + "/create")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(invalidRequest)))
                 .andExpect(status().isBadRequest());
@@ -60,7 +63,7 @@ public class CarControllerUnitTest {
         CarRequest invalidRequest = new CarRequest("", "123", "");
         UUID id = UUID.randomUUID();
 
-        mockMvc.perform(patch("/api/v1/cars/update?id=" + id)
+        mockMvc.perform(patch(baseUrl + "/update?id=" + id)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(invalidRequest)))
                 .andExpect(status().isBadRequest());
@@ -70,7 +73,7 @@ public class CarControllerUnitTest {
     public void testCreateNewCar_ValidRequest() throws Exception {
         CarRequest validRequest = new CarRequest("Toyota Camry", "7777 BB-7", "Sedan");
 
-        mockMvc.perform(post("/api/v1/cars/create")
+        mockMvc.perform(post(baseUrl + "/create")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(validRequest)))
                 .andExpect(status().isCreated());
@@ -81,7 +84,7 @@ public class CarControllerUnitTest {
         CarRequest validRequest = new CarRequest("Toyota Camry", "7777 BB-7", "Sedan");
         UUID id = UUID.randomUUID();
 
-        mockMvc.perform(patch("/api/v1/cars/update?id=" + id)
+        mockMvc.perform(patch(baseUrl + "/update?id=" + id)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(validRequest)))
                 .andExpect(status().isAccepted());
@@ -94,7 +97,7 @@ public class CarControllerUnitTest {
 
         when(carService.getCarById(validId)).thenReturn(carResponse);
 
-        mockMvc.perform(get("/api/v1/cars/id?id=" + validId))
+        mockMvc.perform(get(baseUrl + "/id?id=" + validId))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id").value(validId.toString()))
                 .andExpect(jsonPath("$.brand").value("Toyota"))
@@ -106,7 +109,7 @@ public class CarControllerUnitTest {
     public void testGetCarById_InvalidId() throws Exception {
         String invalidId = "invalid-uuid";
 
-        mockMvc.perform(get("/api/v1/cars/id?id=" + invalidId))
+        mockMvc.perform(get(baseUrl + "/id?id=" + invalidId))
                 .andExpect(status().isBadRequest());
     }
 
@@ -114,7 +117,7 @@ public class CarControllerUnitTest {
     public void testDeleteCarById_ValidId() throws Exception {
         UUID validId = UUID.randomUUID();
 
-        mockMvc.perform(delete("/api/v1/cars?id=" + validId))
+        mockMvc.perform(delete(baseUrl + "?id=" + validId))
                 .andExpect(status().isOk());
 
         verify(carService).deleteCarById(validId);
@@ -124,7 +127,7 @@ public class CarControllerUnitTest {
     public void testDeleteCarById_InvalidId() throws Exception {
         String invalidId = "invalid-uuid";
 
-        mockMvc.perform(delete("/api/v1/cars?id=" + invalidId))
+        mockMvc.perform(delete(baseUrl + "?id=" + invalidId))
                 .andExpect(status().isBadRequest());
     }
 
@@ -138,7 +141,7 @@ public class CarControllerUnitTest {
 
         when(carService.getAllAvailableCars(validPageNumber, validSize)).thenReturn(response);
 
-        mockMvc.perform(get("/api/v1/cars/available?page_number=" + validPageNumber + "&size=" + validSize))
+        mockMvc.perform(get(baseUrl + "/available?page_number=" + validPageNumber + "&size=" + validSize))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.totalPages").value(1))
                 .andExpect(jsonPath("$.content[0].brand").value("Toyota"));
@@ -149,7 +152,7 @@ public class CarControllerUnitTest {
         int invalidPageNumber = -1;
         int size = 10;
 
-        mockMvc.perform(get("/api/v1/cars/available?page_number=" + invalidPageNumber + "&size=" + size))
+        mockMvc.perform(get(baseUrl + "/available?page_number=" + invalidPageNumber + "&size=" + size))
                 .andExpect(status().isBadRequest());
     }
 
@@ -158,7 +161,7 @@ public class CarControllerUnitTest {
         int pageNumber = -1;
         int invalidSize = -1;
 
-        mockMvc.perform(get("/api/v1/cars/available?page_number=" + pageNumber + "&size=" + invalidSize))
+        mockMvc.perform(get(baseUrl + "/available?page_number=" + pageNumber + "&size=" + invalidSize))
                 .andExpect(status().isBadRequest());
     }
 
@@ -169,7 +172,7 @@ public class CarControllerUnitTest {
 
         when(carService.getCarByNumber(validNumber)).thenReturn(carResponse);
 
-        mockMvc.perform(get("/api/v1/cars/number?number=" + validNumber))
+        mockMvc.perform(get(baseUrl + "/number?number=" + validNumber))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.number").value(validNumber));
     }
@@ -178,7 +181,7 @@ public class CarControllerUnitTest {
     public void testGetCarByNumber_InvalidNumber() throws Exception {
         String invalidNumber = "123";
 
-        mockMvc.perform(get("/api/v1/cars/number?number=" + invalidNumber))
+        mockMvc.perform(get(baseUrl + "/number?number=" + invalidNumber))
                 .andExpect(status().isBadRequest());
     }
 

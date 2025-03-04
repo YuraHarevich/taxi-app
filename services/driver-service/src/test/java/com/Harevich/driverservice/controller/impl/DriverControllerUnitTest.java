@@ -32,7 +32,10 @@ public class DriverControllerUnitTest {
     private DriverController driverController;
 
     private MockMvc mockMvc;
+
     private ObjectMapper objectMapper;
+
+    private String baseUrl;
 
     @BeforeEach
     public void setUp() {
@@ -40,6 +43,7 @@ public class DriverControllerUnitTest {
                 .setControllerAdvice(new GlobalExceptionHandler())
                 .build();
         objectMapper = new ObjectMapper();
+        baseUrl = "/api/v1/drivers";
     }
 
     @Test
@@ -49,7 +53,7 @@ public class DriverControllerUnitTest {
 
         when(driverService.createNewDriver(validRequest)).thenReturn(response);
 
-        mockMvc.perform(post("/api/v1/drivers/create")
+        mockMvc.perform(post(baseUrl + "/create")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(validRequest)))
                 .andExpect(status().isCreated())
@@ -62,7 +66,7 @@ public class DriverControllerUnitTest {
     public void testCreateDriver_InvalidRequest() throws Exception {
         DriverRequest invalidRequest = new DriverRequest("John","Doe", "mple.com", "+37547525709",MALE.toString());
 
-        mockMvc.perform(post("/api/v1/drivers/create")
+        mockMvc.perform(post(baseUrl + "/create")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(invalidRequest)))
                 .andExpect(status().isBadRequest());
@@ -76,7 +80,7 @@ public class DriverControllerUnitTest {
 
         when(driverService.updateDriver(validRequest, id)).thenReturn(response);
 
-        mockMvc.perform(patch("/api/v1/drivers/update?id=" + id)
+        mockMvc.perform(patch(baseUrl + "/update?id=" + id)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(validRequest)))
                 .andExpect(status().isAccepted())
@@ -91,7 +95,7 @@ public class DriverControllerUnitTest {
         UUID id = UUID.randomUUID();
         DriverRequest invalidRequest = new DriverRequest("John","Doe", "mple.com", "+37547525709",MALE.toString());
 
-        mockMvc.perform(patch("/api/v1/drivers/update?id=" + id)
+        mockMvc.perform(patch(baseUrl + "/update?id=" + id)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(invalidRequest)))
                 .andExpect(status().isBadRequest());
@@ -104,7 +108,7 @@ public class DriverControllerUnitTest {
 
         when(driverService.getById(id)).thenReturn(response);
 
-        mockMvc.perform(get("/api/v1/drivers?id=" + id))
+        mockMvc.perform(get(baseUrl + "?id=" + id))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id").value(id.toString()))
                 .andExpect(jsonPath("$.name").value("John"))
@@ -116,7 +120,7 @@ public class DriverControllerUnitTest {
     public void testGetDriverById_InvalidId() throws Exception {
         String invalidId = "invalid-uuid";
 
-        mockMvc.perform(get("/api/v1/drivers?id=" + invalidId))
+        mockMvc.perform(get(baseUrl + "?id=" + invalidId))
                 .andExpect(status().isBadRequest());
     }
 
@@ -124,7 +128,7 @@ public class DriverControllerUnitTest {
     public void testDeleteDriverById_ValidId() throws Exception {
         UUID id = UUID.randomUUID();
 
-        mockMvc.perform(delete("/api/v1/drivers?id=" + id))
+        mockMvc.perform(delete(baseUrl + "?id=" + id))
                 .andExpect(status().isOk());
 
         verify(driverService).deleteById(id);
@@ -134,7 +138,7 @@ public class DriverControllerUnitTest {
     public void testDeleteDriverById_InvalidId() throws Exception {
         String invalidId = "invalid-uuid";
 
-        mockMvc.perform(delete("/api/v1/drivers?id=" + invalidId))
+        mockMvc.perform(delete(baseUrl + "?id=" + invalidId))
                 .andExpect(status().isBadRequest());
     }
 
@@ -146,7 +150,7 @@ public class DriverControllerUnitTest {
 
         when(driverService.assignPersonalCar(driverId, carId)).thenReturn(response);
 
-        mockMvc.perform(patch("/api/v1/drivers/changeCar?driver_id=" + driverId + "&car_id=" + carId))
+        mockMvc.perform(patch(baseUrl + "/changeCar?driver_id=" + driverId + "&car_id=" + carId))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id").value(driverId.toString()))
                 .andExpect(jsonPath("$.name").value("John"))
@@ -160,7 +164,7 @@ public class DriverControllerUnitTest {
         String invalidDriverId = "invalid-uuid";
         String invalidCarId = "invalid-uuid";
 
-        mockMvc.perform(patch("/api/v1/drivers/changeCar?driver_id=" + invalidDriverId + "&car_id=" + invalidCarId))
+        mockMvc.perform(patch(baseUrl + "/changeCar?driver_id=" + invalidDriverId + "&car_id=" + invalidCarId))
                 .andExpect(status().isBadRequest());
     }
 }

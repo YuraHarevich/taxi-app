@@ -147,11 +147,12 @@ public class CarServiceUnitTest {
 
         carService.deleteCarById(carId);
 
+        assertTrue(car.isDeleted());
+        assertNull(car.getDriver());
+
         verify(carValidation).findIfExistsById(carId);
         verify(carValidation).isDeleted(carId);
         verify(carRepository).save(car);
-        assertTrue(car.isDeleted());
-        assertNull(car.getDriver());
     }
 
     @Test
@@ -164,12 +165,13 @@ public class CarServiceUnitTest {
 
         carService.deleteCarById(carId);
 
-        verify(carValidation).findIfExistsById(carId);
-        verify(carValidation).isDeleted(carId);
-        verify(carRepository).save(car);
         assertTrue(car.isDeleted());
         assertNull(car.getDriver());
         assertNull(driver.getCar());
+
+        verify(carValidation).findIfExistsById(carId);
+        verify(carValidation).isDeleted(carId);
+        verify(carRepository).save(car);
     }
 
     @Test
@@ -184,6 +186,7 @@ public class CarServiceUnitTest {
         PageableResponse<CarResponse> result = carService.getAllAvailableCars(pageNumber, size);
 
         assertNotNull(result);
+
         verify(carRepository).findByDriverIsNullAndDeletedFalse(pageRequest);
         verify(pageMapper).toResponse(carPage);
     }
