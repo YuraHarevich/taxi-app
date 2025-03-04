@@ -46,6 +46,8 @@ public class PassengerControllerIntegrationTest {
     @LocalServerPort
     private Integer port;
 
+    private final String passengersRelativeUrl = "/api/v1/passengers";
+
     @BeforeEach
     void setup() {
         RestAssured.baseURI = "http://localhost";
@@ -60,7 +62,7 @@ public class PassengerControllerIntegrationTest {
                 .contentType(ContentType.JSON)
                 .body(request)
                 .when()
-                .post("/api/v1/passengers")
+                .post(passengersRelativeUrl)
                 .then()
                 .statusCode(HttpStatus.CREATED.value())
                 .body("email", equalTo(request.email()))
@@ -77,7 +79,7 @@ public class PassengerControllerIntegrationTest {
                 .contentType(ContentType.JSON)
                 .body(invalidRequest)
                 .when()
-                .post("/api/v1/passengers")
+                .post(passengersRelativeUrl)
                 .then()
                 .statusCode(HttpStatus.BAD_REQUEST.value());
     }
@@ -90,7 +92,7 @@ public class PassengerControllerIntegrationTest {
                 .contentType(ContentType.JSON)
                 .body(invalidRequest)
                 .when()
-                .post("/api/v1/passengers")
+                .post(passengersRelativeUrl)
                 .then()
                 .statusCode(HttpStatus.BAD_REQUEST.value());
     }
@@ -103,7 +105,7 @@ public class PassengerControllerIntegrationTest {
                 .contentType(ContentType.JSON)
                 .body(invalidRequest)
                 .when()
-                .post("/api/v1/passengers")
+                .post(passengersRelativeUrl)
                 .then()
                 .statusCode(HttpStatus.BAD_REQUEST.value());
     }
@@ -117,7 +119,7 @@ public class PassengerControllerIntegrationTest {
                 .body(request)
                 .queryParam("id", BASIC_UUID)
                 .when()
-                .patch("/api/v1/passengers")
+                .patch(passengersRelativeUrl)
                 .then()
                 .statusCode(HttpStatus.ACCEPTED.value())
                 .body("email", equalTo(request.email()))
@@ -134,7 +136,7 @@ public class PassengerControllerIntegrationTest {
                 .contentType(ContentType.JSON)
                 .body(invalidRequest)
                 .when()
-                .patch("/api/v1/passengers")
+                .patch(passengersRelativeUrl)
                 .then()
                 .statusCode(HttpStatus.BAD_REQUEST.value());
     }
@@ -146,7 +148,7 @@ public class PassengerControllerIntegrationTest {
         given()
                 .queryParam("id", id.toString())
                 .when()
-                .get("/api/v1/passengers")
+                .get(passengersRelativeUrl)
                 .then()
                 .statusCode(HttpStatus.OK.value());
     }
@@ -158,7 +160,7 @@ public class PassengerControllerIntegrationTest {
         given()
                 .queryParam("id", nonExistentId.toString())
                 .when()
-                .delete("/api/v1/passengers")
+                .delete(passengersRelativeUrl)
                 .then()
                 .statusCode(HttpStatus.NOT_FOUND.value());
     }
@@ -170,7 +172,7 @@ public class PassengerControllerIntegrationTest {
         given()
                 .queryParam("id", id.toString())
                 .when()
-                .delete("/api/v1/passengers")
+                .delete(passengersRelativeUrl)
                 .then()
                 .statusCode(HttpStatus.OK.value());
     }

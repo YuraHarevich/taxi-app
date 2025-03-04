@@ -120,12 +120,5 @@ public class PassengerStepDefinitions {
         Assert.assertEquals(404, getResponse.getStatusCode());
     }
 
-//    @After
-//    public void cleanup() {
-//        if (passengerId != null) {
-//            jdbcTemplate.update("DELETE FROM passenger WHERE id = ?", passengerId);
-//        }
-//    }
-
 }
 
