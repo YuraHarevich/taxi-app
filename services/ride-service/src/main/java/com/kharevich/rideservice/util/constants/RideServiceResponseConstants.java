@@ -31,6 +31,7 @@ public final class RideServiceResponseConstants {
     public static final String ERROR_WHILE_CONVERTING_PROCESSING_STATUS = "The field processing status was determined incorrectly";
 
     public static final String PROCESSING_STATUS_IS_ABSENT = "Parameter processing status is absent";
+
     public static final String PASSENGER_NOT_FOUND = "passenger with id %s not found";
 
     public static final String PASSENGER_SERVICE_UNAVAILABLE = "Passenger service is currently unavailable";

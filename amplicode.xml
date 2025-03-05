@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AmplicodePersistenceUnitSettings">
+    <persistence-units>
+      <persistence-unit moduleName="driver-service" name="Default">
+        <packages>
+          <package value="com.Harevich.driverservice" />
+        </packages>
+      </persistence-unit>
+      <persistence-unit moduleName="passenger-service" name="Default">
+        <packages>
+          <package value="com.Harevich.passengerservice" />
+        </packages>
+      </persistence-unit>
+      <persistence-unit moduleName="ride-service" name="Default">
+        <packages>
+          <package value="com.kharevich.rideservice" />
+        </packages>
+      </persistence-unit>
+    </persistence-units>
+  </component>
+</project>

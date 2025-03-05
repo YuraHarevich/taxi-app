@@ -17,4 +17,6 @@ public interface PassengerQueueRepository extends JpaRepository<PassengerQueueEl
 
     List<PassengerQueueElement> findByProcessingStatus(ProcessingStatus status);
 
+    void deleteByPassengerId(UUID queuePassengerId);
+
 }

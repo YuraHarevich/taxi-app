@@ -3,6 +3,7 @@ app:
     time_of_queue_item_to_become_outdated_in_days: 1
     period_of_performing_cleaning_of_outdated_data_in_millis: 1440000
     period_of_performing_cleaning_stuck_orders_in_millis: 60000
+    period_of_processing_queue_items: 60000
   time:
     zoneId: "Europe/Minsk"
   urls:
@@ -44,7 +45,7 @@ spring:
       key-serializer: org.apache.kafka.common.serialization.StringSerializer
       value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
       properties:
-        spring.json.type.mapping: queueProceedRequest:com.Harevich.rideservice.dto.request.QueueProceedRequest
+        spring.json.type.mapping: queueProceedRequest:com.kharevich.rideservice.dto.request.QueueProceedRequest
     consumer:
       bootstrap-servers: localhost:9092
       group-id: order-group
@@ -53,7 +54,7 @@ spring:
       value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
       properties:
         spring.json.trusted.packages: '*'
-        spring.json.type.mapping: queueProceedRequest:com.Harevich.rideservice.dto.request.QueueProceedRequest
+        spring.json.type.mapping: queueProceedRequest:com.kharevich.rideservice.dto.request.QueueProceedRequest
         
   cloud:
     openfeign:
