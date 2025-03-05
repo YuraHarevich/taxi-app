@@ -115,4 +115,15 @@ public class CarStepDefinitions {
             }
         });
     }
+
+    @And("car response should contain error message")
+    public void responseShouldContainErrorMessage(String expectedResponse) {
+        JsonPath actualResponse = response.jsonPath();
+        JsonPath expectedJson = new JsonPath(expectedResponse);
+
+        expectedJson.getMap("").forEach((key, value) -> {
+            Assert.assertEquals(value, actualResponse.get(key.toString()));
+        });
+    }
+
 }

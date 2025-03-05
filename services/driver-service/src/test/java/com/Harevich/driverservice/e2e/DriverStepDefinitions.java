@@ -108,7 +108,7 @@ public class DriverStepDefinitions {
         });
     }
 
-    @And("response should contain error message")
+    @And("driver response should contain error message")
     public void responseShouldContainErrorMessage(String expectedResponse) {
         JsonPath actualResponse = response.jsonPath();
         JsonPath expectedJson = new JsonPath(expectedResponse);

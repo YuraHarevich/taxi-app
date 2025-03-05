@@ -64,12 +64,12 @@ Feature: Car Management API
     """
     When updates the car with id "beab9ed9-ea27-461b-a87d-62890408b154"
     Then return car response status 409
-#    And response should contain error message
-#    """
-#    {
-#      "message": "Car not found"
-#    }
-#    """
+    And car response should contain error message
+    """
+    {
+      "message": "Car not found"
+    }
+    """
 
   # Позитивный сценарий: обновление автомобиля
   Scenario: Successfully update an existing car
@@ -98,6 +98,12 @@ Feature: Car Management API
   Scenario: Fail to retrieve non-existing car
     When retrieves the car with id "beab9ed9-ea27-461b-a87d-62890408b154"
     Then return car response status 409
+    And car response should contain error message
+    """
+    {
+      "message": "Car not found"
+    }
+    """
 
   # Позитивный сценарий: удаление автомобиля
   Scenario: Successfully delete an existing car
@@ -109,3 +115,9 @@ Feature: Car Management API
   Scenario: Fail to delete non-existing car
     When deletes the car with id "beab9ed9-ea27-461b-a87d-62890408b154"
     Then return car response status 409
+    And car response should contain error message
+    """
+    {
+      "message": "Car not found"
+    }
+    """

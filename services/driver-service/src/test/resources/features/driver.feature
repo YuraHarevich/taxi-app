@@ -41,7 +41,7 @@ Feature: driver Service
     """
     When creates the driver
     Then return driver response status 409
-    And response should contain error message
+    And driver response should contain error message
     """
     {
       "message": "Driver with such email already exists"
@@ -62,7 +62,7 @@ Feature: driver Service
     """
     When creates the driver
     Then return driver response status 409
-    And response should contain error message
+    And driver response should contain error message
     """
     {
       "message": "Driver with such phone number already exists"
@@ -109,7 +109,7 @@ Feature: driver Service
     """
     When updates the driver with id "beab9ed9-ea27-461b-a87d-62890408b154"
     Then return driver response status 404
-    And response should contain error message
+    And driver response should contain error message
     """
     {
       "message": "Driver not found"
@@ -136,7 +136,7 @@ Feature: driver Service
   Scenario: Fail to retrieve non-existing driver
     When retrieves the driver with id "beab9ed9-ea27-461b-a87d-62890408b154"
     Then return driver response status 404
-    And response should contain error message
+    And driver response should contain error message
     """
     {
       "message": "Driver not found"
@@ -153,27 +153,3 @@ Feature: driver Service
   Scenario: Fail to delete non-existing driver
     When deletes the driver with id "beab9ed9-ea27-461b-a87d-62890408b154"
     Then return driver response status 404
-    And response should contain error message
-    """
-    {
-      "message": "Driver not found
-    }
-    """
-
-  ############################## Сценарии с машинами  ##############################
-
-#  # Позитивный сценарий: добавление машины водителю
-#  Scenario: Successfully assign car to the driver
-#    When assign car with id "" to driver
-#    Then return driver response status 200
-#    And driver response body should contain
-#    """
-#      {
-#        "id": "401a7641-f3c7-4d71-b2a1-d18851ad44bc",
-#        "name": "Alex",
-#        "surname": "Messi",
-#        "email": "update@example.com",
-#        "sex": "MALE",
-#        "carId": null
-#      }
-#    """
