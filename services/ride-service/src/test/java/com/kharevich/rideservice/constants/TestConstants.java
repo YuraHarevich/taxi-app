@@ -61,6 +61,7 @@ public class TestConstants {
     public static final String GEOLOCATION_COORDINATES_SERVICE_URL = "/geocode/search";
     public static final String GEOLOCATION_DIRECTIONS_SERVICE_URL = "/v2/directions/driving-car";
     public static final String PASSENGER_SERVICE_URL = "/api/v1/passengers?id=" + DEFAULT_PASSENGER_ID;
+    public static final String RIDE_SERVICE_HOST_NAME = "http://localhost:8030/";
 
     public static final Map<String,Object> GEOLOCATION_COORDINATES_RESPONSE_MAP = Map.of(
             "features", List.of(

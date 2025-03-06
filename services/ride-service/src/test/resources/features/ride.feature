@@ -1,150 +1,148 @@
-Feature: Passenger Service
-Feature: Passenger Management API
+Feature: Ride Service
 
-  # Позитивный сценарий: создание пассажира
-  Scenario: Successfully create a new passenger
-    Given There is passenger service request
-    """
-      {
-        "name": "Yura",
-        "surname": "Harevich",
-        "email": "mymail@gmail.com",
-        "number": "+375447525709"
-      }
-    """
-    When creates the passenger
-    Then return response status 201
-    And response body should contain
-    """
-      {
-        "name": "Yura",
-        "surname": "Harevich",
-        "email": "mymail@gmail.com",
-        "number": "+375447525709"
-      }
-    """
-
-  # Негативный сценарий: создание пассажира с повторяющимся email
-  Scenario: Fail to create passenger with repeated email
-    Given There is passenger service request
-    """
-      {
-        "name": "Yura",
-        "surname": "Harevich",
-        "email": "mymail@gmail.com",
-        "number": "+375447525708"
-      }
-    """
-    When creates the passenger
-    Then return response status 409
-    And response should contain error message
-    """
+  Scenario: Successfully create a new ride order
+    Given There is a ride service request
+  """
     {
-      "message": "Passenger with such email already exists"
+      "from": "Мендзялеева 13",
+      "to": "Таёжная 49",
+      "passengerId": "dd3c9688-b921-4c69-9530-f2e0343dce78"
     }
-    """
+  """
+    When creates the ride order
+    Then return response status 200
 
-  # Негативный сценарий: создание пассажира с повторяющимся номером телефона
-  Scenario: Fail to create passenger with repeated phone number
-    Given There is passenger service request
-    """
-      {
-        "name": "Yura",
-        "surname": "Harevich",
-        "email": "mymail1@gmail.com",
-        "number": "+375447525709"
-      }
-    """
-    When creates the passenger
-    Then return response status 409
-    And response should contain error message
-    """
+  Scenario: Fail to create ride order with invalid request
+    Given There is a ride service request
+  """
     {
-      "message": "Passenger with such phone number already exists"
+      "from": "",
+      "to": "",
+      "passengerId": "dd3c9688-b921-4c69-9530-f2e0343dce78"
     }
-    """
+  """
+    When creates the ride order
+    Then return response status 400
 
-  # Позитивный сценарий: обновление пассажира
-  Scenario: Successfully update an existing passenger
-    Given There is passenger service request
-    """
-      {
-        "name": "Alex",
-        "surname": "Messi",
-        "email": "update@example.com",
-        "number": "+375447777777"
-      }
-    """
-    When updates the passenger with id
+  Scenario: Successfully create driver application
+    When apply by driver with id "552848b1-cf59-4990-a95d-28f69a472ca6"
+    Then return response status 200
+
+  Scenario: Fail to create driver application
+    Given There is a ride service request
+  """
+    {
+      "from": "",
+      "to": "",
+      "passengerId": "dd3c9688-b921-4c69-9530-f2e0343dce78"
+    }
+  """
+    When creates the ride order
+    Then return response status 400
+
+    #!!!!!!!!!!!!!!!!!!!!!updates the ride with id "3fa85f64-5717-4562-b3fc-2c963f66afa6"
+  Scenario: Successfully update an existing ride
+    Given There is a ride service request
+  """
+    {
+      "from": "ЦУМ",
+      "to": "ГУМ",
+      "passengerId": "dd3c9688-b921-4c69-9530-f2e0343dce78"
+    }
+  """
+    When updates the ride with id "3fa85f64-5717-4562-b3fc-2c963f66afa6"
     Then return response status 202
     And response body should contain
-    """
-      {
-        "name": "Alex",
-        "surname": "Messi",
-        "email": "update@example.com",
-        "number": "+375447777777"
-      }
-    """
+  """
+    {
+      "id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+      "from": "New From Address",
+      "to": "New To Address",
+      "price": 20.1,
+      "passengerId": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+      "driverId": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+      "rideStatus": "ACCEPTED",
+      "rideTime": "12:30"
+    }
+  """
 
-  # Негативный сценарий: обновление несуществующего пассажира
-  Scenario: Fail to update non-existing passenger
-    Given There is passenger service request
-    """
-      {
-        "name": "NonExisting",
-        "surname": "User",
-        "email": "nonexist@example.com",
-        "number": "+375335555555"
-      }
-    """
-    When updates the passenger with id "beab9ed9-ea27-461b-a87d-62890408b154"
+  Scenario: Fail to update non-existing ride
+    Given There is a ride service request
+  """
+    {
+      "from": "New From Address",
+      "to": "New To Address",
+      "passengerId": "3fa85f64-5717-4562-b3fc-2c963f66afa6"
+    }
+  """
+    When updates the ride with id "non-existing-id"
     Then return response status 404
     And response should contain error message
-    """
+  """
     {
-      "message": "Passenger with such id not found"
+      "message": "Ride with such id not found"
     }
-    """
+  """
+ #!!!!!!!!!!!rideStatus
+  Scenario: Successfully change ride status
+    When changes the ride status for ride with id "3fa85f64-5717-4562-b3fc-2c963f66afa6"
+    Then return response status 202
+    And response body should contain
+  """
+    {
+      "id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+      "rideStatus": "ACCEPTED"
+    }
+  """
 
-  # Позитивный сценарий: получение информации о пассажире
-  Scenario: Successfully retrieve an existing passenger
-    When retrieves the passenger by id
+  Scenario: Fail to change status for non-existing ride
+    When changes the ride status for ride with id "non-existing-id"
+    Then return response status 404
+    And response should contain error message
+  """
+    {
+      "message": "Ride with such id not found"
+    }
+  """
+
+  Scenario: Successfully retrieve an existing ride
+    When retrieves the ride by id "3fa85f64-5717-4562-b3fc-2c963f66afa6"
     Then return response status 200
     And response body should contain
-    """
-      {
-        "name": "Alex",
-        "surname": "Messi",
-        "email": "update@example.com",
-        "number": "+375447777777"
-      }
-    """
+  """
+    {
+      "id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+      "from": "Мендзялеева 13",
+      "to": "Таёжная 49",
+      "price": 20.1,
+      "passengerId": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+      "driverId": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+      "rideStatus": "ACCEPTED",
+      "rideTime": "12:30"
+    }
+  """
 
-  # Негативный сценарий: получение информации о несуществующем пассажире
-  Scenario: Fail to retrieve non-existing passenger
-    When retrieves the passenger with id "beab9ed9-ea27-461b-a87d-62890408b154"
+  Scenario: Fail to retrieve non-existing ride
+    When retrieves the ride with id "non-existing-id"
     Then return response status 404
     And response should contain error message
-    """
+  """
     {
-      "message": "Passenger with such id not found"
+      "message": "Ride with such id not found"
     }
-    """
+  """
 
-  # Позитивный сценарий: удаление пассажира
-  Scenario: Successfully delete an existing passenger
-    When deletes the passenger by id
+  Scenario: Successfully retrieve all rides by passenger ID
+    When retrieves all rides for passenger with id "3fa85f64-5717-4562-b3fc-2c963f66afa6"
     Then return response status 200
-    And the passenger should no longer exist
+    And response body should contain a list of rides
 
-  # Негативный сценарий: удаление несуществующего пассажира
-  Scenario: Fail to delete non-existing passenger
-    When deletes the passenger with id "beab9ed9-ea27-461b-a87d-62890408b154"
+  Scenario: Fail to retrieve rides for non-existing passenger
+    When retrieves all rides for passenger with id "non-existing-id"
     Then return response status 404
     And response should contain error message
-    """
+  """
     {
       "message": "Passenger with such id not found"
     }
-    """
+  """
