@@ -20,8 +20,10 @@ app:
       passenger-service-url: "localhost:8010/api/v1/passengers"
       driver-service-url: "localhost:8020/api/v1/drivers"
       ride-service-url: "localhost:8030/api/v1/rides"
+
 server:
   port: 8030
+
 spring:
   application:
     name: ride-service
@@ -60,12 +62,12 @@ spring:
     openfeign:
       client:
         config:
-          geolocation-client:
+          geolocation-client-dev:
             url: "https://api.openrouteservice.org"
             loggerLevel: full
-          driver-service-client:
+          driver-service-client-dev:
             url: "http://localhost:8020/api/v1/drivers"
             loggerLevel: full
-          passenger-service-client:
+          passenger-service-client-dev:
             url: "http://localhost:8010/api/v1/passengers"
             loggerLevel: full

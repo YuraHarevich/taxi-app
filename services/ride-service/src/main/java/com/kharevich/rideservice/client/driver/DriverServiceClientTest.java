@@ -5,8 +5,7 @@ import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.context.annotation.Profile;
 
 @FeignClient(
-        name = "driver-service-client",
-        url = "${passenger-driver-geolocation-services.wire-mock.url}"
+        name = "driver-service-client-test"
 )
 @Profile("test")
 public interface DriverServiceClientTest  extends DriverServiceClient {
