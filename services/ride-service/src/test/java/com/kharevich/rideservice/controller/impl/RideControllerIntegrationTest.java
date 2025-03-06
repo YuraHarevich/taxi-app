@@ -4,6 +4,7 @@ import com.github.tomakehurst.wiremock.WireMockServer;
 import com.kharevich.rideservice.constants.RideServiceDTOFactory;
 import com.kharevich.rideservice.constants.TestConstants;
 import com.kharevich.rideservice.dto.response.RideResponse;
+import com.kharevich.rideservice.model.enumerations.RideStatus;
 import com.kharevich.rideservice.stubs.WireMockStubs;
 import io.restassured.RestAssured;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -33,6 +34,7 @@ import java.util.UUID;
 import static com.kharevich.rideservice.constants.TestConstants.*;
 import static io.restassured.RestAssured.given;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @Testcontainers
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -227,6 +229,24 @@ public class RideControllerIntegrationTest {
 
         String totalElements = response.jsonPath().getString("totalElements");
         assertEquals(totalElements,"1");
+    }
+
+    @Test
+    public void testChangeStatusOfRide() throws Exception {
+        var response = given()
+                .contentType(ContentType.JSON)
+                .queryParam("id",DEFAULT_RIDE_ID)
+                .body(RideServiceDTOFactory.createDefaultUpdateRideRequest())
+                .when()
+                .patch(RIDE_SERVICE_CHANGE_RIDE_STATUS)
+                .then()
+                .statusCode(HttpStatus.ACCEPTED.value())
+                .extract()
+                .response();
+
+        String actualRideStatus = response.jsonPath().getString("rideStatus");
+        assertTrue(Objects.equals(actualRideStatus, RideStatus.ACCEPTED.toString()) ||
+                Objects.equals(actualRideStatus, RideStatus.DECLINED.toString()));
     }
 
 }
