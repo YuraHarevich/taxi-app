@@ -8,11 +8,13 @@ import io.restassured.RestAssured;
 import io.restassured.path.json.JsonPath;
 import io.restassured.response.Response;
 import org.json.JSONException;
+import org.json.JSONObject;
 import org.junit.Assert;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.UUID;
 
+import static com.kharevich.ratingservice.constants.TestConstants.RATING_SERVICE_ESTIMATE_RIDE;
 import static com.kharevich.ratingservice.constants.TestConstants.RATING_SERVICE_GET_ALL_RATINGS_DRIVER;
 import static com.kharevich.ratingservice.constants.TestConstants.RATING_SERVICE_GET_ALL_RATINGS_PASSENGER;
 import static com.kharevich.ratingservice.constants.TestConstants.RATING_SERVICE_GET_RATING_DRIVER;
@@ -42,27 +44,28 @@ public class RatingStepDefinitions {
         unFinishedRideId = UUID.fromString(unFinId);
     }
 
-    @Given("an invalid rating request")
-    public void anInvalidRatingRequest() {
-//        response = RestAssured.
-//                given().
-//                contentType("application/json")
-//                ;
+    @Given("a valid rating request")
+    public void validRatingRequest(String requestBody) throws JSONException {
+        JSONObject jsonData = new JSONObject(requestBody);
+        jsonData.put("rideId", finishedRideId);
+        String updatedData = jsonData.toString();
+        this.requestBody = updatedData;
     }
 
-    @Given("a valid driver ID")
-    public void aValidDriverId() {
-        //request = given().contentType("application/json");
+    @Given("non-valid rating request")
+    public void non_validRatingRequest(String requestBody) throws JSONException {
+        JSONObject jsonData = new JSONObject(requestBody);
+        jsonData.put("rideId", unFinishedRideId);
+        String updatedData = jsonData.toString();
+        this.requestBody = updatedData;
     }
 
-    @Given("a valid passenger ID")
-    public void aValidPassengerId() {
-        //request = given().contentType("application/json");
-    }
-
-    @When("the ride is estimated with the following data:")
-    public void theRideIsEstimatedWithTheFollowingData(String requestBody) {
-        //response = request.body(requestBody).post(baseUrl + "/estimation");
+    @When("the ride is estimated with the following data")
+    public void theRideIsEstimatedWithTheFollowingData() {
+        response = RestAssured.given()
+                .contentType("application/json")
+                .body(requestBody)
+                .post(RATING_SERVICE_HOST_NAME + RATING_SERVICE_ESTIMATE_RIDE);
     }
 
     @When("request all ratings for driver")
@@ -102,17 +105,14 @@ public class RatingStepDefinitions {
 
     @And("response body should contain")
     public void responseBodyShouldContain(String expectedResponse) {
-//        JsonPath actualResponse = response.jsonPath();
-//        JsonPath expectedJson = new JsonPath(expectedResponse);
-//
-//        expectedJson.getMap("").forEach((key, value) -> {
-//            if (key.equals("totalRating") || key.equals("to")) {
-//                Assert.assertEquals(value, actualResponse.get(key.toString()));
-//            }
-//            if (key.equals("rideStatus")) {
-//                Assert.assertTrue(value.equals(ACCEPTED.toString()) || value.equals(DECLINED.toString()));
-//            }
-//        });
+        JsonPath actualResponse = response.jsonPath();
+        JsonPath expectedJson = new JsonPath(expectedResponse);
+
+        expectedJson.getMap("").forEach((key, value) -> {
+            if (!key.equals("rideId")) {
+                Assert.assertEquals(value, actualResponse.get(key.toString()));
+            }
+        });
     }
 
     @And("total raiting should be {string}")
@@ -125,6 +125,16 @@ public class RatingStepDefinitions {
     public void responseBodyShouldContainAListOfRides() {
         response.then()
                 .body("totalElements", equalTo(0));
+    }
+
+    @And("response should contain error message")
+    public void responseShouldContainErrorMessage(String expectedResponse) {
+        JsonPath actualResponse = response.jsonPath();
+        JsonPath expectedJson = new JsonPath(expectedResponse);
+
+        expectedJson.getMap("").forEach((key, value) -> {
+            Assert.assertEquals(value, actualResponse.get(key.toString()));
+        });
     }
 
 }

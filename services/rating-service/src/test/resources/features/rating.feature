@@ -1,51 +1,74 @@
 Feature: Rating Controller
 
   Scenario: assign ids
-    Given assign passenger id "8bbba50d-df84-45d7-b928-9643f8e2284e" and driver id "2ad438ae-95e1-4e5e-b8e2-8b0f726ab6e2"
+    Given assign passenger id "ce0036a7-56dd-4f12-8f84-2afca90d9266" and driver id "fcdfa1f7-b0ad-48b9-a96b-e2c6d46dc6ac"
 
   Scenario: assign ids
-    Given "assign finished ride id a7955f40-c68a-4cf7-b18b-b44eac51bd7d and unfinished ride id 0d8d8d12-bd31-48a8-93ed-789b9d71beb2
+    Given assign finished ride id "a0d391c2-94b9-48ce-9652-83bf52ba43a1" and unfinished ride id "9af48588-5923-4ef5-9691-d428ffc67033"
 
   Scenario: Successfully estimate the ride
     Given a valid rating request
-    When the ride is estimated with the following data:
-      """
+    """
       {
         "rideId": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
-        "rating": 5,
+        "rating": 3,
         "whoIsRated": "PASSENGER",
         "feedback": "в целом норм"
       }
-      """
+    """
+    When the ride is estimated with the following data
     Then response status should be 201
-    And the response body should contain:
+    And response body should contain
       """
       {
         "rideId": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
-        "whoIsRated": "PASSENGER",
-        "rating": 5,
+        "whoIsRated": "passenger",
+        "rating": 3,
+        "feedback": "в целом норм"
+      }
+      """
+
+  Scenario: Successfully estimate the ride by another person
+    Given a valid rating request
+    """
+      {
+        "rideId": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+        "rating": 3,
+        "whoIsRated": "DRIVER",
+        "feedback": "в целом норм"
+      }
+    """
+    When the ride is estimated with the following data
+    Then response status should be 201
+    And response body should contain
+      """
+      {
+        "rideId": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+        "whoIsRated": "driver",
+        "rating": 3,
         "feedback": "в целом норм"
       }
       """
 
   Scenario: Fail to estimate unfinished
-    Given an invalid rating request
-    When the ride is estimated with the following data:
-      """
+    Given non-valid rating request
+    """
       {
         "rideId": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
-        "rating": 6,
-        "whoIsRated": "PASSENGER",
+        "rating": 3,
+        "whoIsRated": "DRIVER",
         "feedback": "в целом норм"
       }
-      """
-    Then the response status should be 400
-    And the response body should contain:
-      """
+    """
+    When the ride is estimated with the following data
+    Then response status should be 409
+    And response should contain error message
+        """
       {
-        "message": "Rating must be between 1 and 5"
+         "message": "Ride is not finished yet"
       }
-      """
+        """
+
 
   Scenario: Get all ratings by driver ID
     When request all ratings for driver
