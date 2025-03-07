@@ -1,9 +1,8 @@
 package com.kharevich.ratingservice.util.validation.impl;
 
-import com.kharevich.ratingservice.client.DriverServiceClient;
+import com.kharevich.ratingservice.client.driver.DriverServiceClient;
 import com.kharevich.ratingservice.util.validation.PersonValidationService;
 import lombok.RequiredArgsConstructor;
-import com.kharevich.ratingservice.util.validation.PersonValidationService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 

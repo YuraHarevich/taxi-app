@@ -6,7 +6,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import static org.mockito.Mockito.*;
 
-import com.kharevich.ratingservice.client.RideServiceClient;
+import com.kharevich.ratingservice.client.ride.RideServiceClient;
 import com.kharevich.ratingservice.dto.request.RatingRequest;
 import com.kharevich.ratingservice.dto.response.PageableResponse;
 import com.kharevich.ratingservice.dto.response.PersonalRatingResponse;
@@ -68,10 +68,10 @@ public class RatingServiceUnitTest {
         passengerId = UUID.randomUUID();
         driverId = UUID.randomUUID();
 
-        ratingRequest = new RatingRequest(rideId, driverId,passengerId,5, DRIVER,"so so");
+        ratingRequest = new RatingRequest(rideId,5, DRIVER,"so so");
         rideResponse = new RideResponse(rideId,"from","to", BigDecimal.ONE, passengerId, driverId,ACCEPTED, Duration.ZERO);
         rating = new Rating();
-        ratingResponse = new RatingResponse(rideId,driverId,passengerId, DRIVER.toString(), 5, "so so");
+        ratingResponse = new RatingResponse(rideId, DRIVER.toString(), 5, "so so");
     }
 
     @Test

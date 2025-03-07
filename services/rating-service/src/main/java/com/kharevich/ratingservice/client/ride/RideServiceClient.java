@@ -1,4 +1,4 @@
-package com.kharevich.ratingservice.client;
+package com.kharevich.ratingservice.client.ride;
 
 import com.kharevich.ratingservice.controller.exceptions.RideServiceErrorDecoder;
 import org.springframework.cloud.openfeign.FeignClient;
@@ -8,10 +8,6 @@ import com.kharevich.ratingservice.sideservices.ride.RideResponse;
 
 import java.util.UUID;
 
-@FeignClient(
-        name = "ride-service-client",
-        configuration = RideServiceErrorDecoder.class
-)
 public interface RideServiceClient {
 
     @GetMapping

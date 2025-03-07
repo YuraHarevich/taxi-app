@@ -1,4 +1,4 @@
-package com.kharevich.ratingservice.client;
+package com.kharevich.ratingservice.client.passenger;
 
 import com.kharevich.ratingservice.controller.exceptions.PassengerServiceErrorDecoder;
 import com.kharevich.ratingservice.sideservices.passenger.PassengerResponse;
@@ -8,10 +8,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.UUID;
 
-@FeignClient(
-        name = "passenger-service-client",
-        configuration = PassengerServiceErrorDecoder.class
-)
 public interface PassengerServiceClient {
 
     @GetMapping

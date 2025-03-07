@@ -38,52 +38,6 @@ public class PassengerStepDefinitions {
         }
     }
 
-    @When("updates the passenger with id")
-    public void updatesThePassengerWithId() {
-        response = RestAssured.given()
-                .contentType("application/json")
-                .body(requestBody)
-                .param("id", passengerId)
-                .patch(BASE_PASSENGERS_URL);
-    }
-
-    @When("updates the passenger with id {string}")
-    public void updatesThePassengerWithId(String id) {
-        response = RestAssured.given()
-                .contentType("application/json")
-                .body(requestBody)
-                .param("id", UUID.fromString(id))
-                .patch(BASE_PASSENGERS_URL);
-    }
-
-    @When("retrieves the passenger by id")
-    public void retrievesThePassengerById() {
-        response = RestAssured.given()
-                .param("id", passengerId)
-                .get(BASE_PASSENGERS_URL);
-    }
-
-    @When("retrieves the passenger with id {string}")
-    public void retrievesThePassengerWithId(String id) {
-        response = RestAssured.given()
-                .param("id", id)
-                .get(BASE_PASSENGERS_URL);
-    }
-
-    @When("deletes the passenger by id")
-    public void deletesThePassengerById() {
-        response = RestAssured.given()
-                .param("id", passengerId)
-                .delete(BASE_PASSENGERS_URL);
-    }
-
-    @When("deletes the passenger with id {string}")
-    public void deletesThePassengerWithId(String id) {
-        response = RestAssured.given()
-                .param("id", id)
-                .delete(BASE_PASSENGERS_URL);
-    }
-
     @Then("return response status {int}")
     public void returnResponseStatus(int statusCode) {
         Assert.assertEquals(statusCode, response.getStatusCode());
