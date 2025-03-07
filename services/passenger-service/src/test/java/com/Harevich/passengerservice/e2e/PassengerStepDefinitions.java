@@ -90,7 +90,7 @@ public class PassengerStepDefinitions {
     }
 
     @And("response body should contain")
-    public void responseBodyShouёёldContain(String expectedResponse) {
+    public void responseBodyShouldContain(String expectedResponse) {
         JsonPath actualResponse = response.jsonPath();
         JsonPath expectedJson = new JsonPath(expectedResponse);
 
