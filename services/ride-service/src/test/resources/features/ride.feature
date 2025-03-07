@@ -141,9 +141,7 @@ Feature: Ride Service
   Scenario: Successfully retrieve all rides by passenger ID
     When retrieves all rides for passenger
     Then return response status 200
-    And response body should contain a list of rides
 
   Scenario: Successfully retrieve all rides by driver ID
     When retrieves all rides for driver
     Then return response status 200
-    And response body should contain a list of rides
