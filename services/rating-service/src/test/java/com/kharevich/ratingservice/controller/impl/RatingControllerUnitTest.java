@@ -44,7 +44,7 @@ public class RatingControllerUnitTest {
 
     @Test
     public void testEstimateTheRide_InvalidRequest() throws Exception {
-        ratingRequest = new RatingRequest(UUID.randomUUID(), UUID.randomUUID(),UUID.randomUUID(),6, DRIVER,"so so");
+        ratingRequest = new RatingRequest(UUID.randomUUID(),6, DRIVER,"so so");
 
         mockMvc.perform(post("/api/v1/ratings/estimation")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -86,7 +86,7 @@ public class RatingControllerUnitTest {
 
     @Test
     public void testEstimateTheRide_ValidRequest() throws Exception {
-        ratingRequest = new RatingRequest(UUID.randomUUID(), UUID.randomUUID(), UUID.randomUUID(), 5, DRIVER, "Great ride!");
+        ratingRequest = new RatingRequest(UUID.randomUUID(), 5, DRIVER, "Great ride!");
 
         mockMvc.perform(post("/api/v1/ratings/estimation")
                         .contentType(MediaType.APPLICATION_JSON)
