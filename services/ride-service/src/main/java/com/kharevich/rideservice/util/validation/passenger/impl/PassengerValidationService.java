@@ -1,6 +1,6 @@
 package com.kharevich.rideservice.util.validation.passenger.impl;
 
-import com.kharevich.rideservice.client.PassengerServiceClient;
+import com.kharevich.rideservice.client.passenger.PassengerServiceClient;
 import com.kharevich.rideservice.util.validation.passenger.PassengerValidation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

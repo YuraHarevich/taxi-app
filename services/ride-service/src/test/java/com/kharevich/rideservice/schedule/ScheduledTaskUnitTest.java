@@ -4,6 +4,7 @@ import com.kharevich.rideservice.model.DriverQueueElement;
 import com.kharevich.rideservice.model.PassengerQueueElement;
 import com.kharevich.rideservice.repository.DriverQueueRepository;
 import com.kharevich.rideservice.repository.PassengerQueueRepository;
+import com.kharevich.rideservice.service.RideService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -29,12 +30,15 @@ class ScheduledTaskUnitTest {
     @Mock
     private DriverQueueRepository driverQueueRepository;
 
+    @Mock
+    private RideService rideService;
+
     @InjectMocks
     private ScheduledTask scheduledTask;
 
     @BeforeEach
     void setUp() {
-        scheduledTask = new ScheduledTask(passengerQueueRepository, driverQueueRepository);
+        scheduledTask = new ScheduledTask(passengerQueueRepository, rideService, driverQueueRepository);
     }
 
     @Test
