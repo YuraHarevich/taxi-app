@@ -1,10 +1,10 @@
 Feature: Rating Controller
 
   Scenario: assign ids
-    Given assign passenger id "8bbba50d-df84-45d7-b928-9643f8e2284e" and driver id "a598f83e-9c83-4584-b616-815dc7e99518"
+    Given assign passenger id "8bbba50d-df84-45d7-b928-9643f8e2284e" and driver id "cde48a21-efa8-4272-947c-7e45ab7ad46c"
 
   Scenario: assign ids
-    Given assign finished ride id "f134d95d-e57e-40b0-974f-87f761903737" and unfinished ride id "483db8bc-dec8-4bb3-8087-c7adba626ace"
+    Given assign finished ride id "f8b9bfe2-48d8-4149-acf4-6c992156f9c8" and unfinished ride id "f8b9bfe2-48d8-4149-acf4-6c992156f9c8"
 
   Scenario: Successfully estimate the ride
     Given a valid rating request
