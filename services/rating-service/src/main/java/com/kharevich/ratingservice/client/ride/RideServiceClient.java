@@ -8,7 +8,7 @@ import com.kharevich.ratingservice.sideservices.ride.RideResponse;
 
 import java.util.UUID;
 
-public interface RideServiceClient {
+public interface  RideServiceClient {
 
     @GetMapping
     RideResponse getRideIfExists(@RequestParam("id") UUID id);
