@@ -20,7 +20,17 @@ import org.testcontainers.utility.DockerImageName;
 
 import java.util.UUID;
 
-import static com.Harevich.driverservice.constants.TestConstants.*;
+import static com.Harevich.driverservice.constants.TestConstants.BASIC_CAR_NUMBER;
+import static com.Harevich.driverservice.constants.TestConstants.BASIC_CAR_UUID;
+import static com.Harevich.driverservice.constants.TestConstants.RELATIVE_CREATE_CAR_URL;
+import static com.Harevich.driverservice.constants.TestConstants.RELATIVE_DELETE_CAR_URL;
+import static com.Harevich.driverservice.constants.TestConstants.RELATIVE_GET_AVAILABLE_CARS_URL;
+import static com.Harevich.driverservice.constants.TestConstants.RELATIVE_GET_ID_CAR_URL;
+import static com.Harevich.driverservice.constants.TestConstants.RELATIVE_GET_NUMBER_CAR_URL;
+import static com.Harevich.driverservice.constants.TestConstants.RELATIVE_UPDATE_CAR_URL;
+import static com.Harevich.driverservice.constants.TestConstants.SQL_CLEAR_MERGE_TABLE;
+import static com.Harevich.driverservice.constants.TestConstants.SQL_CLEAR_TABLE_CARS;
+import static com.Harevich.driverservice.constants.TestConstants.SQL_INSERT_DATA_CAR;
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.equalTo;
 
@@ -34,7 +44,7 @@ import static org.hamcrest.Matchers.equalTo;
 @ActiveProfiles("test")
 public class CarControllerIntegrationTest {
     @Container
-    static PostgreSQLContainer psqlContainer = new PostgreSQLContainer(DockerImageName.parse("postgres:latest"));
+    static PostgreSQLContainer psqlContainer = new PostgreSQLContainer(DockerImageName.parse("postgres:17.4"));
 
     @DynamicPropertySource
     static void configureProperties(DynamicPropertyRegistry registry) {
@@ -53,7 +63,7 @@ public class CarControllerIntegrationTest {
     }
 
     @Test
-    public void testCreateCar() {
+    public void createCar_ValidRequest() {
         CarRequest request = CarRequestFactory.createDefaultRequest();
 
         given()
@@ -69,7 +79,7 @@ public class CarControllerIntegrationTest {
     }
 
     @Test
-    public void testCreateCar_InvalidNumber() {
+    public void createCar_InvalidNumber() {
         CarRequest invalidRequest = CarRequestFactory.createInvalidNumberRequest();
 
         given()
@@ -82,7 +92,7 @@ public class CarControllerIntegrationTest {
     }
 
     @Test
-    public void testCreateCar_EmptyFields() {
+    public void createCar_EmptyFields() {
         CarRequest invalidRequest = CarRequestFactory.createInvalidRequest();
 
         given()
@@ -95,7 +105,7 @@ public class CarControllerIntegrationTest {
     }
 
     @Test
-    public void testUpdateCar() {
+    public void updateCar_ValidRequest() {
         CarRequest request = CarRequestFactory.createUpdateRequest();
 
         given()
@@ -112,7 +122,7 @@ public class CarControllerIntegrationTest {
     }
 
     @Test
-    public void testUpdateCar_RepeatedNumber() {
+    public void updateCar_RepeatedNumber() {
         CarRequest invalidRequest = CarRequestFactory.createRepeatedNumberRequest();
 
         given()
@@ -125,8 +135,9 @@ public class CarControllerIntegrationTest {
     }
 
     @Test
-    public void testGetCarById() {
+    public void getCarById_ValidRequest() {
         given()
+                .contentType(ContentType.JSON)
                 .queryParam("id", BASIC_CAR_UUID)
                 .when()
                 .get(RELATIVE_GET_ID_CAR_URL)
@@ -135,8 +146,9 @@ public class CarControllerIntegrationTest {
     }
 
     @Test
-    public void testGetAllAvailableCarById() {
+    public void getAllAvailableCarById_ValidRequest() {
         given()
+                .contentType(ContentType.JSON)
                 .queryParam(BASIC_CAR_UUID)
                 .when()
                 .get(RELATIVE_GET_AVAILABLE_CARS_URL)
@@ -146,8 +158,9 @@ public class CarControllerIntegrationTest {
     }
 
     @Test
-    public void testGetCarByNumber() {
+    public void getCarByNumber_ValidRequest() {
         given()
+                .contentType(ContentType.JSON)
                 .queryParam("number", BASIC_CAR_NUMBER)
                 .when()
                 .get(RELATIVE_GET_NUMBER_CAR_URL)
@@ -156,9 +169,10 @@ public class CarControllerIntegrationTest {
     }
 
     @Test
-    public void testDeleteCarById_NotFound() {
+    public void deleteCarById_NotFound() {
         UUID nonExistentId = UUID.randomUUID();
         given()
+                .contentType(ContentType.JSON)
                 .queryParam("id", nonExistentId.toString())
                 .when()
                 .delete(RELATIVE_DELETE_CAR_URL)
@@ -167,8 +181,9 @@ public class CarControllerIntegrationTest {
     }
 
     @Test
-    public void testDeleteCarById() {
+    public void deleteCarById_ValidRequest() {
         given()
+                .contentType(ContentType.JSON)
                 .queryParam("id", BASIC_CAR_UUID)
                 .when()
                 .delete(RELATIVE_DELETE_CAR_URL)

@@ -1,5 +1,4 @@
-Feature: Car Service
-Feature: Car Management API
+Feature: car Service
 
   # Позитивный сценарий: создание автомобиля
   Scenario: Successfully create a new car

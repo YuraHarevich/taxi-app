@@ -5,12 +5,12 @@ import io.cucumber.java.en.Given;
 import io.cucumber.java.en.When;
 import io.cucumber.java.en.Then;
 import io.restassured.RestAssured;
+import io.restassured.http.ContentType;
 import io.restassured.response.Response;
 import io.restassured.path.json.JsonPath;
 import org.junit.Assert;
-import org.springframework.transaction.annotation.Transactional;
+import org.springframework.http.HttpStatus;
 
-import java.util.Objects;
 import java.util.UUID;
 
 import static com.Harevich.driverservice.constants.TestConstants.BASIC_SERVER_HOST;
@@ -19,13 +19,12 @@ import static com.Harevich.driverservice.constants.TestConstants.RELATIVE_DELETE
 import static com.Harevich.driverservice.constants.TestConstants.RELATIVE_GET_ID_DRIVER_URL;
 import static com.Harevich.driverservice.constants.TestConstants.RELATIVE_UPDATE_DRIVER_URL;
 
-@Transactional
+
 public class DriverStepDefinitions {
 
     private Response response;
     private String requestBody;
     private static UUID driverId;
-    private static UUID carId;
 
     @Given("There is driver service request")
     public void thereIsDriverServiceRequest(String body) {
@@ -35,11 +34,11 @@ public class DriverStepDefinitions {
     @When("creates the driver")
     public void createsTheDriver() {
         response = RestAssured.given()
-                .contentType("application/json")
+                .contentType(ContentType.JSON)
                 .body(requestBody)
                 .post(BASIC_SERVER_HOST + RELATIVE_CREATE_DRIVER_URL);
 
-        if (response.getStatusCode() == 201) {
+        if (response.getStatusCode() ==  HttpStatus.CREATED.value()) {
             driverId = UUID.fromString(response.jsonPath().getString("id"));
         }
     }
@@ -47,7 +46,7 @@ public class DriverStepDefinitions {
     @When("updates the driver with id")
     public void updatesTheDriverWithId() {
         response = RestAssured.given()
-                .contentType("application/json")
+                .contentType(ContentType.JSON)
                 .body(requestBody)
                 .param("id", driverId)
                 .patch(BASIC_SERVER_HOST + RELATIVE_UPDATE_DRIVER_URL);
@@ -56,7 +55,7 @@ public class DriverStepDefinitions {
     @When("updates the driver with id {string}")
     public void updatesTheDriverWithId(String id) {
         response = RestAssured.given()
-                .contentType("application/json")
+                .contentType(ContentType.JSON)
                 .body(requestBody)
                 .param("id", UUID.fromString(id))
                 .patch(BASIC_SERVER_HOST+RELATIVE_UPDATE_DRIVER_URL);
@@ -65,6 +64,7 @@ public class DriverStepDefinitions {
     @When("retrieves the driver by id")
     public void retrievesTheDriverById() {
         response = RestAssured.given()
+                .contentType(ContentType.JSON)
                 .param("id", driverId)
                 .get(BASIC_SERVER_HOST + RELATIVE_GET_ID_DRIVER_URL);
     }
@@ -72,6 +72,7 @@ public class DriverStepDefinitions {
     @When("retrieves the driver with id {string}")
     public void retrieves_the_driver_with_id(String id) {
         response = RestAssured.given()
+                .contentType(ContentType.JSON)
                 .param("id", id )
                 .get(BASIC_SERVER_HOST + RELATIVE_GET_ID_DRIVER_URL);
     }
@@ -80,6 +81,7 @@ public class DriverStepDefinitions {
     @When("deletes the driver by id")
     public void deletesTheDriverById() {
         response = RestAssured.given()
+                .contentType(ContentType.JSON)
                 .param("id", driverId)
                 .delete(BASIC_SERVER_HOST + RELATIVE_DELETE_DRIVER_URL);
     }
@@ -87,6 +89,7 @@ public class DriverStepDefinitions {
     @When("deletes the driver with id {string}")
     public void deletesTheDriverWithId(String id) {
         response = RestAssured.given()
+                .contentType(ContentType.JSON)
                 .param("id", id)
                 .delete(BASIC_SERVER_HOST + RELATIVE_DELETE_DRIVER_URL);
     }
@@ -121,6 +124,7 @@ public class DriverStepDefinitions {
     @And("the driver should no longer exist")
     public void theDriverShouldNoLongerExist() {
         Response getResponse = RestAssured.given()
+                .contentType(ContentType.JSON)
                 .param("id", driverId)
                 .get(BASIC_SERVER_HOST + RELATIVE_GET_ID_DRIVER_URL);
 

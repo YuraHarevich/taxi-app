@@ -1,10 +1,7 @@
 package com.Harevich.driverservice.controller.impl;
 
-import com.Harevich.driverservice.constants.CarRequestFactory;
 import com.Harevich.driverservice.constants.DriverRequestFactory;
-import com.Harevich.driverservice.dto.request.CarRequest;
 import com.Harevich.driverservice.dto.request.DriverRequest;
-import com.Harevich.driverservice.model.enumerations.Sex;
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 import org.junit.jupiter.api.BeforeEach;
@@ -23,8 +20,19 @@ import org.testcontainers.utility.DockerImageName;
 
 import java.util.UUID;
 
-import static com.Harevich.driverservice.constants.TestConstants.*;
+import static com.Harevich.driverservice.constants.TestConstants.BASIC_CAR_UUID;
+import static com.Harevich.driverservice.constants.TestConstants.BASIC_DRIVER_UUID;
+import static com.Harevich.driverservice.constants.TestConstants.RELATIVE_ASSIGN_CAR_TO_DRIVER_URL;
+import static com.Harevich.driverservice.constants.TestConstants.RELATIVE_CREATE_DRIVER_URL;
+import static com.Harevich.driverservice.constants.TestConstants.RELATIVE_DELETE_DRIVER_URL;
+import static com.Harevich.driverservice.constants.TestConstants.RELATIVE_GET_ID_DRIVER_URL;
+import static com.Harevich.driverservice.constants.TestConstants.RELATIVE_UPDATE_DRIVER_URL;
+import static com.Harevich.driverservice.constants.TestConstants.SQL_CLEAR_MERGE_TABLE;
+import static com.Harevich.driverservice.constants.TestConstants.SQL_CLEAR_TABLE_CARS;
+import static com.Harevich.driverservice.constants.TestConstants.SQL_CLEAR_TABLE_DRIVERS;
 import static com.Harevich.driverservice.constants.TestConstants.SQL_INSERT_DATA_CAR;
+import static com.Harevich.driverservice.constants.TestConstants.SQL_INSERT_DATA_CAR_DRIVER_MERGE;
+import static com.Harevich.driverservice.constants.TestConstants.SQL_INSERT_DATA_DRIVER;
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.equalTo;
 
@@ -60,7 +68,7 @@ public class DriverControllerIntegrationTest {
     }
 
     @Test
-    public void testCreateDriver() {
+    public void createDriver_ValidRequest() {
         DriverRequest request = DriverRequestFactory.createDefaultRequest();
 
         given()
@@ -77,7 +85,7 @@ public class DriverControllerIntegrationTest {
     }
 
     @Test
-    public void testCreateDriver_InvalidNumber() {
+    public void createDriver_InvalidNumber() {
         DriverRequest invalidRequest = DriverRequestFactory.createInvalidNumberRequest();
 
         given()
@@ -90,7 +98,7 @@ public class DriverControllerIntegrationTest {
     }
 
     @Test
-    public void testCreateDriver_EmptyFields() {
+    public void createDriver_EmptyFields() {
         DriverRequest invalidRequest = DriverRequestFactory.createInvalidRequest();
 
         given()
@@ -103,7 +111,7 @@ public class DriverControllerIntegrationTest {
     }
 
     @Test
-    public void testUpdateDriver() {
+    public void updateDriver_ValidRequest() {
         DriverRequest request = DriverRequestFactory.createUpdateRequest();
 
         given()
@@ -121,7 +129,7 @@ public class DriverControllerIntegrationTest {
     }
 
     @Test
-    public void testUpdateDriver_RepeatedNumber() {
+    public void updateDriver_RepeatedNumber() {
         DriverRequest invalidRequest = DriverRequestFactory.createRepeatedNumberRequest();
 
         given()
@@ -134,7 +142,7 @@ public class DriverControllerIntegrationTest {
     }
 
     @Test
-    public void testUpdateDriver_RepeatedEmail() {
+    public void updateDriver_RepeatedEmail() {
         DriverRequest invalidRequest = DriverRequestFactory.createRepeatedEmailRequest();
 
         given()
@@ -147,8 +155,9 @@ public class DriverControllerIntegrationTest {
     }
 
     @Test
-    public void testGetDriverById() {
+    public void getDriverById_ValidRequest() {
         given()
+                .contentType(ContentType.JSON)
                 .queryParam("id", BASIC_DRIVER_UUID)
                 .when()
                 .get(RELATIVE_GET_ID_DRIVER_URL)
@@ -157,8 +166,9 @@ public class DriverControllerIntegrationTest {
     }
 
     @Test
-    public void testAssignPersonalCar() {
+    public void assignPersonalCar_ValidRequest() {
         given()
+                .contentType(ContentType.JSON)
                 .queryParam("driver_id", BASIC_DRIVER_UUID)
                 .queryParam("car_id", BASIC_CAR_UUID)
                 .when()
@@ -168,9 +178,10 @@ public class DriverControllerIntegrationTest {
     }
 
     @Test
-    public void testDeleteDriverById_NotFound() {
+    public void deleteDriverById_NotFound() {
         UUID nonExistentId = UUID.randomUUID();
         given()
+                .contentType(ContentType.JSON)
                 .queryParam("id", nonExistentId.toString())
                 .when()
                 .delete(RELATIVE_DELETE_DRIVER_URL)
@@ -179,8 +190,9 @@ public class DriverControllerIntegrationTest {
     }
 
     @Test
-    public void testDeleteDriverById() {
+    public void deleteDriverById_ValidRequest() {
         given()
+                .contentType(ContentType.JSON)
                 .queryParam("id", BASIC_DRIVER_UUID)
                 .when()
                 .delete(RELATIVE_DELETE_DRIVER_URL)

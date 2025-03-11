@@ -1,6 +1,10 @@
 package com.Harevich.driverservice.constants;
 
-public class TestConstants {
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
+
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
+public final class TestConstants {
 
     public static final String BASIC_SERVER_HOST = "http://localhost:8020/";
 
