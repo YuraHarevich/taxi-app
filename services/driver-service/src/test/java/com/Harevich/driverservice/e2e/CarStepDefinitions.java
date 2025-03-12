@@ -11,6 +11,7 @@ import io.restassured.path.json.JsonPath;
 import org.junit.Assert;
 import org.springframework.http.HttpStatus;
 
+import java.util.Objects;
 import java.util.UUID;
 
 import static com.Harevich.driverservice.constants.TestConstants.BASIC_SERVER_HOST;
@@ -36,9 +37,10 @@ public class CarStepDefinitions {
         response = RestAssured.given()
                 .contentType(ContentType.JSON)
                 .body(requestBody)
+                .when()
                 .post(BASIC_SERVER_HOST + RELATIVE_CREATE_CAR_URL);
 
-        if (response.getStatusCode() ==  HttpStatus.CREATED.value()) {
+        if(Objects.equals(carId,null)) {
             carId = UUID.fromString(response.jsonPath().getString("id"));
         }
     }
