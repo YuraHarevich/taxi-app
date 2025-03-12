@@ -20,6 +20,11 @@ import org.testcontainers.utility.DockerImageName;
 
 import java.util.UUID;
 
+import static com.Harevich.driverservice.constants.ResponseFieldConstants.CAR_BRAND_FIELD;
+import static com.Harevich.driverservice.constants.ResponseFieldConstants.CAR_COLOR_FIELD;
+import static com.Harevich.driverservice.constants.ResponseFieldConstants.CAR_ID_FIELD;
+import static com.Harevich.driverservice.constants.ResponseFieldConstants.CAR_NUMBER_FIELD;
+import static com.Harevich.driverservice.constants.ResponseFieldConstants.PAGEABLE_RESPONSE_TOTAL_ELEMENTS_FIELD;
 import static com.Harevich.driverservice.constants.TestConstants.BASIC_CAR_NUMBER;
 import static com.Harevich.driverservice.constants.TestConstants.BASIC_CAR_UUID;
 import static com.Harevich.driverservice.constants.TestConstants.RELATIVE_CREATE_CAR_URL;
@@ -73,9 +78,9 @@ public class CarControllerIntegrationTest {
                 .post(RELATIVE_CREATE_CAR_URL)
                 .then()
                 .statusCode(HttpStatus.CREATED.value())
-                .body("color", equalTo(request.color()))
-                .body("number", equalTo(request.number()))
-                .body("brand", equalTo(request.brand()));
+                .body(CAR_COLOR_FIELD, equalTo(request.color()))
+                .body(CAR_NUMBER_FIELD, equalTo(request.number()))
+                .body(CAR_BRAND_FIELD, equalTo(request.brand()));
     }
 
     @Test
@@ -111,14 +116,14 @@ public class CarControllerIntegrationTest {
         given()
                 .contentType(ContentType.JSON)
                 .body(request)
-                .queryParam("id", BASIC_CAR_UUID)
+                .queryParam(CAR_ID_FIELD, BASIC_CAR_UUID)
                 .when()
                 .patch(RELATIVE_UPDATE_CAR_URL)
                 .then()
                 .statusCode(HttpStatus.ACCEPTED.value())
-                .body("color", equalTo(request.color()))
-                .body("number", equalTo(request.number()))
-                .body("brand", equalTo(request.brand()));
+                .body(CAR_COLOR_FIELD, equalTo(request.color()))
+                .body(CAR_NUMBER_FIELD, equalTo(request.number()))
+                .body(CAR_BRAND_FIELD, equalTo(request.brand()));
     }
 
     @Test
@@ -138,7 +143,7 @@ public class CarControllerIntegrationTest {
     public void getCarById_ValidRequest() {
         given()
                 .contentType(ContentType.JSON)
-                .queryParam("id", BASIC_CAR_UUID)
+                .queryParam(CAR_ID_FIELD, BASIC_CAR_UUID)
                 .when()
                 .get(RELATIVE_GET_ID_CAR_URL)
                 .then()
@@ -154,14 +159,14 @@ public class CarControllerIntegrationTest {
                 .get(RELATIVE_GET_AVAILABLE_CARS_URL)
                 .then()
                 .statusCode(HttpStatus.OK.value())
-                .body("totalElements",equalTo(1));
+                .body(PAGEABLE_RESPONSE_TOTAL_ELEMENTS_FIELD,equalTo(1));
     }
 
     @Test
     public void getCarByNumber_ValidRequest() {
         given()
                 .contentType(ContentType.JSON)
-                .queryParam("number", BASIC_CAR_NUMBER)
+                .queryParam(CAR_NUMBER_FIELD, BASIC_CAR_NUMBER)
                 .when()
                 .get(RELATIVE_GET_NUMBER_CAR_URL)
                 .then()
@@ -173,7 +178,7 @@ public class CarControllerIntegrationTest {
         UUID nonExistentId = UUID.randomUUID();
         given()
                 .contentType(ContentType.JSON)
-                .queryParam("id", nonExistentId.toString())
+                .queryParam(CAR_ID_FIELD, nonExistentId.toString())
                 .when()
                 .delete(RELATIVE_DELETE_CAR_URL)
                 .then()
@@ -184,7 +189,7 @@ public class CarControllerIntegrationTest {
     public void deleteCarById_ValidRequest() {
         given()
                 .contentType(ContentType.JSON)
-                .queryParam("id", BASIC_CAR_UUID)
+                .queryParam(CAR_ID_FIELD, BASIC_CAR_UUID)
                 .when()
                 .delete(RELATIVE_DELETE_CAR_URL)
                 .then()
