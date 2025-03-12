@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.27.xsd">
+
+    <include file="changesets/04-changeset-fill-test-driver-queue-data.xml" relativeToChangelogFile="true"/>
+    <include file="changesets/05-changeset-fill-test-passenger-queue-data.xml" relativeToChangelogFile="true"/>
+    <include file="changesets/06-changeset-fill-test-ride-data.xml" relativeToChangelogFile="true"/>
+
+</databaseChangeLog>

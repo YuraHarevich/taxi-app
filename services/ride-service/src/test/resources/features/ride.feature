@@ -1,14 +1,11 @@
 Feature: Ride Service
 
-  Scenario: assign ids
-    Given assign passenger id "8bbba50d-df84-45d7-b928-9643f8e2284e" and driver id "2ad438ae-95e1-4e5e-b8e2-8b0f726ab6e2"
-
   Scenario: Successfully create a new ride
     Given There is a ride service request
   """
     {
-      "from": "Мендзялеева 13",
-      "to": "Таёжная 49",
+      "from": "Сталетава, 10",
+      "to": "Таёжная 5",
       "passengerId": "id"
     }
   """
@@ -21,13 +18,13 @@ Feature: Ride Service
     And response body should contain
   """
     {
-      "id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
-      "from": "Мендзялеева 13",
-      "to": "Таёжная 49",
-      "price": 20.1,
-      "passengerId": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
-      "driverId": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
-      "rideStatus": "ACCEPTED",
+      "id": "4f118f57-eb21-4970-8042-e311ed4c3d2c",
+      "from": "Сталетава, 10",
+      "to": "Таёжная 5",
+      "price": 500.00,
+      "passengerId": "3f8ee7b1-e30b-4ce6-8661-1e2282e3dcb8",
+      "driverId": "ea55537b-0f71-427c-96a9-4e5ef350ce28",
+      "rideStatus": "CREATED",
       "rideTime": "12:30"
     }
   """
@@ -46,9 +43,9 @@ Feature: Ride Service
     Given There is a ride service request
   """
     {
-      "from": "Мендзялеева 13",
-      "to": "Таёжная 49",
-      "passengerId": "id"
+      "from": "Сталетава, 10",
+      "to": "Таёжная 5",
+      "passengerId": "3f8ee7b1-e30b-4ce6-8661-1e2282e3dcb8"
     }
   """
     When creates the ride order
@@ -60,7 +57,7 @@ Feature: Ride Service
     {
       "from": "",
       "to": "",
-      "passengerId": "id"
+      "passengerId": "3f8ee7b1-e30b-4ce6-8661-1e2282e3dcb8"
     }
   """
     When creates the ride order
@@ -80,7 +77,7 @@ Feature: Ride Service
     {
       "from": "ЦУМ",
       "to": "ГУМ",
-      "passengerId": "id"
+      "passengerId": "3f8ee7b1-e30b-4ce6-8661-1e2282e3dcb8"
     }
   """
     When updates the ride
@@ -88,13 +85,13 @@ Feature: Ride Service
     And response body should contain
   """
     {
-      "id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+      "id": "4f118f57-eb21-4970-8042-e311ed4c3d2c",
       "from": "ЦУМ",
       "to": "ГУМ",
       "price": 20.1,
-      "passengerId": "id",
-      "driverId": "id",
-      "rideStatus": "ACCEPTED",
+      "passengerId": "3f8ee7b1-e30b-4ce6-8661-1e2282e3dcb8",
+      "driverId": "ea55537b-0f71-427c-96a9-4e5ef350ce28",
+      "rideStatus": "CREATED",
       "rideTime": "12:30"
     }
   """
@@ -105,7 +102,7 @@ Feature: Ride Service
     {
       "from": "New From Address",
       "to": "New To Address",
-      "passengerId": "3fa85f64-5717-4562-b3fc-2c963f66afa6"
+      "passengerId": "3f8ee7b1-e30b-4ce6-8661-1e2282e3dcb8"
     }
   """
     When updates the ride with id "3fa85f64-5717-4562-b3fc-2c963f66afa6"
@@ -123,7 +120,7 @@ Feature: Ride Service
     And response body should contain
   """
     {
-      "id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+      "id": "3f8ee7b1-e30b-4ce6-8661-1e2282e3dcb8",
       "rideStatus": "ACCEPTED"
     }
   """

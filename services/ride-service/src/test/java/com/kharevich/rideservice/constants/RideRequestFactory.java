@@ -1,10 +1,13 @@
 package com.kharevich.rideservice.constants;
 
 import com.kharevich.rideservice.dto.request.RideRequest;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 
 import java.util.UUID;
 
-public class RideRequestFactory {
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
+public final class RideRequestFactory {
 
     public static RideRequest createDefaultRequest() {
         return new RideRequest(

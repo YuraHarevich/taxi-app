@@ -13,11 +13,11 @@ spring:
       client:
         config:
           geolocation-client:
-            url: "https://api.openrouteservice.org"
+            url: "http://localhost:9090"
             loggerLevel: full
           driver-service-client:
-            url: "http://localhost:8020/api/v1/drivers"
+            url: "http://localhost:9090/api/v1/drivers"
             loggerLevel: full
           passenger-service-client:
-            url: "http://localhost:8010/api/v1/passengers"
+            url: "http://localhost:9090/api/v1/passengers"
             loggerLevel: full

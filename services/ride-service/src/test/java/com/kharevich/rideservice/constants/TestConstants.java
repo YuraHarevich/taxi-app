@@ -1,6 +1,8 @@
 package com.kharevich.rideservice.constants;
 
 import com.kharevich.rideservice.sideservices.driver.Sex;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 
 import java.math.BigDecimal;
@@ -10,9 +12,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-public class TestConstants {
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
+public final class TestConstants {
 
-    public static final String DEFAULT_DRIVER_ID = "3fa85f64-5717-4562-b3fc-2c963f66afa1";
+    public static final String DEFAULT_DRIVER_ID = "ea55537b-0f71-427c-96a9-4e5ef350ce28";
     public static final String DEFAULT_DRIVER_NAME = "Aschab";
     public static final String DEFAULT_DRIVER_SURNAME = "Tamaev";
     public static final String DEFAULT_DRIVER_EMAIL = "tamaev@gmail.com";
@@ -20,17 +23,18 @@ public class TestConstants {
     public static final String DEFAULT_DRIVER_CAR_ID = "3fa85f64-5717-4562-b3fc-2c963f66afa2";
 
     public static final String DEFAULT_PASSENGER_NAME = "Maksim";
-    public static final String DEFAULT_PASSENGER_ID = "3fa85f64-5717-4562-b3fc-2c963f66afa3";
+    public static final String DEFAULT_PASSENGER_ID = "3f8ee7b1-e30b-4ce6-8661-1e2282e3dcb8";
     public static final String DEFAULT_PASSENGER_SURNAME = "Komissarov";
     public static final String DEFAULT_PASSENGER_EMAIL = "mymail@gmail.com";
     public static final String DEFAULT_PASSENGER_NUMBER = "+365446718721";
 
-    public static final String DEFAULT_RIDE_ID = "2fa85f64-5717-4562-b3fc-2c963f66afa2";
-    public static final String DEFAULT_FROM_ADDRESS = "Мендзялеева 12";
-    public static final String DEFAULT_TO_ADDRESS = "Сталетава 10";
+    public static final String DEFAULT_RIDE_ID = "4f118f57-eb21-4970-8042-e311ed4c3d2c";
+    public static final String DEFAULT_FROM_ADDRESS = "Сталетава, 10";
+    public static final String DEFAULT_TO_ADDRESS = "Таёжная 5";
     public static final String MODIFIED_FROM_ADDRESS = "ЦУМ";
     public static final String MODIFIED_TO_ADDRESS = "Таёжная 49";
-    public static final long DEFAULT_PRICE = 10;
+    public static final double DEFAULT_PRICE = 500.00;
+    public static final String EXPECTED_RIDE_TOTAL_ELEMENTS= "1";
 
     public static final String SQL_INSERT_DATA = "INSERT INTO ride (id, from_address, to_address, price, passenger_id, driver_id, ride_status, created_at, accepted_at, started_at, finished_at)\n" +
             "VALUES \n" +

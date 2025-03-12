@@ -16,7 +16,7 @@
                     relativeToChangelogFile="true"
                     endDelimiter="GO"
                     splitStatements="true"
-                    path="../scripts/v1_drop_driver_queue_table.sql"/>
+                    path="../scripts/v1_drop_driver_queue.sql"/>
         </rollback>
     </changeSet>
 

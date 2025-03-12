@@ -3,12 +3,15 @@ package com.kharevich.rideservice.constants;
 import com.kharevich.rideservice.dto.request.RideRequest;
 import com.kharevich.rideservice.sideservices.driver.DriverResponse;
 import com.kharevich.rideservice.sideservices.passenger.PassengerResponse;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 
 import java.util.UUID;
 
 import static com.kharevich.rideservice.constants.TestConstants.*;
 
-public class RideServiceDTOFactory {
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
+public final class RideServiceDTOFactory {
 
     public static DriverResponse createDefaultDriverResponse() {
         return new DriverResponse(

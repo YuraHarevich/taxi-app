@@ -31,6 +31,13 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
 
+import static com.kharevich.rideservice.constants.RideFieldConstants.DRIVER_ID_FIELD;
+import static com.kharevich.rideservice.constants.RideFieldConstants.PASSENGER_ID_FIELD;
+import static com.kharevich.rideservice.constants.RideFieldConstants.RIDE_FROM_FIELD;
+import static com.kharevich.rideservice.constants.RideFieldConstants.RIDE_ID_FIELD;
+import static com.kharevich.rideservice.constants.RideFieldConstants.RIDE_STATUS_FIELD;
+import static com.kharevich.rideservice.constants.RideFieldConstants.RIDE_TOTAL_ELEMENTS_FIELD;
+import static com.kharevich.rideservice.constants.RideFieldConstants.RIDE_TO_FIELD;
 import static com.kharevich.rideservice.constants.TestConstants.*;
 import static io.restassured.RestAssured.given;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -38,7 +45,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @Testcontainers
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-@ActiveProfiles("test")
+@ActiveProfiles("it")
 @AutoConfigureWireMock(port = 9090)
 @Sql(statements = {
         TestConstants.SQL_CLEAR_TABLES,
@@ -46,7 +53,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 }, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
 public class RideControllerIntegrationTest {
     @Container
-    static PostgreSQLContainer psqlContainer = new PostgreSQLContainer(DockerImageName.parse("postgres:latest"));
+    static PostgreSQLContainer psqlContainer = new PostgreSQLContainer(DockerImageName.parse("postgres:17.4"));
 
     @DynamicPropertySource
     static void configureProperties(DynamicPropertyRegistry registry) {
@@ -71,12 +78,12 @@ public class RideControllerIntegrationTest {
     }
 
     @Test
-    public void testApplyForDriver() throws Exception {
+    public void applyForDriver_ValidRequest() throws Exception {
         WireMockStubs.getDriverResponseStub(wireMockServer, objectMapper, RideServiceDTOFactory.createDefaultDriverResponse());
 
         given()
                 .contentType(ContentType.JSON)
-                .queryParam("driver_id",DEFAULT_DRIVER_ID)
+                .queryParam(DRIVER_ID_FIELD,DEFAULT_DRIVER_ID)
                 .when()
                 .post(RIDE_SERVICE_APPLY_FOR_DRIVER)
                 .then()
@@ -84,7 +91,7 @@ public class RideControllerIntegrationTest {
     }
 
     @Test
-    public void testCreateOrderByPassenger() throws Exception {
+    public void createOrderByPassenger_ValidRequest() throws Exception {
         WireMockStubs.getPassengerResponseStub(wireMockServer, objectMapper, RideServiceDTOFactory.createDefaultPassengerResponse());
 
         given()
@@ -97,7 +104,7 @@ public class RideControllerIntegrationTest {
     }
 
     @Test
-    public void testCreateOrderByPassenger_InvalidRequest() throws Exception {
+    public void createOrderByPassenger_InvalidRequest() throws Exception {
         WireMockStubs.getPassengerResponseStub(wireMockServer, objectMapper, RideServiceDTOFactory.createDefaultPassengerResponse());
 
         given()
@@ -110,13 +117,13 @@ public class RideControllerIntegrationTest {
     }
 
     @Test
-    public void testUpdateRide() throws Exception {
+    public void updateRide_ValidRequest() throws Exception {
         WireMockStubs.getGeolocationCordinatesResponseStub(wireMockServer, objectMapper, GEOLOCATION_COORDINATES_RESPONSE_MAP);
         WireMockStubs.getGeolocationDirectionsResponseStub(wireMockServer, objectMapper, GEOLOCATION_DIRECTIONS_RESPONSE_MAP);
 
         var response = given()
                 .contentType(ContentType.JSON)
-                .queryParam("id",DEFAULT_RIDE_ID)
+                .queryParam(RIDE_ID_FIELD,DEFAULT_RIDE_ID)
                 .body(RideServiceDTOFactory.createDefaultUpdateRideRequest())
                 .when()
                 .patch(RIDE_SERVICE_UPDATE_RIDE)
@@ -132,13 +139,13 @@ public class RideControllerIntegrationTest {
     }
 
     @Test
-    public void testUpdateRide_InvalidRequest() throws Exception {
+    public void updateRide_InvalidRequest() throws Exception {
         WireMockStubs.getGeolocationCordinatesResponseStub(wireMockServer, objectMapper, GEOLOCATION_COORDINATES_RESPONSE_MAP);
         WireMockStubs.getGeolocationDirectionsResponseStub(wireMockServer, objectMapper, GEOLOCATION_DIRECTIONS_RESPONSE_MAP);
 
         var response = given()
                 .contentType(ContentType.JSON)
-                .queryParam("id",DEFAULT_RIDE_ID)
+                .queryParam(RIDE_ID_FIELD,DEFAULT_RIDE_ID)
                 .body(RideServiceDTOFactory.createInvalidUpdateRideRequest())
                 .when()
                 .patch(RIDE_SERVICE_UPDATE_RIDE)
@@ -147,13 +154,13 @@ public class RideControllerIntegrationTest {
     }
 
     @Test
-    public void testCreateRide() throws Exception {
+    public void createRide_ValidRequest() throws Exception {
         WireMockStubs.getGeolocationCordinatesResponseStub(wireMockServer, objectMapper, GEOLOCATION_COORDINATES_RESPONSE_MAP);
         WireMockStubs.getGeolocationDirectionsResponseStub(wireMockServer, objectMapper, GEOLOCATION_DIRECTIONS_RESPONSE_MAP);
 
         given()
                 .contentType(ContentType.JSON)
-                .queryParam("driver_id",DEFAULT_DRIVER_ID)
+                .queryParam(DRIVER_ID_FIELD, DEFAULT_DRIVER_ID)
                 .body(RideServiceDTOFactory.createDefaultRideRequest())
                 .when()
                 .post(RIDE_SERVICE_CREATE_RIDE)
@@ -162,10 +169,10 @@ public class RideControllerIntegrationTest {
     }
 
     @Test
-    public void testGetRide() throws Exception {
+    public void getRide_ValidRequest() throws Exception {
         var response = given()
                 .contentType(ContentType.JSON)
-                .queryParam("id",DEFAULT_RIDE_ID)
+                .queryParam(RIDE_ID_FIELD, DEFAULT_RIDE_ID)
                 .when()
                 .get(RIDE_SERVICE_CREATE_RIDE)
                 .then()
@@ -173,17 +180,17 @@ public class RideControllerIntegrationTest {
                 .extract()
                 .response();
 
-        String actualFrom = response.jsonPath().getString("from");
-        String actualTo = response.jsonPath().getString("to");
-        assertEquals(actualFrom,DEFAULT_FROM_ADDRESS);
-        assertEquals(actualTo,DEFAULT_TO_ADDRESS);
+        String actualFrom = response.jsonPath().getString(RIDE_FROM_FIELD);
+        String actualTo = response.jsonPath().getString(RIDE_TO_FIELD);
+        assertEquals(actualFrom, DEFAULT_FROM_ADDRESS);
+        assertEquals(actualTo, DEFAULT_TO_ADDRESS);
     }
 
     @Test
-    public void testGetAllRides() throws Exception {
+    public void gGetAllRides_ValidRequest() throws Exception {
         var response = given()
                 .contentType(ContentType.JSON)
-                .queryParam("id",DEFAULT_RIDE_ID)
+                .queryParam(RIDE_ID_FIELD,DEFAULT_RIDE_ID)
                 .when()
                 .get(RIDE_SERVICE_GET_ALL_RIDES)
                 .then()
@@ -191,17 +198,17 @@ public class RideControllerIntegrationTest {
                 .extract()
                 .response();
 
-        String totalElements = response.jsonPath().getString("totalElements");
-        assertEquals(totalElements,"1");
+        String totalElements = response.jsonPath().getString(RIDE_TOTAL_ELEMENTS_FIELD);
+        assertEquals(totalElements, EXPECTED_RIDE_TOTAL_ELEMENTS);
     }
 
     @Test
-    public void testGetAllRidesByPassengerId() throws Exception {
+    public void getAllRidesByPassengerId_ValidRequest() throws Exception {
         WireMockStubs.getPassengerResponseStub(wireMockServer, objectMapper, RideServiceDTOFactory.createDefaultPassengerResponse());
 
         var response = given()
                 .contentType(ContentType.JSON)
-                .queryParam("passenger_id",DEFAULT_PASSENGER_ID)
+                .queryParam(PASSENGER_ID_FIELD, DEFAULT_PASSENGER_ID)
                 .when()
                 .get(RIDE_SERVICE_GET_ALL_RIDES_PASSENGER_ID)
                 .then()
@@ -209,17 +216,17 @@ public class RideControllerIntegrationTest {
                 .extract()
                 .response();
 
-        String totalElements = response.jsonPath().getString("totalElements");
+        String totalElements = response.jsonPath().getString(RIDE_TOTAL_ELEMENTS_FIELD);
         assertEquals(totalElements,"1");
     }
 
     @Test
-    public void testGetAllRidesByDriverId() throws Exception {
+    public void getAllRidesByDriverId_ValidRequest() throws Exception {
         WireMockStubs.getDriverResponseStub(wireMockServer, objectMapper, RideServiceDTOFactory.createDefaultDriverResponse());
 
         var response = given()
                 .contentType(ContentType.JSON)
-                .queryParam("driver_id",DEFAULT_DRIVER_ID)
+                .queryParam(DRIVER_ID_FIELD,DEFAULT_DRIVER_ID)
                 .when()
                 .get(RIDE_SERVICE_GET_ALL_RIDES_DRIVER_ID)
                 .then()
@@ -227,15 +234,15 @@ public class RideControllerIntegrationTest {
                 .extract()
                 .response();
 
-        String totalElements = response.jsonPath().getString("totalElements");
+        String totalElements = response.jsonPath().getString(RIDE_TOTAL_ELEMENTS_FIELD);
         assertEquals(totalElements,"1");
     }
 
     @Test
-    public void testChangeStatusOfRide() throws Exception {
+    public void changeStatusOfRide_ValidRequest() throws Exception {
         var response = given()
                 .contentType(ContentType.JSON)
-                .queryParam("id",DEFAULT_RIDE_ID)
+                .queryParam(RIDE_ID_FIELD, DEFAULT_RIDE_ID)
                 .body(RideServiceDTOFactory.createDefaultUpdateRideRequest())
                 .when()
                 .patch(RIDE_SERVICE_CHANGE_RIDE_STATUS)
@@ -244,7 +251,7 @@ public class RideControllerIntegrationTest {
                 .extract()
                 .response();
 
-        String actualRideStatus = response.jsonPath().getString("rideStatus");
+        String actualRideStatus = response.jsonPath().getString(RIDE_STATUS_FIELD);
         assertTrue(Objects.equals(actualRideStatus, RideStatus.ACCEPTED.toString()) ||
                 Objects.equals(actualRideStatus, RideStatus.DECLINED.toString()));
     }

@@ -6,9 +6,9 @@ import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.context.annotation.Profile;
 
 @FeignClient(
-        name = "geolocation-client-dev",
+        name = "geolocation-client",
         configuration = RetreiveMessageErrorDecoder.class
 )
-@Profile("dev")
+@Profile({"test", "dev"})
 public interface GeolocationClientDev  extends GeolocationClient {
 }

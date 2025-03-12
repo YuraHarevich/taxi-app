@@ -5,8 +5,8 @@ import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.context.annotation.Profile;
 
 @FeignClient(
-        name = "driver-service-client-test"
+        name = "driver-service-client"
 )
-@Profile("test")
-public interface DriverServiceClientTest  extends DriverServiceClient {
+@Profile("it")
+public interface DriverServiceClientIntegreationTest  extends DriverServiceClient {
 }
