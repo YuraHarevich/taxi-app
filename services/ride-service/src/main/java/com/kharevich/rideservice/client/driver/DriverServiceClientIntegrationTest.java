@@ -8,5 +8,5 @@ import org.springframework.context.annotation.Profile;
         name = "driver-service-client"
 )
 @Profile("it")
-public interface DriverServiceClientIntegreationTest  extends DriverServiceClient {
+public interface DriverServiceClientIntegrationTest extends DriverServiceClient {
 }

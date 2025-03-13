@@ -10,5 +10,5 @@ import org.springframework.context.annotation.Profile;
         name = "geolocation-client"
 )
 @Profile("it")
-public interface GeolocationClientIntegreationTest extends GeolocationClient {
+public interface GeolocationClientIntegrationTest extends GeolocationClient {
 }
