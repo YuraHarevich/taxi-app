@@ -63,8 +63,6 @@ public class RatingValidationUnitTest {
         ratingPerson = DRIVER;
         pageable = PageRequest.of(0, 10);
         ratingResponse = new RatingResponse(UUID.randomUUID(),
-                UUID.randomUUID(),
-                UUID.randomUUID(),
                 DRIVER.toString(),
                 4,
                 "so so");
