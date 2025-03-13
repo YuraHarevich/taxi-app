@@ -13,7 +13,7 @@ import static com.kharevich.rideservice.util.constants.GeolocationResponseConsta
 import static com.kharevich.rideservice.util.constants.RideServiceResponseConstants.ADDRESS_NOT_FOUND;
 import static com.kharevich.rideservice.util.constants.TariffMultiplyConstants.ACCURACY_OF_DISTANCE;
 
-import com.kharevich.rideservice.client.GeolocationClient;
+import com.kharevich.rideservice.client.geolocation.GeolocationClient;
 import com.kharevich.rideservice.dto.Coordinates;
 import com.kharevich.rideservice.exception.AddressNotFoundException;
 import com.kharevich.rideservice.service.GeolocationService;

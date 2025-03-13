@@ -1,4 +1,4 @@
-package com.kharevich.rideservice.client;
+package com.kharevich.rideservice.client.passenger;
 
 import com.kharevich.rideservice.controller.exceptions.PassengerServiceErrorDecoder;
 import com.kharevich.rideservice.sideservices.passenger.PassengerResponse;
@@ -8,10 +8,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.UUID;
 
-@FeignClient(
-        name = "passenger-service-client",
-        configuration = PassengerServiceErrorDecoder.class
-)
 public interface PassengerServiceClient {
 
     @GetMapping
