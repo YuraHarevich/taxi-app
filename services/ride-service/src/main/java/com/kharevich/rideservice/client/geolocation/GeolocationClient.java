@@ -1,4 +1,4 @@
-package com.kharevich.rideservice.client;
+package com.kharevich.rideservice.client.geolocation;
 
 import com.kharevich.rideservice.controller.exceptions.RetreiveMessageErrorDecoder;
 import org.springframework.cloud.openfeign.FeignClient;
@@ -8,10 +8,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.Map;
 
-@FeignClient(
-        name = "geolocation-client",
-        configuration = RetreiveMessageErrorDecoder.class
-)
 public interface GeolocationClient {
 
     @GetMapping("{relative_path}")

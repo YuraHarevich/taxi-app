@@ -1,3 +1,33 @@
+spring:
+  profiles:
+    active: test
+
+  application:
+    name: ride-service
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    database: postgresql
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+  kafka:
+    topic:
+      order-queue: order-topic
+    producer:
+      bootstrap-server: localhost:9092
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+      properties:
+        spring.json.type.mapping: queueProceedRequest:com.kharevich.rideservice.dto.request.QueueProceedRequest
+    consumer:
+      bootstrap-servers: localhost:9092
+      group-id: order-group
+      auto-offset-reset: earliest
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
+      properties:
+        spring.json.trusted.packages: '*'
+        spring.json.type.mapping: queueProceedRequest:com.kharevich.rideservice.dto.request.QueueProceedRequest
+
 app:
   scheduling:
     time_of_queue_item_to_become_outdated_in_days: 1
@@ -20,52 +50,4 @@ app:
       passenger-service-url: "localhost:8010/api/v1/passengers"
       driver-service-url: "localhost:8020/api/v1/drivers"
       ride-service-url: "localhost:8030/api/v1/rides"
-server:
-  port: 8030
-spring:
-  application:
-    name: ride-service
-  datasource:
-    driver-class-name: ${DB_DRIVER:org.postgresql.Driver}
-    url: ${DB_URL:jdbc:postgresql://localhost:5435/ride}
-    username: ${DB_USERNAME:postgres}
-    password: ${DB_PASSWORD:password}
-  jpa:
-    hibernate:
-      ddl-auto: validate
-    database: postgresql
-    database-platform: org.hibernate.dialect.PostgreSQLDialect
-  liquibase:
-    change-log: classpath:/db/changelog/app-changelog.xml
-  kafka:
-    topic:
-      order-queue: order-topic
-    producer:
-      bootstrap-server: localhost:9092
-      key-serializer: org.apache.kafka.common.serialization.StringSerializer
-      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
-      properties:
-        spring.json.type.mapping: queueProceedRequest:com.kharevich.rideservice.dto.request.QueueProceedRequest
-    consumer:
-      bootstrap-servers: localhost:9092
-      group-id: order-group
-      auto-offset-reset: earliest
-      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
-      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
-      properties:
-        spring.json.trusted.packages: '*'
-        spring.json.type.mapping: queueProceedRequest:com.kharevich.rideservice.dto.request.QueueProceedRequest
-        
-  cloud:
-    openfeign:
-      client:
-        config:
-          geolocation-client:
-            url: "https://api.openrouteservice.org"
-            loggerLevel: full
-          driver-service-client:
-            url: "http://localhost:8020/api/v1/drivers"
-            loggerLevel: full
-          passenger-service-client:
-            url: "http://localhost:8010/api/v1/passengers"
-            loggerLevel: full
+

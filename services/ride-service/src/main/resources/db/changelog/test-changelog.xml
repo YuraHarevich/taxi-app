@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.27.xsd">
+
+    <changeSet id="0" author="Yura">
+        <tagDatabase tag="create-ride-table"/>
+    </changeSet>
+
+    <include file="v1/changelog-v1.0.xml" relativeToChangelogFile="true"/>
+
+    <changeSet id="2" author="Yura">
+        <tagDatabase tag="create-queues"/>
+    </changeSet>
+
+    <include file="v1/2-changelog-v1.0.xml" relativeToChangelogFile="true"/>
+    <include file="v1/3-test-changelog-v1.0.xml" relativeToChangelogFile="true"/>
+
+    <changeSet id="8" author="Yura">
+        <tagDatabase tag="v1.0"/>
+    </changeSet>
+
+</databaseChangeLog>

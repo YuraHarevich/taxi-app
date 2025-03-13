@@ -70,7 +70,7 @@ public class RatingServiceUnitTest {
         driverId = UUID.randomUUID();
 
         ratingRequest = new RatingRequest(rideId,5, DRIVER,"so so");
-        rideResponse = new RideResponse(rideId,"from","to", BigDecimal.ONE, passengerId, driverId,FINISHED, Duration.ZERO);
+        rideResponse = new RideResponse(rideId,"from","to", BigDecimal.ONE, passengerId, driverId, FINISHED, Duration.ZERO);
         rating = new Rating();
         ratingResponse = new RatingResponse(rideId, DRIVER.toString(), 5, "so so");
     }
