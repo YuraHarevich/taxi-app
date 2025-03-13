@@ -7,7 +7,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import static org.mockito.Mockito.*;
 
-import com.kharevich.ratingservice.client.RideServiceClient;
+import com.kharevich.ratingservice.client.ride.RideServiceClient;
 import com.kharevich.ratingservice.dto.request.RatingRequest;
 import com.kharevich.ratingservice.dto.response.PageableResponse;
 import com.kharevich.ratingservice.dto.response.PersonalRatingResponse;
