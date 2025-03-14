@@ -29,3 +29,17 @@ spring:
           uri: lb:http://RATING-SERVICE
           predicates:
             - Path=/api/v1/ratings/**
+
+springdoc:
+  swagger-ui:
+    urls[0]:
+      name: Passenger Service
+      url: /aggregate/passenger-service/v3/api-docs
+    urls[1]:
+      name: Driver Service
+      url: /aggregate/driver-service/v3/api-docs
+    urls[2]:
+      name: Ride Service
+      url: /aggregate/ride-service/v3/api-docs
+  api-docs:
+    path: /api-docs
