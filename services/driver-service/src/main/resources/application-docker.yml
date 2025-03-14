@@ -1,0 +1,3 @@
+spring:
+  datasource:
+    url: ${DB_URL:jdbc:postgresql://ms_drivers_pg_sql:5432/drivers}
