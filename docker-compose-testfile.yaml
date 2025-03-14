@@ -1,0 +1,35 @@
+services:
+  driver-service:
+    container_name: ms_drivers
+    profiles: ['docker']
+    build:
+      context: services/driver-service
+      dockerfile: ../../Dockerfile
+      args:
+        SERVICE_NAME: driver-service
+    environment:
+      MAVEN_PROFILE: docker
+    restart: always
+    ports:
+      - "9020:9020"
+
+  drivers_postgresql:
+    container_name: ms_drivers_pg_sql
+    image: postgres
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: drivers
+    volumes:
+      - drivers_psql:/data/postgres
+    ports:
+      - "5434:5432"
+    networks:
+      - microservices-net
+    restart: unless-stopped
+
+networks:
+  microservices-net:
+    driver: bridge
+volumes:
+  drivers_psql:
