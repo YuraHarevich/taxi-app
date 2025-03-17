@@ -3,12 +3,12 @@ spring:
     openfeign:
       client:
         config:
-          passenger-service-client-test:
+          passenger-service-client:
             url: "http://localhost:9090/api/v1/passengers"
             loggerLevel: full
-          driver-service-client-test:
+          driver-service-client:
             url: "http://localhost:9090/api/v1/drivers"
             loggerLevel: full
-          ride-service-client-test:
+          ride-service-client:
             url: "http://localhost:9090/api/v1/rides"
             loggerLevel: full

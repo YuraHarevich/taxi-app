@@ -1,17 +1,5 @@
-server:
-  port: 8030
 spring:
   datasource:
-    driver-class-name: ${DB_DRIVER:org.postgresql.Driver}
     url: ${DB_URL:jdbc:postgresql://localhost:5335/ride}
     username: ${DB_USERNAME:test}
     password: ${DB_PASSWORD:test}
-  liquibase:
-    change-log: classpath:/db/changelog/test-changelog.xml
-  cloud:
-    openfeign:
-      client:
-        config:
-          geolocation-client:
-            url: "https://api.openrouteservice.org"
-            loggerLevel: full

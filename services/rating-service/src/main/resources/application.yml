@@ -15,4 +15,3 @@ spring:
       host: localhost
       database: ratings
       uri: mongodb://localhost:27017/ratings
-
