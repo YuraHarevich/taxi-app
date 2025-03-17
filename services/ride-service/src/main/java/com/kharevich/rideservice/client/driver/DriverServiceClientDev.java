@@ -8,6 +8,5 @@ import org.springframework.context.annotation.Profile;
         name = "driver-service-client",
         configuration = DriverServiceErrorDecoder.class
 )
-@Profile({"test", "dev"})
 public interface DriverServiceClientDev extends DriverServiceClient {
 }
