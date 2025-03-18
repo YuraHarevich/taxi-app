@@ -1,13 +1,8 @@
-app:
-  urls:
-    services:
-      passenger-service-url: "passenger-service"
-      driver-service-url: "driver-service"
-      ride-service-url: "ride-service"
-  rating:
-    number_to_evaluate: 10
 server:
   port: 8040
+app:
+  rating:
+    number_to_evaluate: 10
 
 spring:
   profiles:

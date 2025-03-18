@@ -10,7 +10,7 @@ import java.util.UUID;
 
 public interface PassengerServiceClient {
 
-    @GetMapping
+    @GetMapping("/api/v1/passengers")
     PassengerResponse getPassengerIfExists(@RequestParam("id") UUID id);
 
 }

@@ -15,9 +15,3 @@ spring:
           geolocation-client:
             url: "https://api.openrouteservice.org"
             loggerLevel: full
-          driver-service-client:
-            url: "{app.urls.services.driver-service-url}/api/v1/drivers"
-            loggerLevel: full
-          passenger-service-client:
-            url: "{app.urls.services.passenger-service-url}/api/v1/passengers"
-            loggerLevel: full

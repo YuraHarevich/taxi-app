@@ -5,9 +5,8 @@ import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.context.annotation.Profile;
 
 @FeignClient(
-        name = "ride-service-client",
+        name = "ride-service",
         configuration = RideServiceErrorDecoder.class
 )
-@Profile("dev")
 public interface RideServiceClientDev extends RideServiceClient{
 }

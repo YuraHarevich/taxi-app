@@ -5,7 +5,7 @@ import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.context.annotation.Profile;
 
 @FeignClient(
-        name = "driver-service-client",
+        name = "driver-service",
         configuration = DriverServiceErrorDecoder.class
 )
 @Profile("test")

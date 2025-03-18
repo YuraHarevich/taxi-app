@@ -10,7 +10,7 @@ import java.util.UUID;
 
 public interface  RideServiceClient {
 
-    @GetMapping
+    @GetMapping("/api/v1/rides")
     RideResponse getRideIfExists(@RequestParam("id") UUID id);
 
 }

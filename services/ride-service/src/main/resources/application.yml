@@ -46,8 +46,4 @@ app:
       geocode_relational_url: geocode/search
       api-key: ${API_KEY:default}
       country-iso-code: "BLR"
-    services:
-      passenger-service-url: "passenger-service"
-      driver-service-url: "driver-service"
-      ride-service-url: "ride-service"
 
