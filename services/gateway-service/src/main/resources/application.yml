@@ -1,9 +1,11 @@
 server:
   port: 8222
+
 eureka:
   client:
     service-url:
       defaultZone: http://localhost:8761/eureka
+
 spring:
   application:
     name: gateway-service
@@ -14,32 +16,61 @@ spring:
           enabled: true
       routes:
         - id: passenger-service
-          uri: lb:http://PASSENGER-SERVICE
+          uri: lb://PASSENGER-SERVICE
           predicates:
             - Path=/api/v1/passengers/**
         - id: ride-service
-          uri: lb:http://RIDE-SERVICE
+          uri: lb://RIDE-SERVICE
           predicates:
             - Path=/api/v1/rides/**
         - id: driver-service
-          uri: lb:http://DRIVER-SERVICE
+          uri: lb://DRIVER-SERVICE
           predicates:
             - Path=/api/v1/drivers/**
         - id: rating-service
-          uri: lb:http://RATING-SERVICE
+          uri: lb://RATING-SERVICE
           predicates:
             - Path=/api/v1/ratings/**
 
+        - id: passenger-service-docs
+          uri: lb://PASSENGER-SERVICE
+          predicates:
+            - Path=/aggregate/passenger-service/v3/api-docs
+          filters:
+            - RewritePath=/aggregate/passenger-service/v3/api-docs, /v3/api-docs
+
+        - id: driver-service-docs
+          uri: lb://DRIVER-SERVICE
+          predicates:
+            - Path=/aggregate/driver-service/v3/api-docs
+          filters:
+            - RewritePath=/aggregate/driver-service/v3/api-docs, /v3/api-docs
+
+        - id: ride-service-docs
+          uri: lb://RIDE-SERVICE
+          predicates:
+            - Path=/aggregate/ride-service/v3/api-docs
+          filters:
+            - RewritePath=/aggregate/ride-service/v3/api-docs, /v3/api-docs
+
+        - id: rating-service-docs
+          uri: lb://RATING-SERVICE
+          predicates:
+            - Path=/aggregate/rating-service/v3/api-docs
+          filters:
+            - RewritePath=/aggregate/rating-service/v3/api-docs, /v3/api-docs
+
 springdoc:
   swagger-ui:
-    urls[0]:
-      name: Passenger Service
-      url: /aggregate/passenger-service/v3/api-docs
-    urls[1]:
-      name: Driver Service
-      url: /aggregate/driver-service/v3/api-docs
-    urls[2]:
-      name: Ride Service
-      url: /aggregate/ride-service/v3/api-docs
+    path: /swagger-ui
+    urls:
+      - name: Passenger Service
+        url: /aggregate/passenger-service/v3/api-docs
+      - name: Driver Service
+        url: /aggregate/driver-service/v3/api-docs
+      - name: Ride Service
+        url: /aggregate/ride-service/v3/api-docs
+      - name: Rating Service
+        url: /aggregate/rating-service/v3/api-docs
   api-docs:
     path: /api-docs
