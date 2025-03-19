@@ -8,7 +8,7 @@ import java.util.UUID;
 
 public interface DriverServiceClient {
 
-    @GetMapping
+    @GetMapping("/api/v1/drivers")
     DriverResponse getDriverIfExists(@RequestParam("id") UUID id);
 
 }
