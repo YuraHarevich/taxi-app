@@ -25,6 +25,54 @@ public class Routes {
     }
 
     @Bean
+    public RouteLocator driverServiceRoute(RouteLocatorBuilder builder) {
+        return builder.routes()
+                .route("driver_service", r -> r
+                        .path("/api/v1/drivers/**")
+                        .filters(f -> f
+                                .circuitBreaker(config -> config
+                                        .setName("driverServiceCircuitBreaker")
+                                        .setFallbackUri("forward:/fallbackRoute")
+                                )
+                        )
+                        .uri("lb://DRIVER-SERVICE")
+                )
+                .build();
+    }
+
+    @Bean
+    public RouteLocator rideServiceRoute(RouteLocatorBuilder builder) {
+        return builder.routes()
+                .route("ride_service", r -> r
+                        .path("/api/v1/rides/**")
+                        .filters(f -> f
+                                .circuitBreaker(config -> config
+                                        .setName("rideServiceCircuitBreaker")
+                                        .setFallbackUri("forward:/fallbackRoute")
+                                )
+                        )
+                        .uri("lb://RIDE-SERVICE")
+                )
+                .build();
+    }
+
+    @Bean
+    public RouteLocator ratingServiceRoute(RouteLocatorBuilder builder) {
+        return builder.routes()
+                .route("rating_service", r -> r
+                        .path("/api/v1/ratings/**")
+                        .filters(f -> f
+                                .circuitBreaker(config -> config
+                                        .setName("ratingServiceCircuitBreaker")
+                                        .setFallbackUri("forward:/fallbackRoute")
+                                )
+                        )
+                        .uri("lb://RATING-SERVICE")
+                )
+                .build();
+    }
+
+    @Bean
     public RouteLocator fallbackRoute(RouteLocatorBuilder builder) {
         return builder.routes()
                 .route("fallbackRoute", r -> r

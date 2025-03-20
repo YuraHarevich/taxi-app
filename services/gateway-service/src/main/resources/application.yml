@@ -9,23 +9,6 @@ spring:
       discovery:
         locator:
           enabled: true
-      routes:
-#        - id: passenger-service
-#          uri: lb:http://PASSENGER-SERVICE
-#          predicates:
-#            - Path=/api/v1/passengers/**
-        - id: ride-service
-          uri: lb:http://RIDE-SERVICE
-          predicates:
-            - Path=/api/v1/rides/**
-        - id: driver-service
-          uri: lb:http://DRIVER-SERVICE
-          predicates:
-            - Path=/api/v1/drivers/**
-        - id: rating-service
-          uri: lb:http://RATING-SERVICE
-          predicates:
-            - Path=/api/v1/ratings/**
 
 springdoc:
   swagger-ui:
