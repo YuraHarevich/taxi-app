@@ -14,6 +14,7 @@ services:
       - "8020:8020"
     depends_on:
       - drivers_postgresql
+      - discovery-service
     networks:
       - microservices-net
 
@@ -31,6 +32,7 @@ services:
       - "8010:8010"
     depends_on:
       - passengers_postgresql
+      - discovery-service
     networks:
       - microservices-net
 
@@ -51,6 +53,43 @@ services:
       - rides_postgresql
       - kafka
       - zookeeper
+      - discovery-service
+    networks:
+      - microservices-net
+
+  discovery-service:
+    container_name: ms-discovery
+    build:
+      context: ../services/discovery-service
+      dockerfile: ../../docker/Dockerfile
+      args:
+        SERVICE_NAME: discovery-service
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+    restart: always
+    ports:
+      - "8761:8761"
+    networks:
+      - microservices-net
+
+  gateway-service:
+    container_name: ms-gateway
+    build:
+      context: ../services/gateway-service
+      dockerfile: ../../docker/Dockerfile
+      args:
+        SERVICE_NAME: gateway-service
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+    restart: always
+    ports:
+      - "8222:8222"
+    depends_on:
+      - discovery-service
+      - passenger-service
+      - driver-service
+      - ride-service
+      - rating-service
     networks:
       - microservices-net
 
@@ -67,6 +106,7 @@ services:
     ports:
       - "8040:8040"
     depends_on:
+      - discovery-service
       - mongo_db
     networks:
       - microservices-net

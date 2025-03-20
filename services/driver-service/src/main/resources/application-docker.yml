@@ -1,3 +1,7 @@
 spring:
   datasource:
     url: ${DB_URL:jdbc:postgresql://ms_drivers_pg_sql:5432/drivers}
+eureka:
+  client:
+    service-url:
+      defaultZone: http://ms-discovery:8761/eureka

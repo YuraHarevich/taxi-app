@@ -3,10 +3,7 @@ server:
 app:
   rating:
     number_to_evaluate: 10
-
 spring:
-  profiles:
-    active: dev
   application:
     name: rating-service
   data:

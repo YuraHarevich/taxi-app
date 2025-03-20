@@ -1,21 +1,9 @@
-app:
-  urls:
-    services:
-      passenger-service-url: "ms-passengers:8010/api/v1/passengers"
-      driver-service-url: "ms-drivers:8020/api/v1/drivers"
-      ride-service-url: "ms-rides:8030/api/v1/rides"
 spring:
   data:
     mongodb:
       host: ratings_mongodb
       uri: mongodb://ratings_mongodb:27017/ratings
-  cloud:
-    openfeign:
-      client:
-        config:
-          passenger-service-client:
-            url: "http://ms-passengers:8010/api/v1/passengers"
-          driver-service-client:
-            url: "http://ms-drivers:8020/api/v1/drivers"
-          ride-service-client:
-            url: "http://ms-rides:8030/api/v1/rides"
+eureka:
+  client:
+    service-url:
+      defaultZone: http://ms-discovery:8761/eureka

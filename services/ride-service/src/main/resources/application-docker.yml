@@ -1,19 +1,7 @@
 spring:
   datasource:
     url: ${DB_URL:jdbc:postgresql://ms_ride_pg_sql:5432/ride}
-  cloud:
-    openfeign:
-      client:
-        config:
-          geolocation-client:
-            url: "https://api.openrouteservice.org"
-            loggerLevel: full
-          driver-service-client:
-            url: "http://ms-drivers:8020/api/v1/drivers"
-            loggerLevel: full
-          passenger-service-client:
-            url: "http://ms-passengers:8010/api/v1/passengers"
-            loggerLevel: full
+
   kafka:
     bootstrap-servers: ms_kafka:9092
     producer:
@@ -21,8 +9,7 @@ spring:
     consumer:
       bootstrap-servers: ms_kafka:9092
 
-app:
-    services:
-      passenger-service-url: "ms-passengers:8010/api/v1/passengers"
-      driver-service-url: "ms-drivers:8020/api/v1/drivers"
-      ride-service-url: "ms-rides:8030/api/v1/rides"
+eureka:
+  client:
+    service-url:
+      defaultZone: http://ms-discovery:8761/eureka
