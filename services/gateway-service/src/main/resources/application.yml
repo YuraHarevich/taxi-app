@@ -14,10 +14,10 @@ spring:
         locator:
           enabled: true
       routes:
-        - id: passenger-service
-          uri: lb:http://PASSENGER-SERVICE
-          predicates:
-            - Path=/api/v1/passengers/**
+#        - id: passenger-service
+#          uri: lb:http://PASSENGER-SERVICE
+#          predicates:
+#            - Path=/api/v1/passengers/**
         - id: ride-service
           uri: lb:http://RIDE-SERVICE
           predicates:
@@ -45,3 +45,56 @@ springdoc:
       url: /aggregate/ride-service/v3/api-docs
   api-docs:
     path: /api-docs
+
+
+#Actuator endpoints
+management:
+  health:
+    circuitbreakers:
+      enabled: true
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+  endpoint:
+    health:
+      show-details: "always"
+
+  #Resilience4J Retry Properties
+  metrics:
+    distribution:
+      percentiles-histogram:
+        http:
+          server:
+            requests: true
+  observations:
+    key-values:
+      application: api-gateway
+  tracing:
+    sampling:
+      probability: 1.0
+#Res properties
+resilience4j:
+  circuitbreaker:
+    configs:
+      default:
+        registerHealthIndicator: true
+        slidingWindowType: COUNT_BASED
+        slidingWindowSize: 10
+        failureRateThreshold: 50
+        waitDurationInOpenState: 5s
+        permittedNumberOfCallsInHalfOpenState: 3
+        automaticTransitionFromOpenToHalfOpenEnabled: true
+        minimum-number-of-calls: 5
+        #retry
+        retry:
+          configs:
+            default:
+              max-attempts: 3
+              wait-duration: 2s
+
+  #timeouts
+  timelimiter:
+    configs:
+      default:
+        timeout-duration: 3s
