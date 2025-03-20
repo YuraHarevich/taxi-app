@@ -19,7 +19,7 @@ public class Routes {
                                         .setFallbackUri("forward:/fallbackRoute")
                                 )
                         )
-                        .uri("http://passenger-service")
+                        .uri("lb://PASSENGER-SERVICE")
                 )
                 .build();
     }
