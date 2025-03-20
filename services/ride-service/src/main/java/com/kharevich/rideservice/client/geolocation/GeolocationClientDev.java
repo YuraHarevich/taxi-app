@@ -9,6 +9,5 @@ import org.springframework.context.annotation.Profile;
         name = "geolocation-client",
         configuration = RetreiveMessageErrorDecoder.class
 )
-@Profile({"test", "dev"})
 public interface GeolocationClientDev  extends GeolocationClient {
 }

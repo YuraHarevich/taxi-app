@@ -1,0 +1,9 @@
+spring:
+  data:
+    mongodb:
+      host: ratings_mongodb
+      uri: mongodb://ratings_mongodb:27017/ratings
+eureka:
+  client:
+    service-url:
+      defaultZone: http://ms-discovery:8761/eureka

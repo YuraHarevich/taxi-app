@@ -1,7 +1,6 @@
+server:
+  port: 8030
 spring:
-  profiles:
-    active: dev
-
   application:
     name: ride-service
   jpa:
@@ -9,6 +8,21 @@ spring:
       ddl-auto: validate
     database: postgresql
     database-platform: org.hibernate.dialect.PostgreSQLDialect
+  datasource:
+    driver-class-name: ${DB_DRIVER:org.postgresql.Driver}
+    url: ${DB_URL:jdbc:postgresql://localhost:5435/rides}
+    username: ${DB_USERNAME:postgres}
+    password: ${DB_PASSWORD:password}
+
+  liquibase:
+    change-log: classpath:/db/changelog/app-changelog.xml
+  cloud:
+    openfeign:
+      client:
+        config:
+          geolocation-client:
+            url: "https://api.openrouteservice.org"
+            loggerLevel: full
   kafka:
     topic:
       order-queue: order-topic

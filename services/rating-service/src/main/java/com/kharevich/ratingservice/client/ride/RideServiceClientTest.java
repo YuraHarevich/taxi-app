@@ -8,6 +8,6 @@ import org.springframework.context.annotation.Profile;
         name = "ride-service",
         configuration = RideServiceErrorDecoder.class
 )
-@Profile("test")
+@Profile("it")
 public interface RideServiceClientTest extends RideServiceClient {
 }

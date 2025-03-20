@@ -9,6 +9,6 @@ import org.springframework.context.annotation.Profile;
         name = "passenger-service",
         configuration = PassengerServiceErrorDecoder.class
 )
-@Profile("test")
+@Profile("it")
 public interface PassengerServiceClientTest extends PassengerServiceClient{
 }

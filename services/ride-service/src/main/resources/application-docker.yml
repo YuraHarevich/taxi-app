@@ -1,0 +1,15 @@
+spring:
+  datasource:
+    url: ${DB_URL:jdbc:postgresql://ms_ride_pg_sql:5432/ride}
+
+  kafka:
+    bootstrap-servers: ms_kafka:9092
+    producer:
+      bootstrap-server: ms_kafka:9092
+    consumer:
+      bootstrap-servers: ms_kafka:9092
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://ms-discovery:8761/eureka

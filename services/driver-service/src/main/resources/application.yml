@@ -16,24 +16,3 @@ spring:
 
   liquibase:
     change-log: classpath:/db/changelog/app-changelog.xml
-
-  cloud:
-    gateway:
-      routes:
-        - id: driver-service
-          uri: lb://DRIVER-SERVICE
-          predicates:
-            - Path=/api/v1/drivers/**
-
-springdoc:
-  swagger-ui:
-    path: /swagger-ui.html
-    urls:
-      - name: "Driver Service"
-        url: /v3/api-docs
-  api-docs:
-    path: /v3/api-docs
-eureka:
-  client:
-    service-url:
-      defaultZone: ${DISCOVERY_SERVICE_URL:http://localhost:8761/eureka}
