@@ -6,7 +6,7 @@ import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.context.annotation.Profile;
 
 @FeignClient(
-        name = "passenger-service-client-dev",
+        name = "passenger-service-client",
         configuration = PassengerServiceErrorDecoder.class
 )
 public interface PassengerServiceClientDev extends PassengerServiceClient{
