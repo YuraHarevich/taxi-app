@@ -14,7 +14,7 @@
         </batch>
         <format>
             <label>
-                <pattern>app=driver-service,host=${HOSTNAME}</pattern>
+                <pattern>app=gateway-service,host=${HOSTNAME}</pattern>
             </label>
             <message>
                 <pattern>%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level [traceId=%X{traceId:-NO_TRACE}, spanId=%X{spanId:-NO_SPAN}] %logger{36} - %msg%n</pattern>

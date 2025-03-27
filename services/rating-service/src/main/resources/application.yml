@@ -12,3 +12,24 @@ spring:
       host: localhost
       database: ratings
       uri: mongodb://localhost:27017/ratings
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include:
+          - health
+          - prometheus
+  prometheus:
+    metrics:
+      export:
+        enabled: true
+  metrics:
+    tags:
+      application: rating-service
+  zipkin:
+    tracing:
+      endpoint: ${TEMPO_ZIPKIN_URL:http://localhost:9411/api/v2/spans}
+  tracing:
+    sampling:
+      probability: 1.0

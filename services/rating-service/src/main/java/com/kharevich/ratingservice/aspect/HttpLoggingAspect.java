@@ -1,10 +1,7 @@
-package com.Harevich.driverservice.aspect;
+package com.kharevich.ratingservice.aspect;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.HttpServletRequest;
-import java.util.Arrays;
-import java.util.Objects;
-import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.ProceedingJoinPoint;
@@ -14,9 +11,14 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
-import static com.Harevich.driverservice.util.constants.DriversLogConstants.ERROR_SERIALIZING_JSON_MESSAGE;
-import static com.Harevich.driverservice.util.constants.DriversLogConstants.HTTP_REQUEST_LOGGING_MESSAGE;
-import static com.Harevich.driverservice.util.constants.DriversLogConstants.HTTP_RESPONSE_LOGGING_MESSAGE;
+import java.util.Arrays;
+import java.util.Objects;
+import java.util.stream.Collectors;
+
+import static com.kharevich.ratingservice.util.constants.RatingLogConstants.ERROR_SERIALIZING_JSON_MESSAGE;
+import static com.kharevich.ratingservice.util.constants.RatingLogConstants.HTTP_REQUEST_LOGGING_MESSAGE;
+import static com.kharevich.ratingservice.util.constants.RatingLogConstants.HTTP_RESPONSE_LOGGING_MESSAGE;
+
 
 @Slf4j
 @RequiredArgsConstructor

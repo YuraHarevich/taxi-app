@@ -31,17 +31,23 @@ spring:
           predicates:
             - Path=/api/v1/ratings/**
 
-springdoc:
-  swagger-ui:
-    path: /swagger-ui.html
-    urls[0]:
-      name: Passenger Service
-      url: /aggregate/passenger-service/v3/api-docs
-    urls[1]:
-      name: Driver Service
-      url: /aggregate/driver-service/v3/api-docs
-    urls[2]:
-      name: Ride Service
-      url: /aggregate/ride-service/v3/api-docs
-  api-docs:
-    path: /api-docs
+management:
+  endpoints:
+    web:
+      exposure:
+        include:
+          - health
+          - prometheus
+  prometheus:
+    metrics:
+      export:
+        enabled: true
+  metrics:
+    tags:
+      application: gateway-service
+  zipkin:
+    tracing:
+      endpoint: ${TEMPO_ZIPKIN_URL:http://localhost:9411/api/v2/spans}
+  tracing:
+    sampling:
+      probability: 1.0

@@ -10,7 +10,7 @@ spring:
     database-platform: org.hibernate.dialect.PostgreSQLDialect
   datasource:
     driver-class-name: ${DB_DRIVER:org.postgresql.Driver}
-    url: ${DB_URL:jdbc:postgresql://localhost:5435/rides}
+    url: ${DB_URL:jdbc:postgresql://localhost:5435/ride}
     username: ${DB_USERNAME:postgres}
     password: ${DB_PASSWORD:password}
 
@@ -60,4 +60,25 @@ app:
       geocode_relational_url: geocode/search
       api-key: ${API_KEY:default}
       country-iso-code: "BLR"
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include:
+          - health
+          - prometheus
+  prometheus:
+    metrics:
+      export:
+        enabled: true
+  metrics:
+    tags:
+      application: ride-service
+  zipkin:
+    tracing:
+      endpoint: ${TEMPO_ZIPKIN_URL:http://localhost:9411/api/v2/spans}
+  tracing:
+    sampling:
+      probability: 1.0
 
