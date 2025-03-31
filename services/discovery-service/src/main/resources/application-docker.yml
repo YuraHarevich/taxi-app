@@ -1,7 +1,3 @@
-eureka:
-  client:
-    service-url:
-      defaultZone: http://ms-discovery:8761/eureka
 management:
   zipkin:
     tracing:

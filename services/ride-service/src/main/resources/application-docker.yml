@@ -13,3 +13,7 @@ eureka:
   client:
     service-url:
       defaultZone: http://ms-discovery:8761/eureka
+management:
+  zipkin:
+    tracing:
+      endpoint: ${TEMPO_ZIPKIN_URL:http://tempo:9411/api/v2/spans}
