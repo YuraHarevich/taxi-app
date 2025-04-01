@@ -14,9 +14,9 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
-import static com.Harevich.driverservice.util.constants.DriversLogConstants.ERROR_SERIALIZING_JSON_MESSAGE;
-import static com.Harevich.driverservice.util.constants.DriversLogConstants.HTTP_REQUEST_LOGGING_MESSAGE;
-import static com.Harevich.driverservice.util.constants.DriversLogConstants.HTTP_RESPONSE_LOGGING_MESSAGE;
+import static com.Harevich.driverservice.util.constants.MessagesTemplate.ERROR_SERIALIZING_JSON_MESSAGE;
+import static com.Harevich.driverservice.util.constants.MessagesTemplate.HTTP_REQUEST_LOGGING_MESSAGE;
+import static com.Harevich.driverservice.util.constants.MessagesTemplate.HTTP_RESPONSE_LOGGING_MESSAGE;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -26,7 +26,9 @@ public class HttpLoggingAspect {
 
     private final ObjectMapper jsonMapper;
 
-    @Around("@within(org.springframework.web.bind.annotation.RestController) && execution(* *(..))")
+    @Around("@within(org.springframework.web.bind.annotation.RestController) &&" +
+            " (execution(*com.Harevich.driverservice.controller.impl.CarController.*(..))  || " +
+            "execution(*com.Harevich.driverservice.controller.impl.DriverController.*(..)))")
     public Object logRequestAndResponse(ProceedingJoinPoint joinPoint) throws Throwable {
         HttpServletRequest httpRequest = getCurrentHttpRequest();
         String requestBody = extractRequestBody(joinPoint);

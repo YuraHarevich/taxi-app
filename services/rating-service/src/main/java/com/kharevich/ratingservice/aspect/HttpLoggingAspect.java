@@ -15,9 +15,9 @@ import java.util.Arrays;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
-import static com.kharevich.ratingservice.util.constants.RatingLogConstants.ERROR_SERIALIZING_JSON_MESSAGE;
-import static com.kharevich.ratingservice.util.constants.RatingLogConstants.HTTP_REQUEST_LOGGING_MESSAGE;
-import static com.kharevich.ratingservice.util.constants.RatingLogConstants.HTTP_RESPONSE_LOGGING_MESSAGE;
+import static com.kharevich.ratingservice.util.constants.MessagesTemplate.ERROR_SERIALIZING_JSON_MESSAGE;
+import static com.kharevich.ratingservice.util.constants.MessagesTemplate.HTTP_REQUEST_LOGGING_MESSAGE;
+import static com.kharevich.ratingservice.util.constants.MessagesTemplate.HTTP_RESPONSE_LOGGING_MESSAGE;
 
 
 @Slf4j
@@ -28,7 +28,8 @@ public class HttpLoggingAspect {
 
     private final ObjectMapper jsonMapper;
 
-    @Around("@within(org.springframework.web.bind.annotation.RestController) && execution(* *(..))")
+    @Around("@within(org.springframework.web.bind.annotation.RestController) &&" +
+            " (execution(*com.kharevich.ratingservice.controller.impl.RatingController.*(..)) ")
     public Object logRequestAndResponse(ProceedingJoinPoint joinPoint) throws Throwable {
         HttpServletRequest httpRequest = getCurrentHttpRequest();
         String requestBody = extractRequestBody(joinPoint);

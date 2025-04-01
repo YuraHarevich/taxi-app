@@ -183,44 +183,44 @@ public class RideServiceImpl implements RideService {
         var queuePairOptional = queueService.pickPair();
         PassengerDriverRideQueuePair passengerDriverRideQueuePair = null;
 
-            if(queuePairOptional.isEmpty()) {
-                log.info("RideService. make pair for entity");
-                return false;
-            }
+        if(queuePairOptional.isEmpty()) {
+            log.info("RideService. make pair for entity");
+            return false;
+        }
 
-            passengerDriverRideQueuePair = queuePairOptional.get();
+        passengerDriverRideQueuePair = queuePairOptional.get();
 
-            log.info("RideService.trying to make up pair from passenger {} and driver {}", queuePairOptional.get().passengerId(), queuePairOptional.get().driverId());
+        log.info("RideService.trying to make up pair from passenger {} and driver {}", queuePairOptional.get().passengerId(), queuePairOptional.get().driverId());
 
-            UUID passengerId = passengerDriverRideQueuePair.passengerId();
-            UUID driverId = passengerDriverRideQueuePair.driverId();
+        UUID passengerId = passengerDriverRideQueuePair.passengerId();
+        UUID driverId = passengerDriverRideQueuePair.driverId();
 
-            RideRequest rideRequest = new RideRequest(
-                    passengerDriverRideQueuePair.from(),
-                    passengerDriverRideQueuePair.to(),
-                    passengerId);
-            try {
-                createRide(rideRequest, driverId);
-            } catch (GeolocationServiceUnavailableException ex) {
-                log.info("RideService.pair of driver {} and passenger {} can't be processed cause of external error in geo service",
-                        passengerDriverRideQueuePair.driverId(),
-                        passengerDriverRideQueuePair.passengerId());
-                return false;
-            } catch (DriverNotFoundException ex) {
-                queueService.removeDriver(driverId);
-                log.info("RideService.successfully removed driver");
-                return true;
-            } catch (PassengerNotFoundException ex) {
-                queueService.removePassenger(passengerId);
-                log.info("RideService.successfully removed passenger");
-                return true;
-            } catch (Exception exception) {
-                log.error("RideService.exception: {}", exception.getMessage());
-                return false;
-            }
-            queueService.markAsProcessed(passengerDriverRideQueuePair);
-            log.info("RideService.pair successfully processed");
+        RideRequest rideRequest = new RideRequest(
+                passengerDriverRideQueuePair.from(),
+                passengerDriverRideQueuePair.to(),
+                passengerId);
+        try {
+            createRide(rideRequest, driverId);
+        } catch (GeolocationServiceUnavailableException ex) {
+            log.info("RideService.pair of driver {} and passenger {} can't be processed cause of external error in geo service",
+                    passengerDriverRideQueuePair.driverId(),
+                    passengerDriverRideQueuePair.passengerId());
+            return false;
+        } catch (DriverNotFoundException ex) {
+            queueService.removeDriver(driverId);
+            log.info("RideService.successfully removed driver");
             return true;
+        } catch (PassengerNotFoundException ex) {
+            queueService.removePassenger(passengerId);
+            log.info("RideService.successfully removed passenger");
+            return true;
+        } catch (Exception exception) {
+            log.error("RideService.exception: {}", exception.getMessage());
+            return false;
+        }
+        queueService.markAsProcessed(passengerDriverRideQueuePair);
+        log.info("RideService.pair successfully processed");
+        return true;
 
     }
 

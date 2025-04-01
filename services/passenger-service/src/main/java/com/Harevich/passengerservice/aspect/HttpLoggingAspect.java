@@ -15,9 +15,9 @@ import java.util.Arrays;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
-import static com.Harevich.passengerservice.util.constants.PassengersLogConstants.ERROR_SERIALIZING_JSON_MESSAGE;
-import static com.Harevich.passengerservice.util.constants.PassengersLogConstants.HTTP_REQUEST_LOGGING_MESSAGE;
-import static com.Harevich.passengerservice.util.constants.PassengersLogConstants.HTTP_RESPONSE_LOGGING_MESSAGE;
+import static com.Harevich.passengerservice.util.constants.MessagesTemplate.ERROR_SERIALIZING_JSON_MESSAGE;
+import static com.Harevich.passengerservice.util.constants.MessagesTemplate.HTTP_REQUEST_LOGGING_MESSAGE;
+import static com.Harevich.passengerservice.util.constants.MessagesTemplate.HTTP_RESPONSE_LOGGING_MESSAGE;
 
 
 @Slf4j
@@ -28,7 +28,8 @@ public class HttpLoggingAspect {
 
     private final ObjectMapper jsonMapper;
 
-    @Around("@within(org.springframework.web.bind.annotation.RestController) && execution(* *(..))")
+    @Around("@within(org.springframework.web.bind.annotation.RestController) &&" +
+            " (execution(*com.Harevich.passengerservice.controller.impl.PassengerControllerImpl.*(..)) ")
     public Object logRequestAndResponse(ProceedingJoinPoint joinPoint) throws Throwable {
         HttpServletRequest httpRequest = getCurrentHttpRequest();
         String requestBody = extractRequestBody(joinPoint);

@@ -23,6 +23,7 @@
 		<rest-assured.version>5.5.1</rest-assured.version>
 		<cucumber.version>7.21.1</cucumber.version>
 		<maven-compiler-plugin.version>3.13.0</maven-compiler-plugin.version>
+		<logback.appender.version>1.6.0</logback.appender.version>
 	</properties>
 	<dependencies>
 		<dependency>
@@ -131,7 +132,7 @@
 		<dependency>
 			<groupId>com.github.loki4j</groupId>
 			<artifactId>loki-logback-appender</artifactId>
-			<version>1.6.0</version>
+			<version>${logback.appender.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>io.micrometer</groupId>

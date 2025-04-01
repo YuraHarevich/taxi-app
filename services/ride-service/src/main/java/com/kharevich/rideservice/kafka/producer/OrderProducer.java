@@ -2,8 +2,10 @@ package com.kharevich.rideservice.kafka.producer;
 
 import com.kharevich.rideservice.dto.request.QueueProceedRequest;
 import com.kharevich.rideservice.dto.request.RideRequest;
+import io.micrometer.tracing.Tracer;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.kafka.support.KafkaHeaders;
@@ -21,11 +23,15 @@ public class OrderProducer {
     @Value("${spring.kafka.topic.order-queue}")
     private String topic;
 
+    @Autowired
+    private Tracer tracer;
+
     public void sendOrderRequest(QueueProceedRequest queueProceedRequest){
         log.info("OrderProducer.Sending order kafka request");
         Message<QueueProceedRequest> message = MessageBuilder
                 .withPayload(queueProceedRequest)
                 .setHeader(KafkaHeaders.TOPIC,topic)
+                .setHeader("traceparent", tracer.currentSpan().context().traceId())
                 .build();
         kafkaTemplate.send(message);
     }
