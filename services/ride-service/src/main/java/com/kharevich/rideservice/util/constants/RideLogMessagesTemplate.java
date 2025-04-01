@@ -1,10 +1,10 @@
-package com.Harevich.driverservice.util.constants;
+package com.kharevich.rideservice.util.constants;
 
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
-public final class MessagesTemplate {
+public final class RideLogMessagesTemplate {
 
     public static final String HTTP_REQUEST_LOGGING_MESSAGE = "Http request | Method: {} | URI: {} | Args -> {}";
 

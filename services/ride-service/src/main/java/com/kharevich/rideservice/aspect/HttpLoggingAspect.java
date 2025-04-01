@@ -15,9 +15,9 @@ import java.util.Arrays;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
-import static com.kharevich.rideservice.util.constants.MessagesTemplate.ERROR_SERIALIZING_JSON_MESSAGE;
-import static com.kharevich.rideservice.util.constants.MessagesTemplate.HTTP_REQUEST_LOGGING_MESSAGE;
-import static com.kharevich.rideservice.util.constants.MessagesTemplate.HTTP_RESPONSE_LOGGING_MESSAGE;
+import static com.kharevich.rideservice.util.constants.RideLogMessagesTemplate.ERROR_SERIALIZING_JSON_MESSAGE;
+import static com.kharevich.rideservice.util.constants.RideLogMessagesTemplate.HTTP_REQUEST_LOGGING_MESSAGE;
+import static com.kharevich.rideservice.util.constants.RideLogMessagesTemplate.HTTP_RESPONSE_LOGGING_MESSAGE;
 
 
 @Slf4j
@@ -28,9 +28,7 @@ public class HttpLoggingAspect {
 
     private final ObjectMapper jsonMapper;
 
-    @Around("@within(org.springframework.web.bind.annotation.RestController) &&" +
-            " (execution(*com.kharevich.rideservice.controller.impl.GeolocationController.*(..))  || " +
-            "execution(*com.kharevich.rideservice.controller.impl.RideController.*(..)))")
+    @Around("@within(org.springframework.web.bind.annotation.RestController) && execution(* *(..))")
     public Object logRequestAndResponse(ProceedingJoinPoint joinPoint) throws Throwable {
         HttpServletRequest httpRequest = getCurrentHttpRequest();
         String requestBody = extractRequestBody(joinPoint);

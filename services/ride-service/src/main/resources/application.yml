@@ -30,6 +30,7 @@ spring:
       bootstrap-server: localhost:9092
       key-serializer: org.apache.kafka.common.serialization.StringSerializer
       value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+      observation-enabled: true
       properties:
         spring.json.type.mapping: queueProceedRequest:com.kharevich.rideservice.dto.request.QueueProceedRequest
     consumer:
@@ -38,6 +39,7 @@ spring:
       auto-offset-reset: earliest
       key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
       value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
+      observation-enabled: true
       properties:
         spring.json.trusted.packages: '*'
         spring.json.type.mapping: queueProceedRequest:com.kharevich.rideservice.dto.request.QueueProceedRequest
@@ -81,6 +83,4 @@ management:
   tracing:
     sampling:
       probability: 1.0
-    propagation:
-      type: W3C
 

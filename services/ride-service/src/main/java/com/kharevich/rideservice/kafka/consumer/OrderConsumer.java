@@ -43,12 +43,12 @@ public class OrderConsumer {
     private final KafkaTemplate<String, RideRequest> kafkaTemplate;
 
     @KafkaListener(topics = "order-topic",groupId = "order-group")
-    public void consumeSupplyRequests(
-            QueueProceedRequest queueProceedRequest,
-            @Header(name = "traceparent", required = false) String traceparent
-    ) throws MessagingException {
+    public void consumeSupplyRequests(QueueProceedRequest queueProceedRequest) throws MessagingException {
+        Observation.createNotStarted("kafka.consume", observationRegistry)
+                .observe(() -> {
                     log.info("OrderConsumer.Processing message");
                     rideService.tryToCreatePairFromQueue();
+                });
     }
 
 }

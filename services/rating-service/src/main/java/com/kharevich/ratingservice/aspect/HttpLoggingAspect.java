@@ -15,9 +15,9 @@ import java.util.Arrays;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
-import static com.kharevich.ratingservice.util.constants.MessagesTemplate.ERROR_SERIALIZING_JSON_MESSAGE;
-import static com.kharevich.ratingservice.util.constants.MessagesTemplate.HTTP_REQUEST_LOGGING_MESSAGE;
-import static com.kharevich.ratingservice.util.constants.MessagesTemplate.HTTP_RESPONSE_LOGGING_MESSAGE;
+import static com.kharevich.ratingservice.util.constants.RatingLogMessagesTemplate.ERROR_SERIALIZING_JSON_MESSAGE;
+import static com.kharevich.ratingservice.util.constants.RatingLogMessagesTemplate.HTTP_REQUEST_LOGGING_MESSAGE;
+import static com.kharevich.ratingservice.util.constants.RatingLogMessagesTemplate.HTTP_RESPONSE_LOGGING_MESSAGE;
 
 
 @Slf4j

@@ -14,9 +14,9 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
-import static com.Harevich.driverservice.util.constants.MessagesTemplate.ERROR_SERIALIZING_JSON_MESSAGE;
-import static com.Harevich.driverservice.util.constants.MessagesTemplate.HTTP_REQUEST_LOGGING_MESSAGE;
-import static com.Harevich.driverservice.util.constants.MessagesTemplate.HTTP_RESPONSE_LOGGING_MESSAGE;
+import static com.Harevich.driverservice.util.constants.DriverLogMessageTemplates.ERROR_SERIALIZING_JSON_MESSAGE;
+import static com.Harevich.driverservice.util.constants.DriverLogMessageTemplates.HTTP_REQUEST_LOGGING_MESSAGE;
+import static com.Harevich.driverservice.util.constants.DriverLogMessageTemplates.HTTP_RESPONSE_LOGGING_MESSAGE;
 
 @Slf4j
 @RequiredArgsConstructor

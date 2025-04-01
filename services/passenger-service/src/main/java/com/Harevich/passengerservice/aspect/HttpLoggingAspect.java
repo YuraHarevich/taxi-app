@@ -15,9 +15,9 @@ import java.util.Arrays;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
-import static com.Harevich.passengerservice.util.constants.MessagesTemplate.ERROR_SERIALIZING_JSON_MESSAGE;
-import static com.Harevich.passengerservice.util.constants.MessagesTemplate.HTTP_REQUEST_LOGGING_MESSAGE;
-import static com.Harevich.passengerservice.util.constants.MessagesTemplate.HTTP_RESPONSE_LOGGING_MESSAGE;
+import static com.Harevich.passengerservice.util.constants.PassengerLogMessagesTemplate.ERROR_SERIALIZING_JSON_MESSAGE;
+import static com.Harevich.passengerservice.util.constants.PassengerLogMessagesTemplate.HTTP_REQUEST_LOGGING_MESSAGE;
+import static com.Harevich.passengerservice.util.constants.PassengerLogMessagesTemplate.HTTP_RESPONSE_LOGGING_MESSAGE;
 
 
 @Slf4j
