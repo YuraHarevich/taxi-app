@@ -10,7 +10,7 @@ spring:
     database-platform: org.hibernate.dialect.PostgreSQLDialect
   datasource:
     driver-class-name: ${DB_DRIVER:org.postgresql.Driver}
-    url: ${DB_URL:jdbc:postgresql://localhost:5435/rides}
+    url: ${DB_URL:jdbc:postgresql://localhost:5435/ride}
     username: ${DB_USERNAME:postgres}
     password: ${DB_PASSWORD:password}
 
