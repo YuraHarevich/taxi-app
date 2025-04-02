@@ -1,13 +1,19 @@
-FROM maven:3.9-eclipse-temurin-21 AS builder
+FROM maven:3.9.6-eclipse-temurin-21 AS build
+WORKDIR /app
+COPY . /app
+RUN mvn clean package -DskipTests
 
-COPY src /usr/app/src
-COPY pom.xml /usr/app
-
-RUN mvn -f /usr/app/pom.xml clean package -DskipTests
+FROM eclipse-temurin:21-jre-jammy AS builder
+ARG SERVICE_NAME
+WORKDIR /app
+COPY --from=build /app/target/${SERVICE_NAME}-0.0.1-SNAPSHOT.jar ./${SERVICE_NAME}.jar
+RUN java -Dlog4j.configurationFile=log4j2-build.xml -Djarmode=layertools -jar ${SERVICE_NAME}.jar extract
 
 FROM eclipse-temurin:21-jre-jammy
-ARG SERVICE_NAME
-
-COPY --from=builder /usr/app/target/${SERVICE_NAME}-*.jar /usr/app/app.jar
-
-ENTRYPOINT ["java", "-jar", "/usr/app/app.jar"]
+RUN apt-get update && apt-get install -y curl
+WORKDIR /app
+COPY --from=builder app/dependencies/ ./
+COPY --from=builder app/spring-boot-loader/ ./
+COPY --from=builder app/snapshot-dependencies/ ./
+COPY --from=builder app/application/ ./
+ENTRYPOINT ["java", "org.springframework.boot.loader.launch.JarLauncher"]

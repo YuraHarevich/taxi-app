@@ -23,6 +23,7 @@
 		<rest-assured.version>5.5.1</rest-assured.version>
 		<cucumber.version>7.21.1</cucumber.version>
 		<maven-compiler-plugin.version>3.13.0</maven-compiler-plugin.version>
+		<logback.appender.version>1.6.0</logback.appender.version>
 	</properties>
 	<dependencies>
 		<dependency>
@@ -119,6 +120,31 @@
 			<artifactId>mapstruct-processor</artifactId>
 			<version>${mapstruct.version}</version>
 			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-actuator</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>io.micrometer</groupId>
+			<artifactId>micrometer-registry-prometheus</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>com.github.loki4j</groupId>
+			<artifactId>loki-logback-appender</artifactId>
+			<version>${logback.appender.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>io.micrometer</groupId>
+			<artifactId>micrometer-tracing</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>io.micrometer</groupId>
+			<artifactId>micrometer-tracing-bridge-otel</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>io.opentelemetry</groupId>
+			<artifactId>opentelemetry-exporter-zipkin</artifactId>
 		</dependency>
 	</dependencies>
 	<dependencyManagement>

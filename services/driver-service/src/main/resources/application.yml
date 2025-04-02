@@ -16,3 +16,24 @@ spring:
 
   liquibase:
     change-log: classpath:/db/changelog/app-changelog.xml
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include:
+          - health
+          - prometheus
+  prometheus:
+    metrics:
+      export:
+        enabled: true
+  metrics:
+    tags:
+      application: driver-service
+  zipkin:
+    tracing:
+      endpoint: ${TEMPO_ZIPKIN_URL:http://localhost:9411/api/v2/spans}
+  tracing:
+    sampling:
+      probability: 1.0

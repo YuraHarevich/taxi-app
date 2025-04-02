@@ -9,6 +9,7 @@ services:
         SERVICE_NAME: driver-service
     environment:
       SPRING_PROFILES_ACTIVE: docker
+      LOKI_URL: http://loki:3100
     restart: always
     ports:
       - "8020:8020"
@@ -27,6 +28,7 @@ services:
         SERVICE_NAME: passenger-service
     environment:
       SPRING_PROFILES_ACTIVE: docker
+      LOKI_URL: http://loki:3100
     restart: always
     ports:
       - "8010:8010"
@@ -45,6 +47,7 @@ services:
         SERVICE_NAME: ride-service
     environment:
       SPRING_PROFILES_ACTIVE: docker
+      LOKI_URL: http://loki:3100
       API_KEY: ${API_KEY}
     restart: always
     ports:
@@ -66,6 +69,7 @@ services:
         SERVICE_NAME: discovery-service
     environment:
       SPRING_PROFILES_ACTIVE: docker
+      LOKI_URL: http://loki:3100
     restart: always
     ports:
       - "8761:8761"
@@ -81,6 +85,7 @@ services:
         SERVICE_NAME: gateway-service
     environment:
       SPRING_PROFILES_ACTIVE: docker
+      LOKI_URL: http://loki:3100
     restart: always
     ports:
       - "8222:8222"
@@ -102,6 +107,7 @@ services:
         SERVICE_NAME: rating-service
     environment:
       SPRING_PROFILES_ACTIVE: docker
+      LOKI_URL: http://loki:3100
     restart: always
     ports:
       - "8040:8040"
@@ -213,6 +219,62 @@ services:
       KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
       KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
       KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://ms_kafka:9092
+    networks:
+      - microservices-net
+
+#<--------------------- Monitoring --------------------->
+
+  victoria-metrics:
+    image: victoriametrics/victoria-metrics:latest
+    container_name: victoria-metrics
+    ports:
+      - "8428:8428"
+    volumes:
+      - ./victoria-metrics/promscrape.yml:/victoria-metrics/promscrape.yml
+    networks:
+      - microservices-net
+    command:
+      - '--promscrape.config=/victoria-metrics/promscrape.yml'
+      - '--promscrape.config.strictParse=false'
+
+  grafana:
+    image: grafana/grafana:11.5.2
+    container_name: grafana
+    volumes:
+      - ./grafana:/var/lib/grafana
+    environment:
+      - GF_AUTH_ANONYMOUS_ENABLED=true
+      - GF_AUTH_ANONYMOUS_ORG_ROLE=Admin
+    ports:
+      - "3000:3000"
+    networks:
+      - microservices-net
+
+  loki:
+    image: grafana/loki:2.9.2
+    container_name: loki
+    volumes:
+      - ./loki:/etc/loki
+    ports:
+      - "3100:3100"
+    command: -config.file=/etc/loki/loki-config.yml
+    networks:
+      - microservices-net
+
+  tempo:
+    container_name: tempo
+    image: grafana/tempo:2.6.0
+    command: [ "-config.file=/etc/tempo-config.yml" ]
+    volumes:
+      - ./tempo/tempo-config.yml:/etc/tempo-config.yml
+    ports:
+      - "14268:14268"
+      - "3200:3200"
+      - "55680:55680"
+      - "55681:55681"
+      - "9411:9411"
+      - "4318:4318"
+      - "4317:4317"
     networks:
       - microservices-net
 

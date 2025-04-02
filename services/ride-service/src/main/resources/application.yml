@@ -30,6 +30,7 @@ spring:
       bootstrap-server: localhost:9092
       key-serializer: org.apache.kafka.common.serialization.StringSerializer
       value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+      observation-enabled: true
       properties:
         spring.json.type.mapping: queueProceedRequest:com.kharevich.rideservice.dto.request.QueueProceedRequest
     consumer:
@@ -38,6 +39,7 @@ spring:
       auto-offset-reset: earliest
       key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
       value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
+      observation-enabled: true
       properties:
         spring.json.trusted.packages: '*'
         spring.json.type.mapping: queueProceedRequest:com.kharevich.rideservice.dto.request.QueueProceedRequest
@@ -46,8 +48,8 @@ app:
   scheduling:
     time_of_queue_item_to_become_outdated_in_days: 1
     period_of_performing_cleaning_of_outdated_data_in_millis: 1440000
-    period_of_performing_cleaning_stuck_orders_in_millis: 60000
-    period_of_processing_queue_items: 60000
+    period_of_performing_cleaning_stuck_orders_in_millis: 600000
+    period_of_processing_queue_items: 600000
   time:
     zoneId: "Europe/Minsk"
   urls:
@@ -60,4 +62,25 @@ app:
       geocode_relational_url: geocode/search
       api-key: ${API_KEY:default}
       country-iso-code: "BLR"
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include:
+          - health
+          - prometheus
+  prometheus:
+    metrics:
+      export:
+        enabled: true
+  metrics:
+    tags:
+      application: ride-service
+  zipkin:
+    tracing:
+      endpoint: ${TEMPO_ZIPKIN_URL:http://localhost:9411/api/v2/spans}
+  tracing:
+    sampling:
+      probability: 1.0
 

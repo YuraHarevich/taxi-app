@@ -1,0 +1,30 @@
+scrape_configs:
+  - job_name: "discovery-metrics"
+    static_configs:
+      - targets: ["host.docker.internal:8761","ms-discovery:8761"]
+    metrics_path: "actuator/prometheus"
+
+  - job_name: "driver-metrics"
+    static_configs:
+      - targets: [ "host.docker.internal:8020","ms-drivers:8020" ]
+    metrics_path: "actuator/prometheus"
+
+  - job_name: "gateway-metrics"
+    static_configs:
+      - targets: ["host.docker.internal:8222","ms-gateway:8222" ]
+    metrics_path: "actuator/prometheus"
+
+  - job_name: "passengers-metrics"
+    static_configs:
+      - targets: [ "host.docker.internal:8010","ms-passengers:8010" ]
+    metrics_path: "actuator/prometheus"
+
+  - job_name: "rating-metrics"
+    static_configs:
+      - targets: [ "host.docker.internal:8040","ms-ratings:8040" ]
+    metrics_path: "actuator/prometheus"
+
+  - job_name: "ride-metrics"
+    static_configs:
+      - targets: [ "host.docker.internal:8030" ,"ms-rides:8030"]
+    metrics_path: "actuator/prometheus"

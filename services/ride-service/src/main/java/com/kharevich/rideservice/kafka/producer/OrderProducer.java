@@ -2,8 +2,11 @@ package com.kharevich.rideservice.kafka.producer;
 
 import com.kharevich.rideservice.dto.request.QueueProceedRequest;
 import com.kharevich.rideservice.dto.request.RideRequest;
+import io.micrometer.tracing.TraceContext;
+import io.micrometer.tracing.Tracer;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.kafka.support.KafkaHeaders;

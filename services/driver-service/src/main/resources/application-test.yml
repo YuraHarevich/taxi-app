@@ -7,3 +7,4 @@ spring:
   liquibase:
     drop-first: true
     change-log: classpath:/db/changelog/app-changelog.xml
+
