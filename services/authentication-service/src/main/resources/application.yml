@@ -1,0 +1,38 @@
+server:
+  port: 8060
+spring:
+  application:
+    name: authentication-service
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: "http://${keycloak.domain}:8080/realms/${keycloak.realm}"
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://localhost:5555/keycloak_db
+    username: postgres
+    password: password
+  jpa:
+    hibernate:
+      ddl-auto: update
+    database: postgresql
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+
+keycloak:
+  domain: localhost
+  clientId: client-api
+  clientSecret: 93CHypPzDPrGTtZBlcz0ijO8pwGrHrIL
+  auth-url:  http://${keycloak.domain}:8080
+  realm: taxi-realm
+
+logging:
+  level:
+    org:
+      keycloak:
+        email: DEBUG
+      eclipse:
+        angus:
+          mail: DEBUG
+      jboss:
+        resteasy: DEBUG
