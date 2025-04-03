@@ -24,6 +24,7 @@
 		<cucumber.version>7.21.1</cucumber.version>
 		<maven-compiler-plugin.version>3.13.0</maven-compiler-plugin.version>
 		<logback.appender.version>1.6.0</logback.appender.version>
+		<keycloak.admin-client.version>26.0.4</keycloak.admin-client.version>
 	</properties>
 	<dependencies>
 		<dependency>
@@ -145,6 +146,15 @@
 		<dependency>
 			<groupId>io.opentelemetry</groupId>
 			<artifactId>opentelemetry-exporter-zipkin</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.cloud</groupId>
+			<artifactId>spring-cloud-starter-openfeign</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.keycloak</groupId>
+			<artifactId>keycloak-admin-client</artifactId>
+			<version>${keycloak.admin-client.version}</version>
 		</dependency>
 	</dependencies>
 	<dependencyManagement>

@@ -1,4 +1,4 @@
-package com.Harevich.driverservice.aspect;
+package com.Harevich.driverservice.proxy;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.HttpServletRequest;
