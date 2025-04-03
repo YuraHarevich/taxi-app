@@ -58,7 +58,7 @@ public class UserController implements UserApi {
 
     @GetMapping("jwt")
     @ResponseStatus(HttpStatus.OK)
-    public AccessTokenResponse getJwt(UserLoginRequest userLoginRecord) {
+    public AccessTokenResponse login(UserLoginRequest userLoginRecord) {
         return userService.getJwtToken(userLoginRecord);
     }
 

@@ -28,7 +28,7 @@ public interface UserApi {
     @Operation(summary = "deleting of the user")
     public void deleteCurrentUser();
 
-    @Operation(summary = "getting jwt token")
-    public AccessTokenResponse getJwt(UserLoginRequest userLoginRecord);
+    @Operation(summary = "logging in")
+    public AccessTokenResponse login(UserLoginRequest userLoginRecord);
 
 }

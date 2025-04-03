@@ -7,6 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import ru.kharevich.authenticationservice.dto.ErrorMessage;
+import ru.kharevich.authenticationservice.exceptions.ClientRightException;
 import ru.kharevich.authenticationservice.exceptions.JwtConverterException;
 import ru.kharevich.authenticationservice.exceptions.RepeatedUserData;
 import ru.kharevich.authenticationservice.exceptions.UserCreationException;
@@ -57,7 +58,19 @@ public class GlobalExceptionHandler {
     })
     public ResponseEntity<ErrorMessage> handleUserCreation(RuntimeException exception) {
         return ResponseEntity
-                .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .status(HttpStatus.CONFLICT)
+                .body(ErrorMessage.builder()
+                        .message(exception.getMessage())
+                        .timestamp(LocalDateTime.now())
+                        .build());
+    }
+
+    @ExceptionHandler({
+            ClientRightException.class
+    })
+    public ResponseEntity<ErrorMessage> handleClientRight(RuntimeException exception) {
+        return ResponseEntity
+                .status(HttpStatus.FORBIDDEN)
                 .body(ErrorMessage.builder()
                         .message(exception.getMessage())
                         .timestamp(LocalDateTime.now())

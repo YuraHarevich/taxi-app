@@ -1,5 +1,7 @@
 package ru.kharevich.authenticationservice.service.impl;
 
+import jakarta.ws.rs.ClientErrorException;
+import jakarta.ws.rs.ForbiddenException;
 import jakarta.ws.rs.core.Response;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -23,12 +25,12 @@ import ru.kharevich.authenticationservice.config.UserCreationProperties;
 import ru.kharevich.authenticationservice.dto.request.RegistrationRequest;
 import ru.kharevich.authenticationservice.dto.request.UserLoginRequest;
 import ru.kharevich.authenticationservice.dto.response.RegistrationResponse;
+import ru.kharevich.authenticationservice.exceptions.ClientRightException;
 import ru.kharevich.authenticationservice.exceptions.RepeatedUserData;
 import ru.kharevich.authenticationservice.exceptions.UserCreationException;
 import ru.kharevich.authenticationservice.service.UserService;
 import ru.kharevich.authenticationservice.utils.constants.KeycloakProperties;
 
-import javax.naming.AuthenticationException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -72,23 +74,7 @@ public class UserServiceImpl implements UserService {
         UsersResource usersResource = getUsersResource();
 
         Response response = usersResource.create(user);
-
-        if(Objects.equals(201,response.getStatus())){
-
-            List<UserRepresentation> representationList = usersResource.searchByUsername(request.username(), true);
-            if(!CollectionUtils.isEmpty(representationList)){
-                UserRepresentation userRepresentation1 = representationList.stream().filter(userRepresentation -> Objects.equals(false, userRepresentation.isEmailVerified())).findFirst().orElse(null);
-                assert userRepresentation1 != null;
-                emailVerification(userRepresentation1.getId());
-                return new RegistrationResponse(
-                        UUID.fromString(userRepresentation1.getId()),
-                        request.username(),
-                        request.firstname(),
-                        request.lastname(),
-                        request.email());
-            }
-            return null;
-        }
+        String userId = null;
 
         switch (response.getStatus()){
             case 201:
@@ -96,15 +82,17 @@ public class UserServiceImpl implements UserService {
                 if(!CollectionUtils.isEmpty(representationList)){
                     UserRepresentation userRepresentation1 = representationList.stream().filter(userRepresentation -> Objects.equals(false, userRepresentation.isEmailVerified())).findFirst().orElse(null);
                     assert userRepresentation1 != null;
-                    emailVerification(userRepresentation1.getId());
-                    //assign role
-                    UserResource userResourceRole = getUsersResource().get(userRepresentation1.getId());
-                    RolesResource rolesResource = getRolesResource();
-                    RoleRepresentation representation = rolesResource.get("USER").toRepresentation();
-                    userResourceRole.roles().realmLevel().add(Collections.singletonList(representation));
-
+                    userId = userRepresentation1.getId();
+                    emailVerification(userId);
+                    try {
+                        assignRole(userId, "USER");
+                    } catch (ForbiddenException exception){
+                        log.error("UserService.Client don't have enough rights: {}", exception.getMessage());
+                        deleteById(UUID.fromString(userId));
+                        throw new ClientRightException(USER_CREATION_ERROR);
+                    }
                     return new RegistrationResponse(
-                            UUID.fromString(userRepresentation1.getId()),
+                            UUID.fromString(userId),
                             request.username(),
                             request.firstname(),
                             request.lastname(),
@@ -131,8 +119,12 @@ public class UserServiceImpl implements UserService {
         user.setFirstName(request.firstname());
         user.setLastName(request.lastname());
         user.setUsername(request.username());
-
-        userResource.get(userId).update(user);
+        try {
+            userResource.get(userId).update(user);
+        } catch (ClientErrorException ex) {
+            log.error("UserService.Exception thrown while trying to update user");
+            throw new UserCreationException(USER_REPEATED_DATA);
+        }
 
         emailVerification(user.getId());
 
@@ -173,6 +165,11 @@ public class UserServiceImpl implements UserService {
         return realm1.users();
     }
 
+    public UserResource getUserResource(String userId){
+        UsersResource usersResource = getUsersResource();
+        return usersResource.get(userId);
+    }
+
     private RolesResource getRolesResource(){
         return  keycloak.realm(keycloakProperties.getRealm()).roles();
     }
@@ -190,6 +187,15 @@ public class UserServiceImpl implements UserService {
             return Optional.of(jwt.getSubject());
         }
         return Optional.empty();
+    }
+
+    private void assignRole(String userId, String roleName) {
+
+        UserResource userResource = getUserResource(userId);
+        RolesResource rolesResource = getRolesResource();
+        RoleRepresentation representation = rolesResource.get(roleName).toRepresentation();
+        userResource.roles().realmLevel().add(Collections.singletonList(representation));
+
     }
 
 }
