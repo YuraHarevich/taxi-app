@@ -1,15 +1,14 @@
-package com.Harevich.driverservice.controller.ex;
+package ru.kharevich.authenticationservice.controller.ex;
 
 import feign.Response;
 import feign.Util;
 import feign.codec.ErrorDecoder;
-import jakarta.persistence.EntityNotFoundException;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
 
 @Slf4j
-public class AuthServiceErrorDecoder implements ErrorDecoder {
+public class ExternalUserErrorDecoder implements ErrorDecoder {
     @Override
     public Exception decode(String methodKey, Response response) {
         String responseBody = "";

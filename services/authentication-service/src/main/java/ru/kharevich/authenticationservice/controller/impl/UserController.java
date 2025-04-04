@@ -28,28 +28,34 @@ public class UserController implements UserApi {
 
     private final UserService userService;
 
-    @PostMapping("/registration")
+    @PostMapping("/registration/driver")
     @ResponseStatus(HttpStatus.CREATED)
-    public RegistrationResponse createUser(RegistrationRequest request) {
-        return userService.create(request);
+    public void createUserDriver(RegistrationRequest request) {
+        userService.createDriver(request);
+    }
+
+    @PostMapping("/registration/passenger")
+    @ResponseStatus(HttpStatus.CREATED)
+    public void createUserPassenger(RegistrationRequest request) {
+        userService.createPassenger(request);
     }
 
     @PatchMapping
     @ResponseStatus(HttpStatus.ACCEPTED)
     public RegistrationResponse updateCurrentUser(RegistrationRequest request) {
-        return userService.update(request);
+        return userService.updateUser(request);
     }
 
     @DeleteMapping
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteCurrentUser() {
-        userService.delete();
+        userService.deleteUser();
     }
 
     @DeleteMapping("admin/delete")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteCurrentUser(@Valid UUID id) {
-        userService.deleteById(id);
+        userService.deleteUserById(id);
     }
 
     @GetMapping("jwt")

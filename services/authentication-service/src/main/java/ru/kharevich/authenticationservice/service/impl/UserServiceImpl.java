@@ -21,6 +21,8 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
+import ru.kharevich.authenticationservice.client.DriverServiceClient;
+import ru.kharevich.authenticationservice.client.PassengerServiceClient;
 import ru.kharevich.authenticationservice.config.UserCreationProperties;
 import ru.kharevich.authenticationservice.dto.request.RegistrationRequest;
 import ru.kharevich.authenticationservice.dto.request.UserLoginRequest;
@@ -30,6 +32,7 @@ import ru.kharevich.authenticationservice.exceptions.RepeatedUserData;
 import ru.kharevich.authenticationservice.exceptions.UserCreationException;
 import ru.kharevich.authenticationservice.service.UserService;
 import ru.kharevich.authenticationservice.utils.constants.KeycloakProperties;
+import ru.kharevich.authenticationservice.utils.mapper.UserPersonMapper;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -51,8 +54,14 @@ public class UserServiceImpl implements UserService {
 
     private final KeycloakProperties keycloakProperties;
 
+    private final DriverServiceClient driverServiceClient;
+
+    private final PassengerServiceClient passengerServiceClient;
+
+    private final UserPersonMapper userPersonMapper;
+
     @Override
-    public RegistrationResponse create(RegistrationRequest request) {
+    public RegistrationResponse createUser(RegistrationRequest request) {
 
         UserRepresentation user = new UserRepresentation();
         user.setEnabled(UserCreationProperties.userEnabledStatus);
@@ -84,13 +93,15 @@ public class UserServiceImpl implements UserService {
                     assert userRepresentation1 != null;
                     userId = userRepresentation1.getId();
                     emailVerification(userId);
+
                     try {
                         assignRole(userId, "USER");
                     } catch (ForbiddenException exception){
                         log.error("UserService.Client don't have enough rights: {}", exception.getMessage());
-                        deleteById(UUID.fromString(userId));
+                        deleteUserById(UUID.fromString(userId));
                         throw new ClientRightException(USER_CREATION_ERROR);
                     }
+
                     return new RegistrationResponse(
                             UUID.fromString(userId),
                             request.username(),
@@ -106,7 +117,19 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public RegistrationResponse update(RegistrationRequest request) {
+    public void createDriver(RegistrationRequest request) {
+        UUID userId = createUser(request).id();
+        driverServiceClient.createDriver(userPersonMapper.toPersonRequest(userId, request));
+    }
+
+    @Override
+    public void createPassenger(RegistrationRequest request) {
+        UUID userId = createUser(request).id();
+        passengerServiceClient.createPassenger(userPersonMapper.toPersonRequest(userId, request));
+    }
+
+    @Override
+    public RegistrationResponse updateUser(RegistrationRequest request) {
         String userId = extractUserIdFromSecurityContext().orElseThrow(() -> {
             log.error("UserService.Unknown exception while extracting user id from security context");
             return new RuntimeException(AUTH_ERROR_MESSAGE);
@@ -132,7 +155,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void delete() {
+    public void deleteUser() {
         String userId = extractUserIdFromSecurityContext().orElseThrow(() -> {
             log.error("UserService.Unknown exception while extracting user id from security context");
             return new RuntimeException(AUTH_ERROR_MESSAGE);
@@ -141,7 +164,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void deleteById(UUID id) {
+    public void deleteUserById(UUID id) {
         getUsersResource().delete(id.toString());
     }
 

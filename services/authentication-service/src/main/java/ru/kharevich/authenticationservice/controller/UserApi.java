@@ -19,8 +19,11 @@ import java.util.UUID;
 @Tag(name = "User api")
 public interface UserApi {
 
-    @Operation(summary = "creating user")
-    public RegistrationResponse createUser(@Valid @RequestBody RegistrationRequest request);
+    @Operation(summary = "creating user for driver")
+    public void createUserDriver(@Valid @RequestBody RegistrationRequest request);
+
+    @Operation(summary = "creating user for passenger")
+    public void createUserPassenger(@Valid @RequestBody RegistrationRequest request);
 
     @Operation(summary = "updating the user")
     public RegistrationResponse updateCurrentUser(@Valid @RequestBody RegistrationRequest request);
