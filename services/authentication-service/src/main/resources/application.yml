@@ -25,14 +25,3 @@ keycloak:
   clientSecret: 93CHypPzDPrGTtZBlcz0ijO8pwGrHrIL
   auth-url:  http://${keycloak.domain}:8080
   realm: taxi-realm
-
-logging:
-  level:
-    org:
-      keycloak:
-        email: DEBUG
-      eclipse:
-        angus:
-          mail: DEBUG
-      jboss:
-        resteasy: DEBUG

@@ -1,7 +1,6 @@
 package com.Harevich.driverservice.controller.impl;
 
 import com.Harevich.driverservice.controller.DriverApi;
-import com.Harevich.driverservice.dto.response.CarResponse;
 import com.Harevich.driverservice.dto.request.DriverRequest;
 import com.Harevich.driverservice.dto.response.DriverResponse;
 import com.Harevich.driverservice.service.DriverService;
@@ -40,7 +39,7 @@ public class DriverController implements DriverApi {
     @DeleteMapping
     @ResponseStatus(HttpStatus.OK)
     public void deleteDriverById(@RequestParam("id") UUID id){
-        driverService.deleteById(id);
+        driverService.deleteDriverById(id);
     }
 
     @PatchMapping("changeCar")
@@ -49,7 +48,5 @@ public class DriverController implements DriverApi {
                                             @RequestParam("car_id") UUID car_id){
         return driverService.assignPersonalCar(driver_id,car_id);
     }
-
-
 
 }

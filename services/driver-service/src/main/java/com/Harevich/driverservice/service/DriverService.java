@@ -13,7 +13,7 @@ public interface DriverService {
 
     public DriverResponse getById(UUID id);
 
-    void deleteById(UUID id);
+    void deleteDriverById(UUID id);
 
     DriverResponse assignPersonalCar(UUID driverId, UUID carId);
 

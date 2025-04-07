@@ -16,6 +16,7 @@ import ru.kharevich.authenticationservice.controller.UserApi;
 import ru.kharevich.authenticationservice.dto.request.RegistrationRequest;
 import ru.kharevich.authenticationservice.dto.request.UserLoginRequest;
 import ru.kharevich.authenticationservice.dto.response.RegistrationResponse;
+import ru.kharevich.authenticationservice.dto.response.UserResponse;
 import ru.kharevich.authenticationservice.service.UserService;
 
 import java.util.UUID;
@@ -30,14 +31,14 @@ public class UserController implements UserApi {
 
     @PostMapping("/registration/driver")
     @ResponseStatus(HttpStatus.CREATED)
-    public void createUserDriver(RegistrationRequest request) {
-        userService.createDriver(request);
+    public UserResponse createUserDriver(RegistrationRequest request) {
+        return userService.createDriver(request);
     }
 
     @PostMapping("/registration/passenger")
     @ResponseStatus(HttpStatus.CREATED)
-    public void createUserPassenger(RegistrationRequest request) {
-        userService.createPassenger(request);
+    public UserResponse createUserPassenger(RegistrationRequest request) {
+        return userService.createPassenger(request);
     }
 
     @PatchMapping

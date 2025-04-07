@@ -1,11 +1,12 @@
 package ru.kharevich.authenticationservice.service;
 
 import jakarta.validation.Valid;
-import org.keycloak.admin.client.Keycloak;
 import org.keycloak.representations.AccessTokenResponse;
 import ru.kharevich.authenticationservice.dto.request.RegistrationRequest;
 import ru.kharevich.authenticationservice.dto.request.UserLoginRequest;
+import ru.kharevich.authenticationservice.dto.response.UserResponse;
 import ru.kharevich.authenticationservice.dto.response.RegistrationResponse;
+import ru.kharevich.authenticationservice.model.User;
 
 import java.util.UUID;
 
@@ -13,9 +14,9 @@ public interface UserService {
 
     RegistrationResponse createUser(@Valid  RegistrationRequest request);
 
-    void createDriver(@Valid  RegistrationRequest request);
+    UserResponse createDriver(@Valid  RegistrationRequest request);
 
-    void createPassenger(@Valid  RegistrationRequest request);
+    UserResponse createPassenger(@Valid  RegistrationRequest request);
 
     RegistrationResponse updateUser(@Valid RegistrationRequest request);
 

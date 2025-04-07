@@ -129,10 +129,10 @@ public class DriverServiceUnitTest {
     }
 
     @Test
-    public void testDeleteById() {
+    public void testDeleteDriverById() {
         when(driverValidation.findIfExistsById(driverId)).thenReturn(driver);
 
-        driverService.deleteById(driverId);
+        driverService.deleteDriverById(driverId);
 
         assertTrue(driver.isDeleted()); 
 
@@ -141,12 +141,12 @@ public class DriverServiceUnitTest {
     }
 
     @Test
-    public void testDeleteByIdWithCar() {
+    public void testDeleteDriverByIdWithCar() {
         driver.setCar(new Car());
 
         when(driverValidation.findIfExistsById(driverId)).thenReturn(driver);
 
-        driverService.deleteById(driverId);
+        driverService.deleteDriverById(driverId);
 
         assertTrue(driver.isDeleted());
 

@@ -4,9 +4,7 @@ import jakarta.validation.constraints.Email;
 
 import java.util.UUID;
 
-public record ExternalPersonRequest(
-
-        UUID id,
+public record UserRequest(
 
         String firstname,
 

@@ -43,6 +43,10 @@ public class WebSecurityConfig {
                     "/api/v1/users/registration"
             );
             web.ignoring().requestMatchers(
+                    HttpMethod.POST,
+                    "/api/v1/users/registration/**"
+            );
+            web.ignoring().requestMatchers(
                     HttpMethod.GET,
                     "/api/v1/users/jwt"
             );

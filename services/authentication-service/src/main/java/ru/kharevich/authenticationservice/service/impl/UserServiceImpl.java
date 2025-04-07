@@ -26,13 +26,16 @@ import ru.kharevich.authenticationservice.client.PassengerServiceClient;
 import ru.kharevich.authenticationservice.config.UserCreationProperties;
 import ru.kharevich.authenticationservice.dto.request.RegistrationRequest;
 import ru.kharevich.authenticationservice.dto.request.UserLoginRequest;
+import ru.kharevich.authenticationservice.dto.response.UserResponse;
 import ru.kharevich.authenticationservice.dto.response.RegistrationResponse;
 import ru.kharevich.authenticationservice.exceptions.ClientRightException;
 import ru.kharevich.authenticationservice.exceptions.RepeatedUserData;
 import ru.kharevich.authenticationservice.exceptions.UserCreationException;
+import ru.kharevich.authenticationservice.model.User;
+import ru.kharevich.authenticationservice.repository.UserRepository;
 import ru.kharevich.authenticationservice.service.UserService;
 import ru.kharevich.authenticationservice.utils.constants.KeycloakProperties;
-import ru.kharevich.authenticationservice.utils.mapper.UserPersonMapper;
+import ru.kharevich.authenticationservice.utils.mapper.UserExternalPersonMapper;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -58,7 +61,9 @@ public class UserServiceImpl implements UserService {
 
     private final PassengerServiceClient passengerServiceClient;
 
-    private final UserPersonMapper userPersonMapper;
+    private final UserExternalPersonMapper userPersonMapper;
+
+    private final UserRepository userRepository;
 
     @Override
     public RegistrationResponse createUser(RegistrationRequest request) {
@@ -97,7 +102,7 @@ public class UserServiceImpl implements UserService {
                     try {
                         assignRole(userId, "USER");
                     } catch (ForbiddenException exception){
-                        log.error("UserService.Client don't have enough rights: {}", exception.getMessage());
+                        log.error("UserService.Client don't have enough rights to assign role: {}", exception.getMessage());
                         deleteUserById(UUID.fromString(userId));
                         throw new ClientRightException(USER_CREATION_ERROR);
                     }
@@ -117,15 +122,23 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void createDriver(RegistrationRequest request) {
-        UUID userId = createUser(request).id();
-        driverServiceClient.createDriver(userPersonMapper.toPersonRequest(userId, request));
+    public UserResponse createDriver(RegistrationRequest request) {
+        UUID keycloakId = createUser(request).id();
+        UserResponse userResponse = driverServiceClient.createDriver(userPersonMapper.toUserRequest(request));
+        User userToSave = userPersonMapper.toUser(keycloakId, userResponse);
+        userRepository.save(userToSave);
+        log.info("UserService.User with id {} successfully created", keycloakId);
+        return userPersonMapper.toUserResponse(userToSave);
     }
 
     @Override
-    public void createPassenger(RegistrationRequest request) {
-        UUID userId = createUser(request).id();
-        passengerServiceClient.createPassenger(userPersonMapper.toPersonRequest(userId, request));
+    public UserResponse createPassenger(RegistrationRequest request) {
+        UUID keycloakId = createUser(request).id();
+        UserResponse userResponse = driverServiceClient.createDriver(userPersonMapper.toUserRequest(request));
+        User userToSave = userPersonMapper.toUser(keycloakId, userResponse);
+        userRepository.save(userToSave);
+        log.info("UserService.User with id {} successfully created", keycloakId);
+        return userPersonMapper.toUserResponse(userToSave);
     }
 
     @Override

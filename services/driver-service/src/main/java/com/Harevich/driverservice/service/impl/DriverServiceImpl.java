@@ -61,7 +61,7 @@ public class DriverServiceImpl implements DriverService {
 
     @Override
     @Transactional
-    public void deleteById(UUID id) {
+    public void deleteDriverById(UUID id) {
         Driver driver = driverValidation.findIfExistsById(id);
         driverValidation.isDeleted(id);
 

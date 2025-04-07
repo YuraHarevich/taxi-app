@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import ru.kharevich.authenticationservice.dto.request.RegistrationRequest;
 import ru.kharevich.authenticationservice.dto.request.UserLoginRequest;
 import ru.kharevich.authenticationservice.dto.response.RegistrationResponse;
+import ru.kharevich.authenticationservice.dto.response.UserResponse;
 
 import java.util.UUID;
 
@@ -20,10 +21,10 @@ import java.util.UUID;
 public interface UserApi {
 
     @Operation(summary = "creating user for driver")
-    public void createUserDriver(@Valid @RequestBody RegistrationRequest request);
+    public UserResponse createUserDriver(@Valid @RequestBody RegistrationRequest request);
 
     @Operation(summary = "creating user for passenger")
-    public void createUserPassenger(@Valid @RequestBody RegistrationRequest request);
+    public UserResponse createUserPassenger(@Valid @RequestBody RegistrationRequest request);
 
     @Operation(summary = "updating the user")
     public RegistrationResponse updateCurrentUser(@Valid @RequestBody RegistrationRequest request);
