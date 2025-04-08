@@ -1,5 +1,6 @@
 package ru.kharevich.authenticationservice.service.impl;
 
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.ws.rs.ClientErrorException;
 import jakarta.ws.rs.ForbiddenException;
 import jakarta.ws.rs.core.Response;
@@ -31,6 +32,7 @@ import ru.kharevich.authenticationservice.dto.response.RegistrationResponse;
 import ru.kharevich.authenticationservice.exceptions.ClientRightException;
 import ru.kharevich.authenticationservice.exceptions.RepeatedUserData;
 import ru.kharevich.authenticationservice.exceptions.UserCreationException;
+import ru.kharevich.authenticationservice.model.Person;
 import ru.kharevich.authenticationservice.model.User;
 import ru.kharevich.authenticationservice.repository.UserRepository;
 import ru.kharevich.authenticationservice.service.UserService;
@@ -44,8 +46,11 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
 
+import static ru.kharevich.authenticationservice.model.Person.DRIVER;
+import static ru.kharevich.authenticationservice.model.Person.PASSENGER;
 import static ru.kharevich.authenticationservice.utils.constants.AuthenticationServiceResponseConstants.AUTH_ERROR_MESSAGE;
 import static ru.kharevich.authenticationservice.utils.constants.AuthenticationServiceResponseConstants.USER_CREATION_ERROR;
+import static ru.kharevich.authenticationservice.utils.constants.AuthenticationServiceResponseConstants.USER_NOT_FOUND;
 import static ru.kharevich.authenticationservice.utils.constants.AuthenticationServiceResponseConstants.USER_REPEATED_DATA;
 
 @Slf4j
@@ -89,14 +94,18 @@ public class UserServiceImpl implements UserService {
 
         Response response = usersResource.create(user);
         String userId = null;
+        int responseStatus = response.getStatus();
+        log.error("UserService.Keycloak create user response with status {}", responseStatus);
 
-        switch (response.getStatus()){
+        switch (responseStatus){
             case 201:
                 List<UserRepresentation> representationList = usersResource.searchByUsername(request.username(), true);
                 if(!CollectionUtils.isEmpty(representationList)){
                     UserRepresentation userRepresentation1 = representationList.stream().filter(userRepresentation -> Objects.equals(false, userRepresentation.isEmailVerified())).findFirst().orElse(null);
                     assert userRepresentation1 != null;
                     userId = userRepresentation1.getId();
+
+                    log.error("UserService.Senging verification email fror user with id {}", userId);
                     emailVerification(userId);
 
                     try {
@@ -125,7 +134,7 @@ public class UserServiceImpl implements UserService {
     public UserResponse createDriver(RegistrationRequest request) {
         UUID keycloakId = createUser(request).id();
         UserResponse userResponse = driverServiceClient.createDriver(userPersonMapper.toUserRequest(request));
-        User userToSave = userPersonMapper.toUser(keycloakId, userResponse);
+        User userToSave = userPersonMapper.toUser(DRIVER, keycloakId, userResponse);
         userRepository.save(userToSave);
         log.info("UserService.User with id {} successfully created", keycloakId);
         return userPersonMapper.toUserResponse(userToSave);
@@ -134,8 +143,8 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserResponse createPassenger(RegistrationRequest request) {
         UUID keycloakId = createUser(request).id();
-        UserResponse userResponse = driverServiceClient.createDriver(userPersonMapper.toUserRequest(request));
-        User userToSave = userPersonMapper.toUser(keycloakId, userResponse);
+        UserResponse userResponse = passengerServiceClient.createPassenger(userPersonMapper.toUserRequest(request));
+        User userToSave = userPersonMapper.toUser(PASSENGER, keycloakId, userResponse);
         userRepository.save(userToSave);
         log.info("UserService.User with id {} successfully created", keycloakId);
         return userPersonMapper.toUserResponse(userToSave);
@@ -167,13 +176,40 @@ public class UserServiceImpl implements UserService {
         return new RegistrationResponse(UUID.fromString(userId), request.username(), request.firstname(), request.lastname(), request.email());
     }
 
+    public RegistrationResponse updatePerson(RegistrationRequest request){
+        RegistrationResponse response = updateUser(request);
+        User user = findUser(response.id());
+
+        if(user.getPerson().equals(DRIVER)){
+            driverServiceClient.updateDriver(userPersonMapper.toUserRequest(request),user.getExternalId());
+        }
+        if(user.getPerson().equals(PASSENGER)){
+            passengerServiceClient.updatePassenger(userPersonMapper.toUserRequest(request),user.getExternalId());
+        }
+        return response;
+    }
+
     @Override
-    public void deleteUser() {
+    public UUID deleteUser() {
         String userId = extractUserIdFromSecurityContext().orElseThrow(() -> {
             log.error("UserService.Unknown exception while extracting user id from security context");
             return new RuntimeException(AUTH_ERROR_MESSAGE);
         });
         getUsersResource().delete(userId);
+        return UUID.fromString(userId);
+    }
+
+    @Override
+    public void deletePerson() {
+        UUID userId = deleteUser();
+        User user = findUser(userId);
+        if(user.getPerson().equals(DRIVER)){
+            driverServiceClient.deleteDriver(user.getExternalId());
+        }
+        if(user.getPerson().equals(PASSENGER)){
+            passengerServiceClient.deletePassenger(user.getExternalId());
+        }
+
     }
 
     @Override
@@ -194,6 +230,12 @@ public class UserServiceImpl implements UserService {
                     .build();
 
             return userKeycloak.tokenManager().getAccessToken();
+    }
+
+    private final User findUser(UUID keycloakId){
+        var userOpt = userRepository.findByKeycloakId(keycloakId);
+        User user = userRepository.findByKeycloakId(keycloakId).orElseThrow(() -> new EntityNotFoundException(USER_NOT_FOUND));
+        return user;
     }
 
     private UsersResource getUsersResource() {

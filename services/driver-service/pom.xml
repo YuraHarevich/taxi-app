@@ -24,7 +24,6 @@
 		<cucumber.version>7.21.1</cucumber.version>
 		<maven-compiler-plugin.version>3.13.0</maven-compiler-plugin.version>
 		<logback.appender.version>1.6.0</logback.appender.version>
-		<keycloak.admin-client.version>26.0.4</keycloak.admin-client.version>
 	</properties>
 	<dependencies>
 		<dependency>

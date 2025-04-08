@@ -2,14 +2,19 @@ package com.Harevich.driverservice.controller.impl;
 
 import com.Harevich.driverservice.controller.DriverApi;
 import com.Harevich.driverservice.dto.request.DriverRequest;
+import com.Harevich.driverservice.dto.request.UserRequest;
 import com.Harevich.driverservice.dto.response.DriverResponse;
+import com.Harevich.driverservice.dto.response.UserResponse;
 import com.Harevich.driverservice.service.DriverService;
+import com.Harevich.driverservice.util.mapper.UserMapper;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.UUID;
+
+import static com.Harevich.driverservice.model.enumerations.Sex.MALE;
 
 @RestController
 @RequiredArgsConstructor

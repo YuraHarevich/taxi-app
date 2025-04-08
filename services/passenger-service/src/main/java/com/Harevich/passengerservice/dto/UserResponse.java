@@ -1,4 +1,4 @@
-package ru.kharevich.authenticationservice.dto.response;
+package com.Harevich.passengerservice.dto;
 
 import jakarta.validation.constraints.Email;
 
@@ -12,6 +12,7 @@ public record UserResponse(
 
         String lastname,
 
+        @Email(message = "email should be valid")
         String email
 
 ) {

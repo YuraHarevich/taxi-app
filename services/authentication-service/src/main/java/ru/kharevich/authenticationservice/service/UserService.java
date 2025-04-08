@@ -4,6 +4,7 @@ import jakarta.validation.Valid;
 import org.keycloak.representations.AccessTokenResponse;
 import ru.kharevich.authenticationservice.dto.request.RegistrationRequest;
 import ru.kharevich.authenticationservice.dto.request.UserLoginRequest;
+import ru.kharevich.authenticationservice.dto.request.UserRequest;
 import ru.kharevich.authenticationservice.dto.response.UserResponse;
 import ru.kharevich.authenticationservice.dto.response.RegistrationResponse;
 import ru.kharevich.authenticationservice.model.User;
@@ -20,7 +21,11 @@ public interface UserService {
 
     RegistrationResponse updateUser(@Valid RegistrationRequest request);
 
-    void deleteUser();
+    RegistrationResponse updatePerson(@Valid RegistrationRequest request);
+
+    UUID deleteUser();
+
+    void deletePerson();
 
     void deleteUserById(@Valid UUID id);
 

@@ -22,7 +22,6 @@ public class WebSecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
         return httpSecurity
                 .authorizeHttpRequests(authorizeHttpRequests -> authorizeHttpRequests
-                        .requestMatchers(HttpMethod.GET, "/api/v1/users/jwt").permitAll()
                         .requestMatchers(HttpMethod.DELETE, "/api/v1/users/admin/**").hasRole("ADMIN")
                         .anyRequest().authenticated())
                 .oauth2ResourceServer(oauth2 -> oauth2
@@ -47,8 +46,8 @@ public class WebSecurityConfig {
                     "/api/v1/users/registration/**"
             );
             web.ignoring().requestMatchers(
-                    HttpMethod.GET,
-                    "/api/v1/users/jwt"
+                    HttpMethod.POST,
+                    "/api/v1/users/login"
             );
             web.ignoring().requestMatchers(
                             HttpMethod.OPTIONS,

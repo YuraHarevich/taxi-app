@@ -4,11 +4,14 @@ import jakarta.ws.rs.NotAuthorizedException;
 import org.keycloak.common.VerificationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import ru.kharevich.authenticationservice.dto.ErrorMessage;
 import ru.kharevich.authenticationservice.exceptions.ClientRightException;
+import ru.kharevich.authenticationservice.exceptions.ExternalValidationException;
 import ru.kharevich.authenticationservice.exceptions.JwtConverterException;
+import ru.kharevich.authenticationservice.exceptions.RepeatedDataException;
 import ru.kharevich.authenticationservice.exceptions.RepeatedUserData;
 import ru.kharevich.authenticationservice.exceptions.UserCreationException;
 
@@ -30,9 +33,10 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler({
-            JwtConverterException.class
+            JwtConverterException.class,
+            ExternalValidationException.class,
     })
-    public ResponseEntity<ErrorMessage> handleJWT(RuntimeException exception) {
+    public ResponseEntity<ErrorMessage> handleBadRequest(RuntimeException exception) {
         return ResponseEntity
                 .status(HttpStatus.BAD_REQUEST)
                 .body(ErrorMessage.builder()
@@ -41,22 +45,23 @@ public class GlobalExceptionHandler {
                         .build());
     }
 
-    @ExceptionHandler({
-            RepeatedUserData.class
-    })
-    public ResponseEntity<ErrorMessage> handleRepeatedData(RuntimeException exception) {
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResponseEntity<ErrorMessage> handleValidationExceptions(MethodArgumentNotValidException ex) {
+        var error = ex.getBindingResult().getAllErrors().getFirst();
         return ResponseEntity
-                .status(HttpStatus.CONFLICT)
+                .status(HttpStatus.BAD_REQUEST)
                 .body(ErrorMessage.builder()
-                        .message(exception.getMessage())
+                        .message(error.getDefaultMessage())
                         .timestamp(LocalDateTime.now())
                         .build());
     }
 
     @ExceptionHandler({
+            RepeatedUserData.class,
+            RepeatedDataException.class,
             UserCreationException.class
     })
-    public ResponseEntity<ErrorMessage> handleUserCreation(RuntimeException exception) {
+    public ResponseEntity<ErrorMessage> handleConflict(RuntimeException exception) {
         return ResponseEntity
                 .status(HttpStatus.CONFLICT)
                 .body(ErrorMessage.builder()
@@ -68,7 +73,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler({
             ClientRightException.class
     })
-    public ResponseEntity<ErrorMessage> handleClientRight(RuntimeException exception) {
+    public ResponseEntity<ErrorMessage> handleForbidden(RuntimeException exception) {
         return ResponseEntity
                 .status(HttpStatus.FORBIDDEN)
                 .body(ErrorMessage.builder()

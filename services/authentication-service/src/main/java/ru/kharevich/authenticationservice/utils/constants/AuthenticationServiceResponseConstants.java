@@ -14,4 +14,10 @@ public final class AuthenticationServiceResponseConstants {
 
     public static final String AUTH_ERROR_MESSAGE = "authentication exception";
 
+    public static final String UNKNOWN_EXTERNAL_EXCEPTION_CAUSE = "unknown exception cause";
+
+    public static final String PERSON_ENUM_CONVERTION_EXCEPTION = "error while converting person type";
+
+    public static final String USER_NOT_FOUND = "user with sucj id not found";
+
 }

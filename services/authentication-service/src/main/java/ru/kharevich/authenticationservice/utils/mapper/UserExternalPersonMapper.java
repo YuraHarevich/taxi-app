@@ -7,6 +7,7 @@ import org.mapstruct.MappingConstants;
 import ru.kharevich.authenticationservice.dto.request.RegistrationRequest;
 import ru.kharevich.authenticationservice.dto.request.UserRequest;
 import ru.kharevich.authenticationservice.dto.response.UserResponse;
+import ru.kharevich.authenticationservice.model.Person;
 import ru.kharevich.authenticationservice.model.User;
 
 import java.util.UUID;
@@ -17,10 +18,12 @@ import java.util.UUID;
 )
 public interface UserExternalPersonMapper {
 
+    @Mapping(source = "firstname", target = "name")
+    @Mapping(source = "lastname", target = "surname")
     UserRequest toUserRequest(RegistrationRequest request);
 
     UserResponse toUserResponse(User user);
 
-    User toUser(UUID keycloakId, UserResponse response);
+    User toUser(Person person, UUID keycloakId, UserResponse response);
 
 }

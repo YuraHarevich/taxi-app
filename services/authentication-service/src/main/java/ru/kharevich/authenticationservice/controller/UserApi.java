@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import ru.kharevich.authenticationservice.dto.request.RegistrationRequest;
 import ru.kharevich.authenticationservice.dto.request.UserLoginRequest;
+import ru.kharevich.authenticationservice.dto.request.UserRequest;
 import ru.kharevich.authenticationservice.dto.response.RegistrationResponse;
 import ru.kharevich.authenticationservice.dto.response.UserResponse;
 
@@ -32,7 +33,7 @@ public interface UserApi {
     @Operation(summary = "deleting of the user")
     public void deleteCurrentUser();
 
-    @Operation(summary = "logging in")
+    @Operation(summary = "login")
     public AccessTokenResponse login(UserLoginRequest userLoginRecord);
 
 }
