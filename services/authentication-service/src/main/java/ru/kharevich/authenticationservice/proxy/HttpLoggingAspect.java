@@ -1,10 +1,7 @@
-package com.Harevich.driverservice.proxy;
+package ru.kharevich.authenticationservice.proxy;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.HttpServletRequest;
-import java.util.Arrays;
-import java.util.Objects;
-import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.ProceedingJoinPoint;
@@ -14,9 +11,13 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
-import static com.Harevich.driverservice.util.constants.DriverLogMessageTemplates.ERROR_SERIALIZING_JSON_MESSAGE;
-import static com.Harevich.driverservice.util.constants.DriverLogMessageTemplates.HTTP_REQUEST_LOGGING_MESSAGE;
-import static com.Harevich.driverservice.util.constants.DriverLogMessageTemplates.HTTP_RESPONSE_LOGGING_MESSAGE;
+import java.util.Arrays;
+import java.util.Objects;
+import java.util.stream.Collectors;
+
+import static ru.kharevich.authenticationservice.utils.constants.AuthenticationLogMessageTemplates.ERROR_SERIALIZING_JSON_MESSAGE;
+import static ru.kharevich.authenticationservice.utils.constants.AuthenticationLogMessageTemplates.HTTP_REQUEST_LOGGING_MESSAGE;
+import static ru.kharevich.authenticationservice.utils.constants.AuthenticationLogMessageTemplates.HTTP_RESPONSE_LOGGING_MESSAGE;
 
 @Slf4j
 @RequiredArgsConstructor

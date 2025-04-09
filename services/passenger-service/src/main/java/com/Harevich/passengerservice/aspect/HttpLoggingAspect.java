@@ -28,8 +28,7 @@ public class HttpLoggingAspect {
 
     private final ObjectMapper jsonMapper;
 
-    @Around("@within(org.springframework.web.bind.annotation.RestController) &&" +
-            " (execution(*com.Harevich.passengerservice.controller.impl.PassengerControllerImpl.*(..)) ")
+    @Around("@within(org.springframework.web.bind.annotation.RestController) && execution(* *(..))")
     public Object logRequestAndResponse(ProceedingJoinPoint joinPoint) throws Throwable {
         HttpServletRequest httpRequest = getCurrentHttpRequest();
         String requestBody = extractRequestBody(joinPoint);

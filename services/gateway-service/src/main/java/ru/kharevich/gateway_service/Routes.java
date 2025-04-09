@@ -73,6 +73,22 @@ public class Routes {
     }
 
     @Bean
+    public RouteLocator authServiceRoute(RouteLocatorBuilder builder) {
+        return builder.routes()
+                .route("authentication_service", r -> r
+                        .path("/api/v1/users/**")
+                        .filters(f -> f
+                                .circuitBreaker(config -> config
+                                        .setName("authServiceCircuitBreaker")
+                                        .setFallbackUri("forward:/fallbackRoute")
+                                )
+                        )
+                        .uri("lb://AUTHENTICATION-SERVICE")
+                )
+                .build();
+    }
+
+    @Bean
     public RouteLocator fallbackRoute(RouteLocatorBuilder builder) {
         return builder.routes()
                 .route("fallbackRoute", r -> r

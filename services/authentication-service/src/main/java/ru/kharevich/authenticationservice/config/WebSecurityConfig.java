@@ -50,6 +50,10 @@ public class WebSecurityConfig {
                     "/api/v1/users/login"
             );
             web.ignoring().requestMatchers(
+                    HttpMethod.GET,
+                    "/actuator/**"
+            );
+            web.ignoring().requestMatchers(
                             HttpMethod.OPTIONS,
                             "/**"
                     )

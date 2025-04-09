@@ -232,7 +232,7 @@ public class UserServiceImpl implements UserService {
             return userKeycloak.tokenManager().getAccessToken();
     }
 
-    private final User findUser(UUID keycloakId){
+    private User findUser(UUID keycloakId){
         var userOpt = userRepository.findByKeycloakId(keycloakId);
         User user = userRepository.findByKeycloakId(keycloakId).orElseThrow(() -> new EntityNotFoundException(USER_NOT_FOUND));
         return user;

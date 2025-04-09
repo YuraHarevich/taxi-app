@@ -94,11 +94,11 @@
 			<groupId>io.micrometer</groupId>
 			<artifactId>micrometer-registry-prometheus</artifactId>
 		</dependency>
-<!--		<dependency>-->
-<!--			<groupId>com.github.loki4j</groupId>-->
-<!--			<artifactId>loki-logback-appender</artifactId>-->
-<!--			<version>${logback.appender.version}</version>-->
-<!--		</dependency>-->
+		<dependency>
+			<groupId>com.github.loki4j</groupId>
+			<artifactId>loki-logback-appender</artifactId>
+			<version>${logback.appender.version}</version>
+		</dependency>
 		<dependency>
 			<groupId>io.micrometer</groupId>
 			<artifactId>micrometer-tracing</artifactId>
