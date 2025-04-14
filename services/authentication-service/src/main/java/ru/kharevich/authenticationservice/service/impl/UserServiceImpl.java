@@ -32,7 +32,6 @@ import ru.kharevich.authenticationservice.dto.response.RegistrationResponse;
 import ru.kharevich.authenticationservice.exceptions.ClientRightException;
 import ru.kharevich.authenticationservice.exceptions.RepeatedUserData;
 import ru.kharevich.authenticationservice.exceptions.UserCreationException;
-import ru.kharevich.authenticationservice.model.Person;
 import ru.kharevich.authenticationservice.model.User;
 import ru.kharevich.authenticationservice.repository.UserRepository;
 import ru.kharevich.authenticationservice.service.UserService;
@@ -74,17 +73,17 @@ public class UserServiceImpl implements UserService {
     public RegistrationResponse createUser(RegistrationRequest request) {
 
         UserRepresentation user = new UserRepresentation();
-        user.setEnabled(UserCreationProperties.userEnabledStatus);
+        user.setEnabled(UserCreationProperties.USER_ENABLED_STATUS);
         user.setUsername(request.username());
         user.setEmail(request.email());
         user.setFirstName(request.firstname());
         user.setLastName(request.lastname());
-        user.setEmailVerified(UserCreationProperties.userEmailVerifiedStatus);
+        user.setEmailVerified(UserCreationProperties.USER_EMAIL_VERIFIED_STATUS);
 
         CredentialRepresentation credentialRepresentation=new CredentialRepresentation();
         credentialRepresentation.setValue(request.password());
-        credentialRepresentation.setTemporary(UserCreationProperties.credentialsAreTemporary);
-        credentialRepresentation.setType(UserCreationProperties.credentialsRepresentationType);
+        credentialRepresentation.setTemporary(UserCreationProperties.CREDENTIALS_ARE_TEMPORARY);
+        credentialRepresentation.setType(UserCreationProperties.CREDENTIALS_REPRESENTATION_TYPE);
 
         List<CredentialRepresentation> list = new ArrayList<>();
         list.add(credentialRepresentation);
@@ -95,17 +94,21 @@ public class UserServiceImpl implements UserService {
         Response response = usersResource.create(user);
         String userId = null;
         int responseStatus = response.getStatus();
-        log.error("UserService.Keycloak create user response with status {}", responseStatus);
+        log.info("UserService.Keycloak create user response with status {}", responseStatus);
 
         switch (responseStatus){
             case 201:
                 List<UserRepresentation> representationList = usersResource.searchByUsername(request.username(), true);
                 if(!CollectionUtils.isEmpty(representationList)){
-                    UserRepresentation userRepresentation1 = representationList.stream().filter(userRepresentation -> Objects.equals(false, userRepresentation.isEmailVerified())).findFirst().orElse(null);
-                    assert userRepresentation1 != null;
-                    userId = userRepresentation1.getId();
+                    UserRepresentation userRepresentationForCreatedUser = representationList
+                            .stream()
+                            .filter(userRepresentation -> Objects.equals(false, userRepresentation.isEmailVerified()))
+                            .findFirst()
+                            .orElse(null);
+                    assert userRepresentationForCreatedUser != null;
+                    userId = userRepresentationForCreatedUser.getId();
 
-                    log.error("UserService.Senging verification email fror user with id {}", userId);
+                    log.info("UserService.Senging verification email from user with id {}", userId);
                     emailVerification(userId);
 
                     try {
@@ -176,7 +179,7 @@ public class UserServiceImpl implements UserService {
         return new RegistrationResponse(UUID.fromString(userId), request.username(), request.firstname(), request.lastname(), request.email());
     }
 
-    public RegistrationResponse updatePerson(RegistrationRequest request){
+    public RegistrationResponse updatePerson(RegistrationRequest request) {
         RegistrationResponse response = updateUser(request);
         User user = findUser(response.id());
 
@@ -214,7 +217,14 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void deleteUserById(UUID id) {
+        User user = findUser(id);
         getUsersResource().delete(id.toString());
+        if(user.getPerson().equals(DRIVER)){
+            driverServiceClient.deleteDriver(user.getExternalId());
+        }
+        if(user.getPerson().equals(PASSENGER)){
+            passengerServiceClient.deletePassenger(user.getExternalId());
+        }
     }
 
     @Override
@@ -232,33 +242,33 @@ public class UserServiceImpl implements UserService {
             return userKeycloak.tokenManager().getAccessToken();
     }
 
-    private User findUser(UUID keycloakId){
+    private User findUser(UUID keycloakId) {
         var userOpt = userRepository.findByKeycloakId(keycloakId);
         User user = userRepository.findByKeycloakId(keycloakId).orElseThrow(() -> new EntityNotFoundException(USER_NOT_FOUND));
         return user;
     }
 
     private UsersResource getUsersResource() {
-        RealmResource realm1 = keycloak.realm(keycloakProperties.getRealm());
-        return realm1.users();
+        RealmResource realm = keycloak.realm(keycloakProperties.getRealm());
+        return realm.users();
     }
 
-    public UserResource getUserResource(String userId){
+    public UserResource getUserResource(String userId) {
         UsersResource usersResource = getUsersResource();
         return usersResource.get(userId);
     }
 
-    private RolesResource getRolesResource(){
+    private RolesResource getRolesResource() {
         return  keycloak.realm(keycloakProperties.getRealm()).roles();
     }
 
-    private void emailVerification(String userId){
+    private void emailVerification(String userId) {
         log.info("sending email verification");
         UsersResource usersResource = getUsersResource();
         usersResource.get(userId).sendVerifyEmail();
     }
 
-    private Optional<String> extractUserIdFromSecurityContext(){
+    private Optional<String> extractUserIdFromSecurityContext() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication != null && authentication.getPrincipal() instanceof Jwt) {
             Jwt jwt = (Jwt) authentication.getPrincipal();
@@ -268,12 +278,10 @@ public class UserServiceImpl implements UserService {
     }
 
     private void assignRole(String userId, String roleName) {
-
         UserResource userResource = getUserResource(userId);
         RolesResource rolesResource = getRolesResource();
         RoleRepresentation representation = rolesResource.get(roleName).toRepresentation();
         userResource.roles().realmLevel().add(Collections.singletonList(representation));
-
     }
 
 }

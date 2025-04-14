@@ -4,6 +4,8 @@ import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 
+import static ru.kharevich.authenticationservice.utils.constants.AuthServiceConstantValues.PHONE_NUMBER_REGULAR_EXPRESSION;
+
 public record RegistrationRequest(
 
         @NotBlank(message = "username is mandatory")
@@ -18,7 +20,7 @@ public record RegistrationRequest(
         @Email(message = "Invalid email format")
         String email,
 
-        @Pattern(regexp = "\\+375(29|44|25|33|17)\\d{7}", message = "Invalid phone number format")
+        @Pattern(regexp = PHONE_NUMBER_REGULAR_EXPRESSION, message = "Invalid phone number format")
         String number,
 
         @NotBlank(message = "password is mandatory")

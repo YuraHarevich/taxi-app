@@ -7,12 +7,12 @@ import org.keycloak.representations.idm.CredentialRepresentation;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class UserCreationProperties {
 
-    public static final boolean userEnabledStatus = true;
+    public static final boolean USER_ENABLED_STATUS = true;
 
-    public static final boolean userEmailVerifiedStatus = false;
+    public static final boolean USER_EMAIL_VERIFIED_STATUS = false;
 
-    public static final boolean credentialsAreTemporary = false;
+    public static final boolean CREDENTIALS_ARE_TEMPORARY = false;
 
-    public static final String credentialsRepresentationType = CredentialRepresentation.PASSWORD;
+    public static final String CREDENTIALS_REPRESENTATION_TYPE = CredentialRepresentation.PASSWORD;
 
 }

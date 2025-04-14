@@ -7,6 +7,7 @@ import feign.codec.ErrorDecoder;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.xml.bind.ValidationException;
 import lombok.extern.slf4j.Slf4j;
+import ru.kharevich.authenticationservice.exceptions.DecoderException;
 import ru.kharevich.authenticationservice.exceptions.ExternalValidationException;
 import ru.kharevich.authenticationservice.exceptions.RepeatedDataException;
 
@@ -24,13 +25,15 @@ public class ExternalUserErrorDecoder implements ErrorDecoder {
         switch(response.status()) {
             case 400:
                 return new ExternalValidationException(causeMessage);
+            case 404:
+                return new EntityNotFoundException(causeMessage);
             case 409:
                 return new RepeatedDataException(causeMessage);
         }
-        return new RuntimeException();
+        return new DecoderException(causeMessage);
     }
 
-    private final String extractExceptionMessage(Response response){
+    private final String extractExceptionMessage(Response response) {
         String responseBody = "";
         try {
             if (response.body() != null) {

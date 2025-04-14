@@ -1,5 +1,6 @@
 package ru.kharevich.authenticationservice.controller.ex;
 
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.ws.rs.NotAuthorizedException;
 import org.keycloak.common.VerificationException;
 import org.springframework.http.HttpStatus;
@@ -9,6 +10,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import ru.kharevich.authenticationservice.dto.ErrorMessage;
 import ru.kharevich.authenticationservice.exceptions.ClientRightException;
+import ru.kharevich.authenticationservice.exceptions.DecoderException;
 import ru.kharevich.authenticationservice.exceptions.ExternalValidationException;
 import ru.kharevich.authenticationservice.exceptions.JwtConverterException;
 import ru.kharevich.authenticationservice.exceptions.RepeatedDataException;
@@ -26,6 +28,30 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ErrorMessage> handleVerification(RuntimeException exception) {
         return ResponseEntity
                 .status(HttpStatus.UNAUTHORIZED)
+                .body(ErrorMessage.builder()
+                        .message(exception.getMessage())
+                        .timestamp(LocalDateTime.now())
+                        .build());
+    }
+
+    @ExceptionHandler({
+            DecoderException.class
+    })
+    public ResponseEntity<ErrorMessage> handleServiceUnavailable(RuntimeException exception) {
+        return ResponseEntity
+                .status(HttpStatus.SERVICE_UNAVAILABLE)
+                .body(ErrorMessage.builder()
+                        .message(exception.getMessage())
+                        .timestamp(LocalDateTime.now())
+                        .build());
+    }
+
+    @ExceptionHandler({
+            EntityNotFoundException.class
+    })
+    public ResponseEntity<ErrorMessage> handleNoFound(RuntimeException exception) {
+        return ResponseEntity
+                .status(HttpStatus.NOT_FOUND)
                 .body(ErrorMessage.builder()
                         .message(exception.getMessage())
                         .timestamp(LocalDateTime.now())
@@ -88,6 +114,18 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ErrorMessage> handleNotAuthorized(RuntimeException exception) {
         return ResponseEntity
                 .status(HttpStatus.UNAUTHORIZED)
+                .body(ErrorMessage.builder()
+                        .message(exception.getMessage())
+                        .timestamp(LocalDateTime.now())
+                        .build());
+    }
+
+    @ExceptionHandler({
+            RuntimeException.class
+    })
+    public ResponseEntity<ErrorMessage> handleUnresolvedExceptions(RuntimeException exception) {
+        return ResponseEntity
+                .status(HttpStatus.SERVICE_UNAVAILABLE)
                 .body(ErrorMessage.builder()
                         .message(exception.getMessage())
                         .timestamp(LocalDateTime.now())
