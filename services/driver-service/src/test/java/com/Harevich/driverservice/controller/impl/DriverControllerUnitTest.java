@@ -136,7 +136,7 @@ public class DriverControllerUnitTest {
         mockMvc.perform(delete(baseUrl + "?id=" + id))
                 .andExpect(status().isOk());
 
-        verify(driverService).deleteById(id);
+        verify(driverService).deleteDriverById(id);
     }
 
     @Test
