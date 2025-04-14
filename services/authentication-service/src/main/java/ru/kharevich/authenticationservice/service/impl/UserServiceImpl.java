@@ -80,7 +80,7 @@ public class UserServiceImpl implements UserService {
         user.setLastName(request.lastname());
         user.setEmailVerified(UserCreationProperties.USER_EMAIL_VERIFIED_STATUS);
 
-        CredentialRepresentation credentialRepresentation=new CredentialRepresentation();
+        CredentialRepresentation credentialRepresentation = new CredentialRepresentation();
         credentialRepresentation.setValue(request.password());
         credentialRepresentation.setTemporary(UserCreationProperties.CREDENTIALS_ARE_TEMPORARY);
         credentialRepresentation.setType(UserCreationProperties.CREDENTIALS_REPRESENTATION_TYPE);
@@ -96,10 +96,10 @@ public class UserServiceImpl implements UserService {
         int responseStatus = response.getStatus();
         log.info("UserService.Keycloak create user response with status {}", responseStatus);
 
-        switch (responseStatus){
+        switch (responseStatus) {
             case 201:
                 List<UserRepresentation> representationList = usersResource.searchByUsername(request.username(), true);
-                if(!CollectionUtils.isEmpty(representationList)){
+                if (!CollectionUtils.isEmpty(representationList)) {
                     UserRepresentation userRepresentationForCreatedUser = representationList
                             .stream()
                             .filter(userRepresentation -> Objects.equals(false, userRepresentation.isEmailVerified()))
@@ -113,7 +113,7 @@ public class UserServiceImpl implements UserService {
 
                     try {
                         assignRole(userId, "USER");
-                    } catch (ForbiddenException exception){
+                    } catch (ForbiddenException exception) {
                         log.error("UserService.Client don't have enough rights to assign role: {}", exception.getMessage());
                         deleteUserById(UUID.fromString(userId));
                         throw new ClientRightException(USER_CREATION_ERROR);
@@ -183,11 +183,11 @@ public class UserServiceImpl implements UserService {
         RegistrationResponse response = updateUser(request);
         User user = findUser(response.id());
 
-        if(user.getPerson().equals(DRIVER)){
-            driverServiceClient.updateDriver(userPersonMapper.toUserRequest(request),user.getExternalId());
+        if (user.getPerson().equals(DRIVER)) {
+            driverServiceClient.updateDriver(userPersonMapper.toUserRequest(request), user.getExternalId());
         }
-        if(user.getPerson().equals(PASSENGER)){
-            passengerServiceClient.updatePassenger(userPersonMapper.toUserRequest(request),user.getExternalId());
+        if (user.getPerson().equals(PASSENGER)) {
+            passengerServiceClient.updatePassenger(userPersonMapper.toUserRequest(request), user.getExternalId());
         }
         return response;
     }
@@ -206,10 +206,10 @@ public class UserServiceImpl implements UserService {
     public void deletePerson() {
         UUID userId = deleteUser();
         User user = findUser(userId);
-        if(user.getPerson().equals(DRIVER)){
+        if (user.getPerson().equals(DRIVER)) {
             driverServiceClient.deleteDriver(user.getExternalId());
         }
-        if(user.getPerson().equals(PASSENGER)){
+        if (user.getPerson().equals(PASSENGER)) {
             passengerServiceClient.deletePassenger(user.getExternalId());
         }
 
@@ -219,27 +219,27 @@ public class UserServiceImpl implements UserService {
     public void deleteUserById(UUID id) {
         User user = findUser(id);
         getUsersResource().delete(id.toString());
-        if(user.getPerson().equals(DRIVER)){
+        if (user.getPerson().equals(DRIVER)) {
             driverServiceClient.deleteDriver(user.getExternalId());
         }
-        if(user.getPerson().equals(PASSENGER)){
+        if (user.getPerson().equals(PASSENGER)) {
             passengerServiceClient.deletePassenger(user.getExternalId());
         }
     }
 
     @Override
     public AccessTokenResponse getJwtToken(UserLoginRequest userLoginRequest) {
-            Keycloak userKeycloak = KeycloakBuilder.builder()
-                    .serverUrl(keycloakProperties.getAuthUrl())
-                    .realm(keycloakProperties.getRealm())
-                    .grantType(OAuth2Constants.PASSWORD)
-                    .clientId(keycloakProperties.getClientId())
-                    .clientSecret(keycloakProperties.getClientSecret())
-                    .username(userLoginRequest.username())
-                    .password(userLoginRequest.password())
-                    .build();
+        Keycloak userKeycloak = KeycloakBuilder.builder()
+                .serverUrl(keycloakProperties.getAuthUrl())
+                .realm(keycloakProperties.getRealm())
+                .grantType(OAuth2Constants.PASSWORD)
+                .clientId(keycloakProperties.getClientId())
+                .clientSecret(keycloakProperties.getClientSecret())
+                .username(userLoginRequest.username())
+                .password(userLoginRequest.password())
+                .build();
 
-            return userKeycloak.tokenManager().getAccessToken();
+        return userKeycloak.tokenManager().getAccessToken();
     }
 
     private User findUser(UUID keycloakId) {
@@ -259,7 +259,7 @@ public class UserServiceImpl implements UserService {
     }
 
     private RolesResource getRolesResource() {
-        return  keycloak.realm(keycloakProperties.getRealm()).roles();
+        return keycloak.realm(keycloakProperties.getRealm()).roles();
     }
 
     private void emailVerification(String userId) {
