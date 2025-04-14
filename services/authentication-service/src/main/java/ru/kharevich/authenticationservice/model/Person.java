@@ -19,7 +19,7 @@ public enum Person {
 
     public static Optional<Person> fromCode(int code) {
         return Arrays.stream(Person.values())
-                .filter(sex -> sex.code == code)
+                .filter(person -> person.code == code)
                 .findAny();
     }
 
