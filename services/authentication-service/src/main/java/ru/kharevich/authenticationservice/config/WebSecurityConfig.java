@@ -23,7 +23,7 @@ public class WebSecurityConfig {
         return httpSecurity
                 .authorizeHttpRequests(authorizeHttpRequests -> authorizeHttpRequests
                         .requestMatchers(HttpMethod.DELETE, "/api/v1/users/admin/**").hasRole("ADMIN")
-                        .anyRequest().authenticated())
+                        .anyRequest().hasRole("USER"))
                 .oauth2ResourceServer(oauth2 -> oauth2
                         .jwt(jwt -> jwt
                                 .jwtAuthenticationConverter(jwtAuthConverter)
@@ -37,10 +37,6 @@ public class WebSecurityConfig {
     public WebSecurityCustomizer webSecurityCustomizer() {
 
         return (web) -> {
-            web.ignoring().requestMatchers(
-                    HttpMethod.POST,
-                    "/api/v1/users/registration"
-            );
             web.ignoring().requestMatchers(
                     HttpMethod.POST,
                     "/api/v1/users/registration/**"

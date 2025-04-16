@@ -1,9 +1,12 @@
 package ru.kharevich.authenticationservice.utils.mapper;
 
+import org.mapstruct.BeanMapping;
 import org.mapstruct.InjectionStrategy;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingConstants;
+import org.mapstruct.MappingTarget;
+import org.mapstruct.NullValuePropertyMappingStrategy;
 import ru.kharevich.authenticationservice.dto.request.RegistrationRequest;
 import ru.kharevich.authenticationservice.dto.request.UserRequest;
 import ru.kharevich.authenticationservice.dto.response.UserResponse;
@@ -25,5 +28,8 @@ public interface UserExternalPersonMapper {
     UserResponse toUserResponse(User user);
 
     User toUser(Person person, UUID keycloakId, UserResponse response);
+
+    @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
+    void changeUserByRequest(UserRequest request, @MappingTarget User user);
 
 }

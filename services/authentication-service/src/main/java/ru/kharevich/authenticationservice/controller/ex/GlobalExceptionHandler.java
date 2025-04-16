@@ -11,13 +11,17 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import ru.kharevich.authenticationservice.dto.ErrorMessage;
 import ru.kharevich.authenticationservice.exceptions.ClientRightException;
 import ru.kharevich.authenticationservice.exceptions.DecoderException;
+import ru.kharevich.authenticationservice.exceptions.ExternalServiceUnavailableException;
 import ru.kharevich.authenticationservice.exceptions.ExternalValidationException;
 import ru.kharevich.authenticationservice.exceptions.JwtConverterException;
 import ru.kharevich.authenticationservice.exceptions.RepeatedDataException;
 import ru.kharevich.authenticationservice.exceptions.RepeatedUserData;
 import ru.kharevich.authenticationservice.exceptions.UserCreationException;
+import ru.kharevich.authenticationservice.exceptions.WrongCredentialsException;
 
 import java.time.LocalDateTime;
+
+import static ru.kharevich.authenticationservice.utils.constants.AuthenticationServiceResponseConstants.UNKNOWN_LINKED_SERVICE_ERROR_MESSAGE;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
@@ -120,14 +124,26 @@ public class GlobalExceptionHandler {
                         .build());
     }
 
+    @ExceptionHandler({WrongCredentialsException.class
+    })
+    public ResponseEntity<ErrorMessage> handleWrongCredentials(RuntimeException exception) {
+        return ResponseEntity
+                .status(HttpStatus.UNAUTHORIZED)
+                .body(ErrorMessage.builder()
+                        .message(exception.getMessage())
+                        .timestamp(LocalDateTime.now())
+                        .build());
+    }
+
     @ExceptionHandler({
+            ExternalServiceUnavailableException.class,
             RuntimeException.class
     })
     public ResponseEntity<ErrorMessage> handleUnresolvedExceptions(RuntimeException exception) {
         return ResponseEntity
                 .status(HttpStatus.SERVICE_UNAVAILABLE)
                 .body(ErrorMessage.builder()
-                        .message(exception.getMessage())
+                        .message(UNKNOWN_LINKED_SERVICE_ERROR_MESSAGE)
                         .timestamp(LocalDateTime.now())
                         .build());
     }
