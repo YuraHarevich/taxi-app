@@ -18,7 +18,6 @@ public class WebSecurityConfig {
                 .pathMatchers("/api/v1/users/login").permitAll()
                 .pathMatchers("/api/v1/users/registration/**").permitAll()
                 .pathMatchers("/actuator/**").permitAll()
-                .pathMatchers("/api/v1/rides/**").hasRole("ADMIN")
                 .pathMatchers("/api/v1/passengers/**").hasRole("ADMIN")
                 .pathMatchers("/api/v1/drivers/**").hasRole("ADMIN")
                 .anyExchange().authenticated()
