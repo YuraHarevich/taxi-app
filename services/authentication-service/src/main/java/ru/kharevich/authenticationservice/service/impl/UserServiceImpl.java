@@ -1,9 +1,27 @@
 package ru.kharevich.authenticationservice.service.impl;
 
+import static ru.kharevich.authenticationservice.model.Person.DRIVER;
+import static ru.kharevich.authenticationservice.model.Person.PASSENGER;
+import static ru.kharevich.authenticationservice.utils.constants.AuthenticationServiceResponseConstants.AUTH_ERROR_MESSAGE;
+import static ru.kharevich.authenticationservice.utils.constants.AuthenticationServiceResponseConstants.USER_CREATION_ERROR;
+import static ru.kharevich.authenticationservice.utils.constants.AuthenticationServiceResponseConstants.USER_NOT_FOUND;
+import static ru.kharevich.authenticationservice.utils.constants.AuthenticationServiceResponseConstants.USER_REPEATED_DATA;
+import static ru.kharevich.authenticationservice.utils.constants.AuthenticationServiceResponseConstants.WRONG_CREDENTIALS;
+
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.transaction.Transactional;
 import jakarta.ws.rs.ClientErrorException;
 import jakarta.ws.rs.ForbiddenException;
+import jakarta.ws.rs.NotFoundException;
 import jakarta.ws.rs.core.Response;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.UUID;
+
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.keycloak.OAuth2Constants;
@@ -27,30 +45,21 @@ import ru.kharevich.authenticationservice.client.PassengerServiceClient;
 import ru.kharevich.authenticationservice.config.UserCreationProperties;
 import ru.kharevich.authenticationservice.dto.request.RegistrationRequest;
 import ru.kharevich.authenticationservice.dto.request.UserLoginRequest;
-import ru.kharevich.authenticationservice.dto.response.UserResponse;
+import ru.kharevich.authenticationservice.dto.request.UserRequest;
 import ru.kharevich.authenticationservice.dto.response.RegistrationResponse;
+import ru.kharevich.authenticationservice.dto.response.UserResponse;
 import ru.kharevich.authenticationservice.exceptions.ClientRightException;
+import ru.kharevich.authenticationservice.exceptions.ExternalServiceUnavailableException;
+import ru.kharevich.authenticationservice.exceptions.ExternalValidationException;
+import ru.kharevich.authenticationservice.exceptions.RepeatedDataException;
 import ru.kharevich.authenticationservice.exceptions.RepeatedUserData;
 import ru.kharevich.authenticationservice.exceptions.UserCreationException;
+import ru.kharevich.authenticationservice.exceptions.WrongCredentialsException;
 import ru.kharevich.authenticationservice.model.User;
 import ru.kharevich.authenticationservice.repository.UserRepository;
 import ru.kharevich.authenticationservice.service.UserService;
 import ru.kharevich.authenticationservice.utils.constants.KeycloakProperties;
 import ru.kharevich.authenticationservice.utils.mapper.UserExternalPersonMapper;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.UUID;
-
-import static ru.kharevich.authenticationservice.model.Person.DRIVER;
-import static ru.kharevich.authenticationservice.model.Person.PASSENGER;
-import static ru.kharevich.authenticationservice.utils.constants.AuthenticationServiceResponseConstants.AUTH_ERROR_MESSAGE;
-import static ru.kharevich.authenticationservice.utils.constants.AuthenticationServiceResponseConstants.USER_CREATION_ERROR;
-import static ru.kharevich.authenticationservice.utils.constants.AuthenticationServiceResponseConstants.USER_NOT_FOUND;
-import static ru.kharevich.authenticationservice.utils.constants.AuthenticationServiceResponseConstants.USER_REPEATED_DATA;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -69,6 +78,7 @@ public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
 
+    @SuppressWarnings("checkstyle:FallThrough")
     @Override
     public RegistrationResponse createUser(RegistrationRequest request) {
 
@@ -92,7 +102,6 @@ public class UserServiceImpl implements UserService {
         UsersResource usersResource = getUsersResource();
 
         Response response = usersResource.create(user);
-        String userId = null;
         int responseStatus = response.getStatus();
         log.info("UserService.Keycloak create user response with status {}", responseStatus);
 
@@ -106,7 +115,7 @@ public class UserServiceImpl implements UserService {
                             .findFirst()
                             .orElse(null);
                     assert userRepresentationForCreatedUser != null;
-                    userId = userRepresentationForCreatedUser.getId();
+                    String userId = userRepresentationForCreatedUser.getId();
 
                     log.info("UserService.Senging verification email from user with id {}", userId);
                     emailVerification(userId);
@@ -135,22 +144,41 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserResponse createDriver(RegistrationRequest request) {
-        UUID keycloakId = createUser(request).id();
-        UserResponse userResponse = driverServiceClient.createDriver(userPersonMapper.toUserRequest(request));
-        User userToSave = userPersonMapper.toUser(DRIVER, keycloakId, userResponse);
-        userRepository.save(userToSave);
-        log.info("UserService.User with id {} successfully created", keycloakId);
-        return userPersonMapper.toUserResponse(userToSave);
+        UUID keycloakId = null;
+        try {
+            keycloakId = createUser(request).id();
+            UserResponse userResponse = driverServiceClient.createDriver(userPersonMapper.toUserRequest(request));
+            User userToSave = userPersonMapper.toUser(DRIVER, keycloakId, userResponse);
+            userRepository.save(userToSave);
+            log.info("UserService.User with id {} successfully created", keycloakId);
+            return userPersonMapper.toUserResponse(userToSave);
+        } catch (ExternalValidationException
+                 | ExternalServiceUnavailableException
+                 | RepeatedDataException
+                 | EntityNotFoundException e) {
+            log.info("error in creation of user with id {} is handled", keycloakId);
+            rollBackCreate(keycloakId);
+            throw e;
+        }
     }
 
     @Override
     public UserResponse createPassenger(RegistrationRequest request) {
-        UUID keycloakId = createUser(request).id();
-        UserResponse userResponse = passengerServiceClient.createPassenger(userPersonMapper.toUserRequest(request));
-        User userToSave = userPersonMapper.toUser(PASSENGER, keycloakId, userResponse);
-        userRepository.save(userToSave);
-        log.info("UserService.User with id {} successfully created", keycloakId);
-        return userPersonMapper.toUserResponse(userToSave);
+        UUID keycloakId = null;
+        try {
+            keycloakId = createUser(request).id();
+            UserResponse userResponse = passengerServiceClient.createPassenger(userPersonMapper.toUserRequest(request));
+            User userToSave = userPersonMapper.toUser(PASSENGER, keycloakId, userResponse);
+            userRepository.save(userToSave);
+            log.info("UserService.User with id {} successfully created", keycloakId);
+            return userPersonMapper.toUserResponse(userToSave);
+        } catch (ExternalValidationException
+                 | ExternalServiceUnavailableException
+                 | RepeatedDataException
+                 | EntityNotFoundException e) {
+            rollBackCreate(keycloakId);
+            throw e;
+        }
     }
 
     @Override
@@ -161,12 +189,20 @@ public class UserServiceImpl implements UserService {
         });
         UsersResource userResource = getUsersResource();
         List<UserRepresentation> users = userResource.list();
-        UserRepresentation user = users.stream().filter(userRepresentation -> Objects.equals(userId, userRepresentation.getId())).findFirst().orElse(null);
+        UserRepresentation user = users
+                .stream()
+                .filter(userRepresentation -> Objects.equals(userId, userRepresentation.getId()))
+                .findFirst()
+                .orElse(null);
 
         user.setEmail(request.email());
         user.setFirstName(request.firstname());
         user.setLastName(request.lastname());
         user.setUsername(request.username());
+
+        User userForRepository = userRepository.findByKeycloakId(UUID.fromString(userId)).get();
+        userPersonMapper.changeUserByRequest(userPersonMapper.toUserRequest(request), userForRepository);
+        userRepository.save(userForRepository);
         try {
             userResource.get(userId).update(user);
         } catch (ClientErrorException ex) {
@@ -176,20 +212,43 @@ public class UserServiceImpl implements UserService {
 
         emailVerification(user.getId());
 
-        return new RegistrationResponse(UUID.fromString(userId), request.username(), request.firstname(), request.lastname(), request.email());
+        return new RegistrationResponse(
+                UUID.fromString(userId),
+                request.username(),
+                request.firstname(),
+                request.lastname(),
+                request.email());
     }
 
     public RegistrationResponse updatePerson(RegistrationRequest request) {
-        RegistrationResponse response = updateUser(request);
-        User user = findUser(response.id());
+        RegistrationRequest userBeforeUpdate = null;
+        UUID updatePersonId = null;
+        try {
+            RegistrationResponse response = updateUser(request);
+            User user = findUser(response.id());
+            updatePersonId = user.getKeycloakId();
+            userBeforeUpdate = new RegistrationRequest(
+                    request.username(),
+                    user.getFirstname(),
+                    user.getLastname(),
+                    user.getEmail(),
+                    user.getNumber(),
+                    request.password());
 
-        if (user.getPerson().equals(DRIVER)) {
-            driverServiceClient.updateDriver(userPersonMapper.toUserRequest(request), user.getExternalId());
+            if (user.getPerson().equals(DRIVER)) {
+                driverServiceClient.updateDriver(userPersonMapper.toUserRequest(request), user.getExternalId());
+            }
+            if (user.getPerson().equals(PASSENGER)) {
+                passengerServiceClient.updatePassenger(userPersonMapper.toUserRequest(request), user.getExternalId());
+            }
+            return response;
+        } catch (ExternalValidationException
+                 | ExternalServiceUnavailableException
+                 | RepeatedDataException
+                 | EntityNotFoundException e) {
+            log.error("user with id {} should be handled mannualy cause of exception in update of driver/passenger", updatePersonId);
+            throw e;
         }
-        if (user.getPerson().equals(PASSENGER)) {
-            passengerServiceClient.updatePassenger(userPersonMapper.toUserRequest(request), user.getExternalId());
-        }
-        return response;
     }
 
     @Override
@@ -203,43 +262,69 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Transactional
     public void deletePerson() {
-        UUID userId = deleteUser();
-        User user = findUser(userId);
-        if (user.getPerson().equals(DRIVER)) {
-            driverServiceClient.deleteDriver(user.getExternalId());
-        }
-        if (user.getPerson().equals(PASSENGER)) {
-            passengerServiceClient.deletePassenger(user.getExternalId());
+        UUID userId = null;
+        try {
+            userId = deleteUser();
+            User user = findUser(userId);
+            userRepository.deleteByKeycloakId(userId);
+            if (user.getPerson().equals(DRIVER)) {
+                driverServiceClient.deleteDriver(user.getExternalId());
+            }
+            if (user.getPerson().equals(PASSENGER)) {
+                passengerServiceClient.deletePassenger(user.getExternalId());
+            }
+        } catch (ExternalValidationException
+                 | ExternalServiceUnavailableException
+                 | RepeatedDataException
+                 | EntityNotFoundException e) {
+            log.error("user with id {} should be handled mannualy cause of exception in delete of driver/passenger", userId);
+            throw e;
         }
 
     }
 
     @Override
     public void deleteUserById(UUID id) {
-        User user = findUser(id);
-        getUsersResource().delete(id.toString());
-        if (user.getPerson().equals(DRIVER)) {
-            driverServiceClient.deleteDriver(user.getExternalId());
-        }
-        if (user.getPerson().equals(PASSENGER)) {
-            passengerServiceClient.deletePassenger(user.getExternalId());
+        try {
+            User user = findUser(id);
+            try {
+                getUsersResource().delete(id.toString());
+            } catch (NotFoundException e) {
+                throw new EntityNotFoundException(USER_NOT_FOUND);
+            }
+            if (user.getPerson().equals(DRIVER)) {
+                driverServiceClient.deleteDriver(user.getExternalId());
+            }
+            if (user.getPerson().equals(PASSENGER)) {
+                passengerServiceClient.deletePassenger(user.getExternalId());
+            }
+        } catch (ExternalValidationException
+                 | ExternalServiceUnavailableException
+                 | RepeatedDataException
+                 | EntityNotFoundException e) {
+            log.error("user with id {} should be handled mannualy cause of exception in delete of driver/passenger", id);
+            throw e;
         }
     }
 
     @Override
     public AccessTokenResponse getJwtToken(UserLoginRequest userLoginRequest) {
-        Keycloak userKeycloak = KeycloakBuilder.builder()
-                .serverUrl(keycloakProperties.getAuthUrl())
-                .realm(keycloakProperties.getRealm())
-                .grantType(OAuth2Constants.PASSWORD)
-                .clientId(keycloakProperties.getClientId())
-                .clientSecret(keycloakProperties.getClientSecret())
-                .username(userLoginRequest.username())
-                .password(userLoginRequest.password())
-                .build();
-
-        return userKeycloak.tokenManager().getAccessToken();
+        try {
+            Keycloak userKeycloak = KeycloakBuilder.builder()
+                    .serverUrl(keycloakProperties.getAuthUrl())
+                    .realm(keycloakProperties.getRealm())
+                    .grantType(OAuth2Constants.PASSWORD)
+                    .clientId(keycloakProperties.getClientId())
+                    .clientSecret(keycloakProperties.getClientSecret())
+                    .username(userLoginRequest.username())
+                    .password(userLoginRequest.password())
+                    .build();
+            return userKeycloak.tokenManager().getAccessToken();
+        } catch (ClientErrorException exception) {
+            throw new WrongCredentialsException(WRONG_CREDENTIALS);
+        }
     }
 
     private User findUser(UUID keycloakId) {
@@ -282,6 +367,10 @@ public class UserServiceImpl implements UserService {
         RolesResource rolesResource = getRolesResource();
         RoleRepresentation representation = rolesResource.get(roleName).toRepresentation();
         userResource.roles().realmLevel().add(Collections.singletonList(representation));
+    }
+
+    private void rollBackCreate(UUID keycloakId) {
+        getUsersResource().delete(keycloakId.toString());
     }
 
 }

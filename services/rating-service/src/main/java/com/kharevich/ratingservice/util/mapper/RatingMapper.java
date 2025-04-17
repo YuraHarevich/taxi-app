@@ -7,6 +7,7 @@ import com.kharevich.ratingservice.model.enumerations.RatingPerson;
 import org.mapstruct.*;
 
 import java.util.Locale;
+import java.util.UUID;
 
 @Mapper(componentModel = MappingConstants.ComponentModel.SPRING,
         injectionStrategy = InjectionStrategy.CONSTRUCTOR)
@@ -14,7 +15,7 @@ public interface RatingMapper {
 
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
     @Mapping(target = "ratingTime", expression = "java(java.time.LocalDateTime.now())")
-    Rating toRating(RatingRequest request);
+    Rating toRating(RatingRequest request, UUID ratedById, UUID ratedId);
 
     @Mapping(source = "whoIsRated", target = "whoIsRated", qualifiedByName = "whoIsRatedToString")
     @Mapping(source = "rideId", target = "rideId")

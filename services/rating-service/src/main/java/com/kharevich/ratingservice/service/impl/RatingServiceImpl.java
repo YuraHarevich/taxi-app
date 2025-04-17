@@ -55,7 +55,10 @@ public class RatingServiceImpl implements RatingService {
         passengerValidation.checkIfPersonExists(rideResponse.passengerId());
         driverValidation.checkIfPersonExists(rideResponse.driverId());
 
-        Rating rating = ratingMapper.toRating(request);
+        UUID ratedId = request.whoIsRated()==DRIVER?rideResponse.driverId():rideResponse.passengerId();
+        UUID ratedById = request.whoIsRated()==DRIVER?rideResponse.passengerId():rideResponse.driverId();
+
+        Rating rating = ratingMapper.toRating(request, ratedById, ratedId);
 
         ratingValidationService.checkIfRideIsAlreadyEstimated(request.rideId(),request.whoIsRated());
 

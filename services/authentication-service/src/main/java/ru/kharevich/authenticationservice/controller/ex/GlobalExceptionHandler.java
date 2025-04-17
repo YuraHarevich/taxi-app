@@ -2,6 +2,7 @@ package ru.kharevich.authenticationservice.controller.ex;
 
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.ws.rs.NotAuthorizedException;
+import lombok.extern.slf4j.Slf4j;
 import org.keycloak.common.VerificationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -11,15 +12,20 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import ru.kharevich.authenticationservice.dto.ErrorMessage;
 import ru.kharevich.authenticationservice.exceptions.ClientRightException;
 import ru.kharevich.authenticationservice.exceptions.DecoderException;
+import ru.kharevich.authenticationservice.exceptions.ExternalServiceUnavailableException;
 import ru.kharevich.authenticationservice.exceptions.ExternalValidationException;
 import ru.kharevich.authenticationservice.exceptions.JwtConverterException;
 import ru.kharevich.authenticationservice.exceptions.RepeatedDataException;
 import ru.kharevich.authenticationservice.exceptions.RepeatedUserData;
 import ru.kharevich.authenticationservice.exceptions.UserCreationException;
+import ru.kharevich.authenticationservice.exceptions.WrongCredentialsException;
 
 import java.time.LocalDateTime;
 
+import static ru.kharevich.authenticationservice.utils.constants.AuthenticationServiceResponseConstants.UNKNOWN_LINKED_SERVICE_ERROR_MESSAGE;
+
 @RestControllerAdvice
+@Slf4j
 public class GlobalExceptionHandler {
 
     @ExceptionHandler({
@@ -88,6 +94,7 @@ public class GlobalExceptionHandler {
             UserCreationException.class
     })
     public ResponseEntity<ErrorMessage> handleConflict(RuntimeException exception) {
+        log.info("Returning conflict response: {}", exception.getMessage());
         return ResponseEntity
                 .status(HttpStatus.CONFLICT)
                 .body(ErrorMessage.builder()
@@ -120,14 +127,26 @@ public class GlobalExceptionHandler {
                         .build());
     }
 
+    @ExceptionHandler({WrongCredentialsException.class
+    })
+    public ResponseEntity<ErrorMessage> handleWrongCredentials(RuntimeException exception) {
+        return ResponseEntity
+                .status(HttpStatus.UNAUTHORIZED)
+                .body(ErrorMessage.builder()
+                        .message(exception.getMessage())
+                        .timestamp(LocalDateTime.now())
+                        .build());
+    }
+
     @ExceptionHandler({
+            ExternalServiceUnavailableException.class,
             RuntimeException.class
     })
     public ResponseEntity<ErrorMessage> handleUnresolvedExceptions(RuntimeException exception) {
         return ResponseEntity
                 .status(HttpStatus.SERVICE_UNAVAILABLE)
                 .body(ErrorMessage.builder()
-                        .message(exception.getMessage())
+                        .message(UNKNOWN_LINKED_SERVICE_ERROR_MESSAGE)
                         .timestamp(LocalDateTime.now())
                         .build());
     }

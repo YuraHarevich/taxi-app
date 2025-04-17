@@ -44,7 +44,7 @@ public class PassengerServiceImpl implements PassengerService {
         passengerValidation.alreadyExistsByEmail(request.email());
         passengerValidation.alreadyExistsByNumber(request.number());
 
-        passengerMapper.changePassengerByRequest(request,passenger);
+        passengerMapper.changePassengerByRequest(request, passenger);
 
         Passenger updatedPassenger = passengerRepository.saveAndFlush(passenger);
         return passengerMapper.toResponse(updatedPassenger);
@@ -53,16 +53,17 @@ public class PassengerServiceImpl implements PassengerService {
     public PassengerResponse getById(UUID id) {
         var passenger = passengerRepository
                 .findById(id)
-                .orElseThrow(()-> new EntityNotFoundException(PassengerValidationConstants.PASSENGER_NOT_FOUND));
+                .orElseThrow(() -> new EntityNotFoundException(PassengerValidationConstants.PASSENGER_NOT_FOUND));
         passengerValidation.isDeleted(id);
         return passengerMapper.toResponse(passenger);
     }
-    @Transactional
-    public void deleteById(UUID passenger_id){
-        passengerValidation.existsById(passenger_id);
-        passengerValidation.isDeleted(passenger_id);
 
-        Passenger passenger = passengerRepository.findById(passenger_id).get();
+    @Transactional
+    public void deleteById(UUID passengerId) {
+        passengerValidation.existsById(passengerId);
+        passengerValidation.isDeleted(passengerId);
+
+        Passenger passenger = passengerRepository.findById(passengerId).get();
         passenger.setDeleted(true);
         passengerRepository.save(passenger);
     }

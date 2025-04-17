@@ -11,4 +11,6 @@ import java.util.UUID;
 public interface UserRepository extends JpaRepository<User, UUID> {
 
     Optional<User> findByKeycloakId(UUID keycloakId);
+
+    long deleteByKeycloakId(UUID keycloakId);
 }

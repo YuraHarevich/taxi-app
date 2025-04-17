@@ -53,7 +53,7 @@ management:
             requests: true
   observations:
     key-values:
-      application: api-gateway
+      application: gateway-service
   tracing:
     sampling:
       probability: 1.0

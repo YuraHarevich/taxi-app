@@ -18,6 +18,11 @@ public final class AuthenticationServiceResponseConstants {
 
     public static final String PERSON_ENUM_CONVERTION_EXCEPTION = "error while converting person type";
 
-    public static final String USER_NOT_FOUND = "user with sucj id not found";
+    public static final String USER_NOT_FOUND = "user with such id not found";
+
+    public static final String WRONG_CREDENTIALS = "wrong password for this username";
+
+    public static final String UNKNOWN_LINKED_SERVICE_ERROR_MESSAGE = "linked service is unavailable";
+
 
 }
