@@ -334,6 +334,27 @@ services:
       - microservices-net
 
   #<----------------------------------------------->
+  kafka_ui:
+    image: provectuslabs/kafka-ui:v0.7.2
+    restart: "no"
+    ports:
+      - "8989:8180"
+    environment:
+      SERVER_PORT: 8180
+      DYNAMIC_CONFIG_ENABLED: "true"
+      KAFKA_CLUSTERS_0_ZOOKEEPER: zookeeper:2181
+      KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS: ms_kafka:9092
+    networks:
+      - microservices-net
+    healthcheck:
+      test: wget --no-verbose --tries=1 --spider http://localhost:8180/actuator/health || exit -1
+      interval: 10s
+      timeout: 5s
+      start_period: 60s
+      retries: 5
+    depends_on:
+      - kafka
+      - zookeeper
 
 networks:
   microservices-net:

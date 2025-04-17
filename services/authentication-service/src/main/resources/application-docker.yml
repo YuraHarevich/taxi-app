@@ -1,4 +1,9 @@
 spring:
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: "http://${keycloak.domain}:8080/realms/${keycloak.realm}"
   datasource:
     url: ${DB_URL:jdbc:postgresql://pg_sql_keycloak:5432/keycloak_db}
 eureka:

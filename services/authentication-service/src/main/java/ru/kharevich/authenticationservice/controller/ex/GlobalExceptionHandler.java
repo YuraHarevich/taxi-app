@@ -2,6 +2,7 @@ package ru.kharevich.authenticationservice.controller.ex;
 
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.ws.rs.NotAuthorizedException;
+import lombok.extern.slf4j.Slf4j;
 import org.keycloak.common.VerificationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -24,6 +25,7 @@ import java.time.LocalDateTime;
 import static ru.kharevich.authenticationservice.utils.constants.AuthenticationServiceResponseConstants.UNKNOWN_LINKED_SERVICE_ERROR_MESSAGE;
 
 @RestControllerAdvice
+@Slf4j
 public class GlobalExceptionHandler {
 
     @ExceptionHandler({
@@ -92,6 +94,7 @@ public class GlobalExceptionHandler {
             UserCreationException.class
     })
     public ResponseEntity<ErrorMessage> handleConflict(RuntimeException exception) {
+        log.info("Returning conflict response: {}", exception.getMessage());
         return ResponseEntity
                 .status(HttpStatus.CONFLICT)
                 .body(ErrorMessage.builder()
